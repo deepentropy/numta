@@ -60,7 +60,7 @@ def test_sma_edge_cases():
     from talib_pure import SMA as SMA_pure
 
     # Small dataset
-    close_small = np.array([100, 101, 102, 103, 104])
+    close_small = np.array([100, 101, 102, 103, 104], dtype=np.float64)
     for timeperiod in [2, 3, 5]:
         if len(close_small) >= timeperiod:
             talib_result = talib.SMA(close_small, timeperiod=timeperiod)
@@ -71,7 +71,7 @@ def test_sma_edge_cases():
             )
 
     # Single value
-    close_single = np.array([100.0])
+    close_single = np.array([100.0], dtype=np.float64)
     talib_result = talib.SMA(close_single, timeperiod=1)
     pure_result = SMA_pure(close_single, timeperiod=1)
     np.testing.assert_array_almost_equal(
