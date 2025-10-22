@@ -122,3 +122,188 @@ def AD(high: Union[np.ndarray, list],
     _ad_numba(high, low, close, volume, output)
 
     return output
+
+
+@jit(nopython=True, cache=True)
+def _adosc_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray,
+                 volume: np.ndarray, fastperiod: int, slowperiod: int,
+                 output: np.ndarray) -> None:
+    """
+    Numba-compiled Chaikin A/D Oscillator calculation (in-place)
+
+    This function is JIT-compiled for maximum performance.
+    It modifies the output array in-place.
+
+    The oscillator is the difference between the fast EMA and slow EMA
+    of the A/D Line.
+    """
+    n = len(high)
+
+    # First, calculate the A/D Line
+    ad_line = np.empty(n, dtype=np.float64)
+    ad_value = 0.0
+
+    for i in range(n):
+        # Calculate Money Flow Multiplier
+        high_low_diff = high[i] - low[i]
+
+        if high_low_diff == 0.0:
+            mf_multiplier = 0.0
+        else:
+            mf_multiplier = ((close[i] - low[i]) - (high[i] - close[i])) / high_low_diff
+
+        # Calculate Money Flow Volume
+        mf_volume = mf_multiplier * volume[i]
+
+        # Accumulate AD Line
+        ad_value += mf_volume
+        ad_line[i] = ad_value
+
+    # Fill lookback period with NaN
+    for i in range(slowperiod - 1):
+        output[i] = np.nan
+
+    # Calculate EMAs using arrays to track intermediate values
+    fast_ema_array = np.empty(n, dtype=np.float64)
+    slow_ema_array = np.empty(n, dtype=np.float64)
+
+    # Fast EMA calculation
+    fast_multiplier = 2.0 / (fastperiod + 1)
+    for i in range(fastperiod - 1):
+        fast_ema_array[i] = np.nan
+
+    # Initialize first fast EMA as SMA
+    sum_val = 0.0
+    for i in range(fastperiod):
+        sum_val += ad_line[i]
+    fast_ema = sum_val / fastperiod
+    fast_ema_array[fastperiod - 1] = fast_ema
+
+    # Calculate remaining fast EMA values
+    for i in range(fastperiod, n):
+        fast_ema = (ad_line[i] - fast_ema) * fast_multiplier + fast_ema
+        fast_ema_array[i] = fast_ema
+
+    # Slow EMA calculation
+    slow_multiplier = 2.0 / (slowperiod + 1)
+    for i in range(slowperiod - 1):
+        slow_ema_array[i] = np.nan
+
+    # Initialize first slow EMA as SMA
+    sum_val = 0.0
+    for i in range(slowperiod):
+        sum_val += ad_line[i]
+    slow_ema = sum_val / slowperiod
+    slow_ema_array[slowperiod - 1] = slow_ema
+
+    # Calculate remaining slow EMA values
+    for i in range(slowperiod, n):
+        slow_ema = (ad_line[i] - slow_ema) * slow_multiplier + slow_ema
+        slow_ema_array[i] = slow_ema
+
+    # Calculate oscillator as difference
+    for i in range(slowperiod - 1, n):
+        output[i] = fast_ema_array[i] - slow_ema_array[i]
+
+
+def ADOSC(high: Union[np.ndarray, list],
+          low: Union[np.ndarray, list],
+          close: Union[np.ndarray, list],
+          volume: Union[np.ndarray, list],
+          fastperiod: int = 3,
+          slowperiod: int = 10) -> np.ndarray:
+    """
+    Chaikin A/D Oscillator
+
+    The Chaikin A/D Oscillator is a momentum indicator that measures the
+    accumulation-distribution line of a moving average convergence-divergence (MACD).
+    It takes the difference between a 3-day and 10-day exponential moving average
+    of the Accumulation/Distribution Line.
+
+    The oscillator is designed to anticipate directional changes in the A/D Line
+    by measuring the momentum behind the movements. A positive value indicates
+    that the security is being accumulated (buying pressure), while a negative
+    value indicates distribution (selling pressure).
+
+    Parameters
+    ----------
+    high : array-like
+        High prices array
+    low : array-like
+        Low prices array
+    close : array-like
+        Close prices array
+    volume : array-like
+        Volume array
+    fastperiod : int, optional
+        Number of periods for the fast EMA (default: 3)
+    slowperiod : int, optional
+        Number of periods for the slow EMA (default: 10)
+
+    Returns
+    -------
+    np.ndarray
+        Array of Chaikin A/D Oscillator values with NaN for the lookback period
+
+    Notes
+    -----
+    - Compatible with TA-Lib ADOSC signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first (slowperiod - 1) values will be NaN
+    - fastperiod should be less than slowperiod for meaningful results
+
+    Formula
+    -------
+    AD Line = Cumulative sum of Money Flow Volume
+    Fast EMA = EMA(AD Line, fastperiod)
+    Slow EMA = EMA(AD Line, slowperiod)
+    ADOSC = Fast EMA - Slow EMA
+
+    Interpretation:
+    - Positive ADOSC: Accumulation (buying pressure)
+    - Negative ADOSC: Distribution (selling pressure)
+    - Rising ADOSC: Increasing buying pressure
+    - Falling ADOSC: Increasing selling pressure
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from talib_pure import ADOSC
+    >>> high = np.array([10, 11, 12, 11, 13, 14, 15])
+    >>> low = np.array([9, 10, 10, 9, 11, 12, 13])
+    >>> close = np.array([9.5, 10.5, 11, 10, 12, 13, 14])
+    >>> volume = np.array([1000, 1100, 1200, 900, 1300, 1400, 1500])
+    >>> adosc = ADOSC(high, low, close, volume)
+    >>> print(adosc)
+    """
+    # Validate inputs
+    if fastperiod < 2:
+        raise ValueError("fastperiod must be >= 2")
+    if slowperiod < 2:
+        raise ValueError("slowperiod must be >= 2")
+    if fastperiod >= slowperiod:
+        raise ValueError("fastperiod must be less than slowperiod")
+
+    # Convert to numpy arrays if needed
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+    close = np.asarray(close, dtype=np.float64)
+    volume = np.asarray(volume, dtype=np.float64)
+
+    # Validate input lengths
+    n = len(high)
+    if len(low) != n or len(close) != n or len(volume) != n:
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    # Not enough data points - return all NaN
+    if n < slowperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _adosc_numba(high, low, close, volume, fastperiod, slowperiod, output)
+
+    return output
