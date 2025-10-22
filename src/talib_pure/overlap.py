@@ -4,6 +4,33 @@ Overlap Studies - Indicators that overlay price charts
 
 import numpy as np
 from typing import Union
+from numba import jit
+
+
+@jit(nopython=True, cache=True)
+def _sma_numba(close: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled SMA calculation (in-place)
+
+    This function is JIT-compiled for maximum performance.
+    It modifies the output array in-place.
+    """
+    n = len(close)
+
+    # Fill lookback period with NaN
+    for i in range(timeperiod - 1):
+        output[i] = np.nan
+
+    # Calculate first SMA value
+    sum_val = 0.0
+    for i in range(timeperiod):
+        sum_val += close[i]
+    output[timeperiod - 1] = sum_val / timeperiod
+
+    # Use rolling window for subsequent values
+    for i in range(timeperiod, n):
+        sum_val = sum_val - close[i - timeperiod] + close[i]
+        output[i] = sum_val / timeperiod
 
 
 def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -30,6 +57,7 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     -----
     - The first (timeperiod - 1) values will be NaN
     - Compatible with TA-Lib SMA signature
+    - Uses Numba JIT compilation for maximum performance
 
     Examples
     --------
@@ -40,29 +68,23 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     >>> print(sma)
     [nan nan  2.  3.  4.  5.  6.  7.  8.  9.]
     """
+    # Validate inputs (TA-Lib requires timeperiod >= 2)
+    if timeperiod < 2:
+        raise ValueError("timeperiod must be >= 2 (TA-Lib requirement)")
+
     # Convert to numpy array if needed
     close = np.asarray(close, dtype=np.float64)
 
-    # Validate inputs
-    if timeperiod < 1:
-        raise ValueError("timeperiod must be >= 1")
+    n = len(close)
+    if n == 0:
+        return np.array([], dtype=np.float64)
 
-    if len(close) == 0:
-        return np.array([])
+    # Not enough data points - return all NaN
+    if n < timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
 
-    # Initialize output with NaN
-    output = np.full(len(close), np.nan, dtype=np.float64)
-
-    # Not enough data points
-    if len(close) < timeperiod:
-        return output
-
-    # Calculate SMA using convolution for better performance
-    # This is much faster than a rolling window approach for large arrays
-    weights = np.ones(timeperiod) / timeperiod
-    sma_values = np.convolve(close, weights, mode='valid')
-
-    # Place the SMA values in the output array
-    output[timeperiod - 1:] = sma_values
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _sma_numba(close, timeperiod, output)
 
     return output

@@ -70,13 +70,13 @@ def test_sma_edge_cases():
                 err_msg=f"SMA differs for small dataset with timeperiod={timeperiod}"
             )
 
-    # Single value
-    close_single = np.array([100.0], dtype=np.float64)
-    talib_result = talib.SMA(close_single, timeperiod=1)
-    pure_result = SMA_pure(close_single, timeperiod=1)
+    # Test with minimum valid timeperiod (TA-Lib requires timeperiod >= 2)
+    close_two = np.array([100.0, 101.0], dtype=np.float64)
+    talib_result = talib.SMA(close_two, timeperiod=2)
+    pure_result = SMA_pure(close_two, timeperiod=2)
     np.testing.assert_array_almost_equal(
         talib_result, pure_result, decimal=10,
-        err_msg="SMA differs for single value"
+        err_msg="SMA differs for minimum timeperiod=2"
     )
 
 
@@ -143,8 +143,12 @@ def test_sma_invalid_timeperiod():
 
     close = np.array([1, 2, 3, 4, 5])
 
+    # TA-Lib requires timeperiod >= 2
     with pytest.raises(ValueError):
         SMA_pure(close, timeperiod=0)
+
+    with pytest.raises(ValueError):
+        SMA_pure(close, timeperiod=1)
 
     with pytest.raises(ValueError):
         SMA_pure(close, timeperiod=-1)
