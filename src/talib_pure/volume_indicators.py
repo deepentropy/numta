@@ -307,3 +307,163 @@ def ADOSC(high: Union[np.ndarray, list],
     _adosc_numba(high, low, close, volume, fastperiod, slowperiod, output)
 
     return output
+
+@jit(nopython=True, cache=True)
+def _obv_numba(close: np.ndarray, volume: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled OBV calculation (in-place)
+
+    Formula:
+    If Close > Close[-1]: OBV = OBV[-1] + Volume
+    If Close < Close[-1]: OBV = OBV[-1] - Volume
+    If Close = Close[-1]: OBV = OBV[-1]
+    """
+    n = len(close)
+
+    # Start with first volume (TA-Lib convention)
+    output[0] = volume[0]
+
+    # Calculate cumulative OBV
+    for i in range(1, n):
+        if close[i] > close[i - 1]:
+            output[i] = output[i - 1] + volume[i]
+        elif close[i] < close[i - 1]:
+            output[i] = output[i - 1] - volume[i]
+        else:
+            output[i] = output[i - 1]
+
+
+def OBV(close: Union[np.ndarray, list],
+        volume: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    On Balance Volume (OBV)
+
+    OBV is a momentum indicator that uses volume flow to predict changes in stock price.
+    Developed by Joe Granville in 1963, it measures buying and selling pressure as a
+    cumulative indicator by adding volume on up days and subtracting volume on down days.
+
+    The theory is that volume precedes price movement. If a security is seeing an
+    increasing OBV, it shows that buyers are willing to step in and push the price higher.
+
+    Parameters
+    ----------
+    close : array-like
+        Close prices array
+    volume : array-like
+        Volume array
+
+    Returns
+    -------
+    np.ndarray
+        Array of OBV values (cumulative volume)
+
+    Notes
+    -----
+    - Compatible with TA-Lib OBV signature
+    - Uses Numba JIT compilation for performance
+    - No lookback period (starts from first bar)
+    - Values are cumulative (running total)
+    - Absolute OBV value is not important
+
+    Formula
+    -------
+    If Close[i] > Close[i-1]:
+        OBV[i] = OBV[i-1] + Volume[i]
+    If Close[i] < Close[i-1]:
+        OBV[i] = OBV[i-1] - Volume[i]
+    If Close[i] = Close[i-1]:
+        OBV[i] = OBV[i-1]
+
+    Starting value: OBV[0] = 0
+
+    Interpretation:
+    - Rising OBV: Buying pressure (bullish)
+    - Falling OBV: Selling pressure (bearish)
+    - OBV confirms price trend when moving same direction
+    - Divergence signals potential reversal
+    - Focus on direction, not absolute value
+
+    Advantages:
+    - Simple and intuitive
+    - Leading indicator (volume leads price)
+    - Confirms price trends
+    - Identifies divergences
+    - Works across timeframes
+    - No parameters to optimize
+
+    Common Uses:
+    - Trend confirmation
+    - Divergence detection
+    - Breakout confirmation
+    - Support/resistance levels
+    - Accumulation/distribution
+    - Volume analysis
+
+    Trading Signals:
+    1. Trend Confirmation:
+       - Price up + OBV up = Strong uptrend
+       - Price down + OBV down = Strong downtrend
+
+    2. Divergence (Reversal Signal):
+       - Price makes new high but OBV doesn't = Bearish divergence
+       - Price makes new low but OBV doesn't = Bullish divergence
+
+    3. Breakout Confirmation:
+       - OBV breaks resistance before price = Bullish
+       - OBV breaks support before price = Bearish
+
+    4. Trendline Analysis:
+       - Draw trendlines on OBV
+       - OBV trendline break signals price reversal
+
+    Trading Applications:
+    - Enter long when OBV breaks above resistance
+    - Exit long when OBV shows divergence
+    - Enter short when OBV breaks below support
+    - Use OBV trendlines for entry/exit signals
+
+    Limitations:
+    - Can give false signals in choppy markets
+    - Large volume spikes can distort OBV
+    - Doesn't account for volume quality
+    - Works best with other indicators
+
+    Comparison with Related Indicators:
+    - AD Line: Uses high-low range, not just close
+    - Money Flow Index: Bounded version (0-100)
+    - Volume: OBV is cumulative volume
+    - Chaikin Money Flow: Weighted by price location
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from talib_pure import OBV
+    >>> close = np.array([100, 102, 101, 103, 105, 104, 106])
+    >>> volume = np.array([1000, 1500, 1200, 1800, 2000, 1100, 1900])
+    >>> obv = OBV(close, volume)
+    >>> print(obv)
+    [0, 1500, 300, 2100, 4100, 3000, 4900]
+    >>> # Rising OBV indicates accumulation
+
+    See Also
+    --------
+    AD : Accumulation/Distribution Line
+    ADOSC : Chaikin A/D Oscillator
+    MFI : Money Flow Index
+    """
+    # Convert to numpy arrays
+    close = np.asarray(close, dtype=np.float64)
+    volume = np.asarray(volume, dtype=np.float64)
+
+    n = len(close)
+    if len(volume) != n:
+        raise ValueError("close and volume must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _obv_numba(close, volume, output)
+
+    return output
