@@ -1036,15 +1036,9 @@ def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
         # Use GPU implementation
         return _tema_cupy(data, timeperiod)
     else:
-        # Use CPU implementation (default)
-        # Calculate EMAs
-        ema1 = EMA(data, timeperiod=timeperiod)
-        ema2 = EMA(ema1, timeperiod=timeperiod)
-        ema3 = EMA(ema2, timeperiod=timeperiod)
-
-        # TEMA = 3*EMA1 - 3*EMA2 + EMA3
-        output = 3.0 * ema1 - 3.0 * ema2 + ema3
-
+        # Use CPU implementation with Numba
+        output = np.empty(n, dtype=np.float64)
+        _tema_numba(data, timeperiod, output)
         return output
 
 
@@ -1091,24 +1085,9 @@ def T3(data: Union[np.ndarray, list],
         # Use GPU implementation
         return _t3_cupy(data, timeperiod, vfactor)
     else:
-        # Use CPU implementation (default)
-        # Calculate coefficients
-        c1 = -vfactor * vfactor * vfactor
-        c2 = 3.0 * vfactor * vfactor + 3.0 * vfactor * vfactor * vfactor
-        c3 = -6.0 * vfactor * vfactor - 3.0 * vfactor - 3.0 * vfactor * vfactor * vfactor
-        c4 = 1.0 + 3.0 * vfactor + vfactor * vfactor * vfactor + 3.0 * vfactor * vfactor
-
-        # Calculate 6 EMAs
-        ema1 = EMA(data, timeperiod=timeperiod)
-        ema2 = EMA(ema1, timeperiod=timeperiod)
-        ema3 = EMA(ema2, timeperiod=timeperiod)
-        ema4 = EMA(ema3, timeperiod=timeperiod)
-        ema5 = EMA(ema4, timeperiod=timeperiod)
-        ema6 = EMA(ema5, timeperiod=timeperiod)
-
-        # T3 = c1*EMA6 + c2*EMA5 + c3*EMA4 + c4*EMA3
-        output = c1 * ema6 + c2 * ema5 + c3 * ema4 + c4 * ema3
-
+        # Use CPU implementation with Numba
+        output = np.empty(n, dtype=np.float64)
+        _t3_numba(data, timeperiod, vfactor, output)
         return output
 
 
@@ -1174,23 +1153,15 @@ def TRIMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
 
     data = np.asarray(data, dtype=np.float64)
     n = len(data)
-    
+
     if n == 0:
         return np.array([], dtype=np.float64)
 
-    # Calculate the periods for double SMA
-    if timeperiod % 2 == 1:  # Odd period
-        n1 = (timeperiod + 1) // 2
-        n2 = n1
-    else:  # Even period
-        n1 = timeperiod // 2
-        n2 = n1 + 1
+    # Use Numba implementation for CPU
+    output = np.empty(n, dtype=np.float64)
+    _trima_numba(data, timeperiod, output)
 
-    # Double SMA
-    sma1 = SMA(data, timeperiod=n1)
-    trima = SMA(sma1, timeperiod=n2)
-
-    return trima
+    return output
 
 
 def WMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
