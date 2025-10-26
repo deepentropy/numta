@@ -28,15 +28,15 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Momentum Indicators | CMO | ✓ | ✓ | - |
 | Momentum Indicators | DX | ✓ | ✓ | - |
 | Momentum Indicators | MACD | ✓ | ✓ | - |
-| Momentum Indicators | MACDEXT | ✗ | ✗ | - |
-| Momentum Indicators | MACDFIX | ✗ | ✗ | - |
+| Momentum Indicators | MACDEXT | ✓ | ✗ | - |
+| Momentum Indicators | MACDFIX | ✓ | ✗ | - |
 | Momentum Indicators | MFI | ✓ | ✗ | - |
 | Momentum Indicators | MINUS_DI | ✓ | ✗ | - |
 | Momentum Indicators | MINUS_DM | ✓ | ✗ | - |
 | Momentum Indicators | MOM | ✓ | ✗ | - |
 | Momentum Indicators | PLUS_DI | ✓ | ✗ | - |
 | Momentum Indicators | PLUS_DM | ✓ | ✗ | - |
-| Momentum Indicators | PPO | ✗ | ✗ | - |
+| Momentum Indicators | PPO | ✓ | ✗ | - |
 | Momentum Indicators | ROC | ✓ | ✗ | - |
 | Momentum Indicators | ROCP | ✓ | ✗ | - |
 | Momentum Indicators | ROCR | ✓ | ✗ | - |
@@ -149,7 +149,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 |----------|----------------|-----------------|-----------------|
 | Cycle Indicators | 6 | 6 (100%) | 0 (0%) |
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
-| Momentum Indicators | 31 | 25 (80%) | 4 (12%) |
+| Momentum Indicators | 31 | 28 (90%) | 4 (12%) |
 | Overlap | 13 | 11 (84%) | 12 (92%) |
 | Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
@@ -161,9 +161,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 88 (65%)
+- **CPU (Numba) Implementations**: 91 (67%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 30
+- **Not Yet Implemented**: 27
 - **Fully Implemented**: 106
 
 ## Notes

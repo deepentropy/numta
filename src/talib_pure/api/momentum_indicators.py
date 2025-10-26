@@ -2027,14 +2027,18 @@ def MACDEXT(close: Union[np.ndarray, list],
     fast_ma = MA(close, timeperiod=fastperiod, matype=fastmatype)
     slow_ma = MA(close, timeperiod=slowperiod, matype=slowmatype)
 
-    # Calculate MACD line
-    macd = fast_ma - slow_ma
+    # Calculate MACD line (needed for signal calculation)
+    macd_temp = fast_ma - slow_ma
 
     # Calculate signal line (MA of MACD)
-    signal = MA(macd, timeperiod=signalperiod, matype=signalmatype)
+    signal_ma = MA(macd_temp, timeperiod=signalperiod, matype=signalmatype)
 
-    # Calculate histogram
-    hist = macd - signal
+    # Use Numba-optimized calculation for final MACD, signal, and histogram
+    from ..cpu.momentum_indicators import _macdext_numba
+    macd = np.empty(n, dtype=np.float64)
+    signal = np.empty(n, dtype=np.float64)
+    hist = np.empty(n, dtype=np.float64)
+    _macdext_numba(fast_ma, slow_ma, signal_ma, macd, signal, hist)
 
     return macd, signal, hist
 
@@ -2116,8 +2120,25 @@ def MACDFIX(close: Union[np.ndarray, list], signalperiod: int = 9) -> tuple:
     MACDEXT : MACD with controllable MA type
     EMA : Exponential Moving Average
     """
-    # MACDFIX uses fixed 12/26 periods
-    return MACD(close, fastperiod=12, slowperiod=26, signalperiod=signalperiod)
+    # Validate inputs
+    if signalperiod < 1:
+        raise ValueError("signalperiod must be >= 1")
+
+    # Convert to numpy array if needed
+    close = np.asarray(close, dtype=np.float64)
+
+    n = len(close)
+    if n == 0:
+        empty = np.array([], dtype=np.float64)
+        return empty, empty, empty
+
+    # Use Numba-optimized implementation with fixed 12/26 periods
+    macd = np.empty(n, dtype=np.float64)
+    signal = np.empty(n, dtype=np.float64)
+    hist = np.empty(n, dtype=np.float64)
+    _macdfix_numba(close, signalperiod, macd, signal, hist)
+
+    return macd, signal, hist
 
 
 def MFI(high: Union[np.ndarray, list],
@@ -2728,15 +2749,9 @@ def PPO(data: Union[np.ndarray, list],
     fast_ema = EMA(data, timeperiod=fastperiod)
     slow_ema = EMA(data, timeperiod=slowperiod)
 
-    # Calculate PPO
+    # Calculate PPO using Numba-optimized implementation
     output = np.empty(n, dtype=np.float64)
-    for i in range(n):
-        if np.isnan(fast_ema[i]) or np.isnan(slow_ema[i]):
-            output[i] = np.nan
-        elif slow_ema[i] == 0.0:
-            output[i] = 0.0
-        else:
-            output[i] = ((fast_ema[i] - slow_ema[i]) / slow_ema[i]) * 100.0
+    _ppo_numba(fast_ema, slow_ema, output)
 
     return output
 

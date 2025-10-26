@@ -22,12 +22,15 @@ __all__ = [
     "_dx_numba",
     "_ema_for_apo",
     "_macd_numba",
+    "_macdext_numba",
+    "_macdfix_numba",
     "_mfi_numba",
     "_minus_di_numba",
     "_minus_dm_numba",
     "_mom_numba",
     "_plus_di_numba",
     "_plus_dm_numba",
+    "_ppo_numba",
     "_roc_numba",
     "_rocp_numba",
     "_rocr100_numba",
@@ -1339,3 +1342,134 @@ def _bop_numba(open_price: np.ndarray, high: np.ndarray, low: np.ndarray,
             output[i] = 0.0
         else:
             output[i] = numerator / denominator
+
+
+@jit(nopython=True, cache=True)
+def _ppo_numba(fast_ema: np.ndarray, slow_ema: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled PPO calculation (in-place)
+    
+    Formula: PPO = ((Fast EMA - Slow EMA) / Slow EMA) * 100
+    
+    This function calculates the percentage price oscillator from pre-computed EMAs.
+    """
+    n = len(fast_ema)
+    
+    for i in range(n):
+        if np.isnan(fast_ema[i]) or np.isnan(slow_ema[i]):
+            output[i] = np.nan
+        elif slow_ema[i] == 0.0:
+            output[i] = 0.0
+        else:
+            output[i] = ((fast_ema[i] - slow_ema[i]) / slow_ema[i]) * 100.0
+
+
+@jit(nopython=True, cache=True)
+def _macdext_numba(fast_ma: np.ndarray, slow_ma: np.ndarray, signal_ma: np.ndarray,
+                   macd_out: np.ndarray, signal_out: np.ndarray, hist_out: np.ndarray) -> None:
+    """
+    Numba-compiled MACDEXT calculation (in-place)
+    
+    Calculates MACD line, signal line, and histogram from pre-computed MAs.
+    
+    Formula:
+    - MACD Line = Fast MA - Slow MA
+    - Signal Line = MA(MACD Line)
+    - Histogram = MACD Line - Signal Line
+    """
+    n = len(fast_ma)
+    
+    # Calculate MACD line
+    for i in range(n):
+        macd_out[i] = fast_ma[i] - slow_ma[i]
+        signal_out[i] = signal_ma[i]
+        hist_out[i] = macd_out[i] - signal_ma[i]
+
+
+@jit(nopython=True, cache=True)
+def _macdfix_numba(close: np.ndarray, signalperiod: int,
+                   macd_out: np.ndarray, signal_out: np.ndarray, hist_out: np.ndarray) -> None:
+    """
+    Numba-compiled MACDFIX calculation (in-place)
+    
+    Optimized version with hardcoded 12/26 periods for maximum performance.
+    
+    Formula:
+    1. Fast EMA = EMA(close, 12)
+    2. Slow EMA = EMA(close, 26)
+    3. MACD Line = Fast EMA - Slow EMA
+    4. Signal Line = EMA(MACD Line, signalperiod)
+    5. Histogram = MACD Line - Signal Line
+    """
+    n = len(close)
+    
+    # Fixed periods for MACDFIX
+    fastperiod = 12
+    slowperiod = 26
+    
+    # Calculate multipliers
+    fast_multiplier = 2.0 / (fastperiod + 1)
+    slow_multiplier = 2.0 / (slowperiod + 1)
+    signal_multiplier = 2.0 / (signalperiod + 1)
+    
+    # Temporary arrays for EMAs
+    fast_ema = np.empty(n, dtype=np.float64)
+    slow_ema = np.empty(n, dtype=np.float64)
+    
+    # Initialize fast EMA with NaN
+    for i in range(fastperiod - 1):
+        fast_ema[i] = np.nan
+    
+    # Calculate first fast EMA value as SMA
+    fast_sum = 0.0
+    for i in range(fastperiod):
+        fast_sum += close[i]
+    fast_val = fast_sum / fastperiod
+    fast_ema[fastperiod - 1] = fast_val
+    
+    # Calculate remaining fast EMA values
+    for i in range(fastperiod, n):
+        fast_val = (close[i] - fast_val) * fast_multiplier + fast_val
+        fast_ema[i] = fast_val
+    
+    # Initialize slow EMA with NaN
+    for i in range(slowperiod - 1):
+        slow_ema[i] = np.nan
+    
+    # Calculate first slow EMA value as SMA
+    slow_sum = 0.0
+    for i in range(slowperiod):
+        slow_sum += close[i]
+    slow_val = slow_sum / slowperiod
+    slow_ema[slowperiod - 1] = slow_val
+    
+    # Calculate remaining slow EMA values
+    for i in range(slowperiod, n):
+        slow_val = (close[i] - slow_val) * slow_multiplier + slow_val
+        slow_ema[i] = slow_val
+    
+    # Calculate MACD line
+    for i in range(n):
+        macd_out[i] = fast_ema[i] - slow_ema[i]
+    
+    # Calculate signal line (EMA of MACD)
+    # Initialize with NaN
+    for i in range(slowperiod + signalperiod - 2):
+        signal_out[i] = np.nan
+    
+    # Calculate first signal value as SMA of first signalperiod MACD values
+    signal_sum = 0.0
+    start_idx = slowperiod - 1
+    for i in range(start_idx, start_idx + signalperiod):
+        signal_sum += macd_out[i]
+    signal_val = signal_sum / signalperiod
+    signal_out[start_idx + signalperiod - 1] = signal_val
+    
+    # Calculate remaining signal values as EMA
+    for i in range(start_idx + signalperiod, n):
+        signal_val = (macd_out[i] - signal_val) * signal_multiplier + signal_val
+        signal_out[i] = signal_val
+    
+    # Calculate histogram
+    for i in range(n):
+        hist_out[i] = macd_out[i] - signal_out[i]
