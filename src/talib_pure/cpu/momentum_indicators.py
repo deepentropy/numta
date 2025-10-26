@@ -38,6 +38,9 @@ __all__ = [
     "_rsi_numba",
     "_sma_for_apo",
     "_stoch_fastk_numba",
+    "_stochrsi_numba",
+    "_trix_numba",
+    "_ultosc_numba",
     "_willr_numba",
 ]
 
@@ -1473,3 +1476,125 @@ def _macdfix_numba(close: np.ndarray, signalperiod: int,
     # Calculate histogram
     for i in range(n):
         hist_out[i] = macd_out[i] - signal_out[i]
+
+
+@jit(nopython=True, cache=True)
+def _stochrsi_numba(rsi: np.ndarray, fastk_period: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled StochRSI %K calculation (in-place)
+
+    Applies Stochastic formula to RSI values.
+
+    Formula: StochRSI %K = ((RSI - Lowest RSI) / (Highest RSI - Lowest RSI)) * 100
+    """
+    n = len(rsi)
+    lookback = fastk_period - 1
+
+    # Initialize with NaN
+    for i in range(lookback):
+        output[i] = np.nan
+
+    # Calculate StochRSI for each bar
+    for i in range(lookback, n):
+        # Find highest and lowest RSI over fastk_period
+        highest_rsi = -np.inf
+        lowest_rsi = np.inf
+        valid_count = 0
+
+        for j in range(i - fastk_period + 1, i + 1):
+            if not np.isnan(rsi[j]):
+                if rsi[j] > highest_rsi:
+                    highest_rsi = rsi[j]
+                if rsi[j] < lowest_rsi:
+                    lowest_rsi = rsi[j]
+                valid_count += 1
+
+        if valid_count == 0 or highest_rsi == lowest_rsi:
+            output[i] = 50.0
+        else:
+            output[i] = ((rsi[i] - lowest_rsi) / (highest_rsi - lowest_rsi)) * 100.0
+
+
+@jit(nopython=True, cache=True)
+def _trix_numba(ema3: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled TRIX calculation (in-place)
+
+    Calculates 1-period ROC of triple EMA.
+
+    Formula: TRIX = ((EMA3[i] - EMA3[i-1]) / EMA3[i-1]) * 100
+    """
+    n = len(ema3)
+
+    # First value is NaN (no previous value)
+    output[0] = np.nan
+
+    # Calculate 1-period ROC
+    for i in range(1, n):
+        if np.isnan(ema3[i]) or np.isnan(ema3[i - 1]) or ema3[i - 1] == 0.0:
+            output[i] = np.nan
+        else:
+            output[i] = ((ema3[i] - ema3[i - 1]) / ema3[i - 1]) * 100.0
+
+
+@jit(nopython=True, cache=True)
+def _ultosc_numba(bp: np.ndarray, tr: np.ndarray,
+                  timeperiod1: int, timeperiod2: int, timeperiod3: int,
+                  output: np.ndarray) -> None:
+    """
+    Numba-compiled Ultimate Oscillator calculation (in-place)
+
+    Calculates UO from pre-computed Buying Pressure and True Range arrays.
+
+    Formula: UO = 100 * [(4*Avg1 + 2*Avg2 + Avg3) / 7]
+    where Avg = Sum(BP over period) / Sum(TR over period)
+    """
+    n = len(bp)
+
+    # Determine lookback period
+    lookback = max(timeperiod1, timeperiod2, timeperiod3) - 1
+
+    # Initialize with NaN
+    for i in range(lookback):
+        output[i] = np.nan
+
+    # Calculate Ultimate Oscillator for each bar
+    for i in range(lookback, n):
+        # Period 1 (shortest)
+        if i >= timeperiod1 - 1:
+            sum_bp1 = 0.0
+            sum_tr1 = 0.0
+            for j in range(i - timeperiod1 + 1, i + 1):
+                sum_bp1 += bp[j]
+                sum_tr1 += tr[j]
+            avg1 = sum_bp1 / sum_tr1 if sum_tr1 != 0.0 else 0.0
+        else:
+            output[i] = np.nan
+            continue
+
+        # Period 2 (medium)
+        if i >= timeperiod2 - 1:
+            sum_bp2 = 0.0
+            sum_tr2 = 0.0
+            for j in range(i - timeperiod2 + 1, i + 1):
+                sum_bp2 += bp[j]
+                sum_tr2 += tr[j]
+            avg2 = sum_bp2 / sum_tr2 if sum_tr2 != 0.0 else 0.0
+        else:
+            output[i] = np.nan
+            continue
+
+        # Period 3 (longest)
+        if i >= timeperiod3 - 1:
+            sum_bp3 = 0.0
+            sum_tr3 = 0.0
+            for j in range(i - timeperiod3 + 1, i + 1):
+                sum_bp3 += bp[j]
+                sum_tr3 += tr[j]
+            avg3 = sum_bp3 / sum_tr3 if sum_tr3 != 0.0 else 0.0
+        else:
+            output[i] = np.nan
+            continue
+
+        # Ultimate Oscillator = 100 * [(4*Avg1 + 2*Avg2 + Avg3) / 7]
+        output[i] = 100.0 * ((4.0 * avg1 + 2.0 * avg2 + avg3) / 7.0)

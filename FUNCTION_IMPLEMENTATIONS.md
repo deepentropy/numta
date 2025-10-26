@@ -44,9 +44,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Momentum Indicators | RSI | ✓ | ✓ | - |
 | Momentum Indicators | STOCH | ✓ | ✗ | - |
 | Momentum Indicators | STOCHF | ✓ | ✗ | - |
-| Momentum Indicators | STOCHRSI | ✗ | ✗ | - |
-| Momentum Indicators | TRIX | ✗ | ✗ | - |
-| Momentum Indicators | ULTOSC | ✗ | ✗ | - |
+| Momentum Indicators | STOCHRSI | ✓ | ✗ | - |
+| Momentum Indicators | TRIX | ✓ | ✗ | - |
+| Momentum Indicators | ULTOSC | ✓ | ✗ | - |
 | Momentum Indicators | WILLR | ✓ | ✗ | - |
 | Overlap | BBANDS | ✓ | ✗ | - |
 | Overlap | DEMA | ✓ | ✓ | - |
@@ -149,7 +149,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 |----------|----------------|-----------------|-----------------|
 | Cycle Indicators | 6 | 6 (100%) | 0 (0%) |
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
-| Momentum Indicators | 31 | 28 (90%) | 4 (12%) |
+| Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
 | Overlap | 13 | 11 (84%) | 12 (92%) |
 | Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
@@ -161,9 +161,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 91 (67%)
+- **CPU (Numba) Implementations**: 94 (69%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 27
+- **Not Yet Implemented**: 24
 - **Fully Implemented**: 106
 
 ## Notes
