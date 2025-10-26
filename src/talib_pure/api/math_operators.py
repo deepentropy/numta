@@ -6,29 +6,17 @@ This module implements mathematical operations compatible with TA-Lib.
 
 import numpy as np
 from typing import Union
-from numba import jit
 
-
-@jit(nopython=True, cache=True)
-def _max_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
-    """
-    Numba-compiled MAX calculation (in-place)
-
-    Finds the highest value over a rolling window.
-    """
-    n = len(data)
-
-    # Fill lookback period with NaN
-    for i in range(timeperiod - 1):
-        output[i] = np.nan
-
-    # Calculate max for each window
-    for i in range(timeperiod - 1, n):
-        max_val = data[i]
-        for j in range(i - timeperiod + 1, i + 1):
-            if data[j] > max_val:
-                max_val = data[j]
-        output[i] = max_val
+# Import CPU implementations
+from ..cpu.math_operators import (
+    _max_numba,
+    _maxindex_numba,
+    _min_numba,
+    _minindex_numba,
+    _minmax_numba,
+    _minmaxindex_numba,
+    _sum_numba,
+)
 
 
 def MAX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -123,31 +111,6 @@ def MAX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     _max_numba(data, timeperiod, output)
 
     return output
-
-
-@jit(nopython=True, cache=True)
-def _maxindex_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
-    """
-    Numba-compiled MAXINDEX calculation (in-place)
-
-    Finds the index of the highest value over a rolling window.
-    Returns the distance from current position (0 = current bar).
-    """
-    n = len(data)
-
-    # Fill lookback period with NaN
-    for i in range(timeperiod - 1):
-        output[i] = np.nan
-
-    # Calculate maxindex for each window
-    for i in range(timeperiod - 1, n):
-        max_val = data[i]
-        max_idx = 0  # Distance from current position
-        for j in range(i - timeperiod + 1, i + 1):
-            if data[j] >= max_val:  # >= to get the most recent if tied
-                max_val = data[j]
-                max_idx = i - j  # Distance from current
-        output[i] = float(max_idx)
 
 
 def MAXINDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -260,20 +223,6 @@ def MAXINDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     return output
 
 
-@jit(nopython=True, cache=True)
-def _min_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
-    """Numba-compiled MIN calculation"""
-    n = len(data)
-    for i in range(timeperiod - 1):
-        output[i] = np.nan
-    for i in range(timeperiod - 1, n):
-        min_val = data[i]
-        for j in range(i - timeperiod + 1, i + 1):
-            if data[j] < min_val:
-                min_val = data[j]
-        output[i] = min_val
-
-
 def MIN(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     """
     Lowest Value Over a Specified Period (MIN)
@@ -311,22 +260,6 @@ def MIN(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     return output
 
 
-@jit(nopython=True, cache=True)
-def _minindex_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
-    """Numba-compiled MININDEX calculation"""
-    n = len(data)
-    for i in range(timeperiod - 1):
-        output[i] = np.nan
-    for i in range(timeperiod - 1, n):
-        min_val = data[i]
-        min_idx = 0
-        for j in range(i - timeperiod + 1, i + 1):
-            if data[j] <= min_val:
-                min_val = data[j]
-                min_idx = i - j
-        output[i] = float(min_idx)
-
-
 def MININDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     """
     Index of Lowest Value Over a Specified Period (MININDEX)
@@ -361,25 +294,6 @@ def MININDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     output = np.empty(n, dtype=np.float64)
     _minindex_numba(data, timeperiod, output)
     return output
-
-
-@jit(nopython=True, cache=True)
-def _minmax_numba(data: np.ndarray, timeperiod: int, min_out: np.ndarray, max_out: np.ndarray) -> None:
-    """Numba-compiled MINMAX calculation"""
-    n = len(data)
-    for i in range(timeperiod - 1):
-        min_out[i] = np.nan
-        max_out[i] = np.nan
-    for i in range(timeperiod - 1, n):
-        min_val = data[i]
-        max_val = data[i]
-        for j in range(i - timeperiod + 1, i + 1):
-            if data[j] < min_val:
-                min_val = data[j]
-            if data[j] > max_val:
-                max_val = data[j]
-        min_out[i] = min_val
-        max_out[i] = max_val
 
 
 def MINMAX(data: Union[np.ndarray, list], timeperiod: int = 30) -> tuple:
@@ -422,29 +336,6 @@ def MINMAX(data: Union[np.ndarray, list], timeperiod: int = 30) -> tuple:
     return min_out, max_out
 
 
-@jit(nopython=True, cache=True)
-def _minmaxindex_numba(data: np.ndarray, timeperiod: int, min_idx_out: np.ndarray, max_idx_out: np.ndarray) -> None:
-    """Numba-compiled MINMAXINDEX calculation"""
-    n = len(data)
-    for i in range(timeperiod - 1):
-        min_idx_out[i] = np.nan
-        max_idx_out[i] = np.nan
-    for i in range(timeperiod - 1, n):
-        min_val = data[i]
-        max_val = data[i]
-        min_idx = 0
-        max_idx = 0
-        for j in range(i - timeperiod + 1, i + 1):
-            if data[j] <= min_val:
-                min_val = data[j]
-                min_idx = i - j
-            if data[j] >= max_val:
-                max_val = data[j]
-                max_idx = i - j
-        min_idx_out[i] = float(min_idx)
-        max_idx_out[i] = float(max_idx)
-
-
 def MINMAXINDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> tuple:
     """
     Indexes of Lowest and Highest Values Over a Specified Period (MINMAXINDEX)
@@ -484,26 +375,6 @@ def MINMAXINDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> tuple:
     max_idx_out = np.empty(n, dtype=np.float64)
     _minmaxindex_numba(data, timeperiod, min_idx_out, max_idx_out)
     return min_idx_out, max_idx_out
-
-
-@jit(nopython=True, cache=True)
-def _sum_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
-    """Numba-compiled SUM calculation (in-place)"""
-    n = len(data)
-
-    for i in range(timeperiod - 1):
-        output[i] = np.nan
-
-    # Calculate first sum
-    sum_val = 0.0
-    for i in range(timeperiod):
-        sum_val += data[i]
-    output[timeperiod - 1] = sum_val
-
-    # Calculate subsequent sums using rolling technique
-    for i in range(timeperiod, n):
-        sum_val = sum_val - data[i - timeperiod] + data[i]
-        output[i] = sum_val
 
 
 def SUM(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
