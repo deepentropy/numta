@@ -497,13 +497,11 @@ def AROONOSC(high: Union[np.ndarray, list],
     if n < timeperiod + 1:
         return np.full(n, np.nan, dtype=np.float64)
 
-    # Calculate Aroon Up and Aroon Down
-    aroondown, aroonup = AROON(high, low, timeperiod)
+    # Use Numba-optimized implementation
+    output = np.empty(n, dtype=np.float64)
+    _aroonosc_numba(high, low, timeperiod, output)
 
-    # Calculate oscillator: Aroon Up - Aroon Down
-    aroonosc = aroonup - aroondown
-
-    return aroonosc
+    return output
 
 
 def ATR(high: Union[np.ndarray, list],
@@ -714,17 +712,9 @@ def BOP(open_price: Union[np.ndarray, list],
     if n == 0:
         return np.array([], dtype=np.float64)
 
-    # Calculate BOP: (Close - Open) / (High - Low)
-    # Handle division by zero when High == Low
-    numerator = close - open_price
-    denominator = high - low
-
-    # Create output array
-    output = np.zeros(n, dtype=np.float64)
-
-    # Avoid division by zero
-    non_zero_range = denominator != 0.0
-    output[non_zero_range] = numerator[non_zero_range] / denominator[non_zero_range]
+    # Use Numba-optimized implementation
+    output = np.empty(n, dtype=np.float64)
+    _bop_numba(open_price, high, low, close, output)
 
     return output
 

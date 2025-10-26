@@ -21,9 +21,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Momentum Indicators | ADXR | ✓ | ✗ | - |
 | Momentum Indicators | APO | ✓ | ✗ | - |
 | Momentum Indicators | AROON | ✓ | ✗ | - |
-| Momentum Indicators | AROONOSC | ✗ | ✗ | - |
+| Momentum Indicators | AROONOSC | ✓ | ✗ | - |
 | Momentum Indicators | ATR | ✓ | ✗ | - |
-| Momentum Indicators | BOP | ✗ | ✗ | - |
+| Momentum Indicators | BOP | ✓ | ✗ | - |
 | Momentum Indicators | CCI | ✓ | ✗ | - |
 | Momentum Indicators | CMO | ✓ | ✓ | - |
 | Momentum Indicators | DX | ✓ | ✓ | - |
@@ -149,7 +149,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 |----------|----------------|-----------------|-----------------|
 | Cycle Indicators | 6 | 6 (100%) | 0 (0%) |
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
-| Momentum Indicators | 31 | 23 (74%) | 4 (12%) |
+| Momentum Indicators | 31 | 25 (80%) | 4 (12%) |
 | Overlap | 13 | 11 (84%) | 12 (92%) |
 | Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
@@ -161,10 +161,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 86 (63%)
+- **CPU (Numba) Implementations**: 88 (65%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 32
-- **Fully Implemented**: 104
+- **Not Yet Implemented**: 30
+- **Fully Implemented**: 106
 
 ## Notes
 

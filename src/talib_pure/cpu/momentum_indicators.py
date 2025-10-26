@@ -14,7 +14,9 @@ __all__ = [
     "_apo_numba_ema",
     "_apo_numba_sma",
     "_aroon_numba",
+    "_aroonosc_numba",
     "_atr_numba",
+    "_bop_numba",
     "_cci_numba",
     "_cmo_numba",
     "_dx_numba",
@@ -1274,3 +1276,66 @@ def _willr_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray,
             output[i] = ((highest - close[i]) / (highest - lowest)) * -100.0
 
 
+
+
+@jit(nopython=True, cache=True)
+def _aroonosc_numba(high: np.ndarray, low: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled AROONOSC calculation (in-place)
+    
+    AROONOSC = Aroon Up - Aroon Down
+    
+    This optimized version calculates both Aroon Up and Aroon Down in a single pass
+    and computes the oscillator directly.
+    """
+    n = len(high)
+    
+    # Fill lookback period with NaN
+    for i in range(timeperiod):
+        output[i] = np.nan
+    
+    # Calculate Aroon Oscillator for each bar
+    for i in range(timeperiod, n):
+        # Find periods since highest high and lowest low in the lookback window
+        periods_since_high = 0
+        periods_since_low = 0
+        highest = high[i]
+        lowest = low[i]
+        
+        for j in range(i - timeperiod + 1, i + 1):
+            if high[j] >= highest:
+                highest = high[j]
+                periods_since_high = i - j
+            if low[j] <= lowest:
+                lowest = low[j]
+                periods_since_low = i - j
+        
+        # Calculate Aroon Up and Aroon Down
+        aroon_up = ((timeperiod - periods_since_high) / timeperiod) * 100.0
+        aroon_down = ((timeperiod - periods_since_low) / timeperiod) * 100.0
+        
+        # AROONOSC = Aroon Up - Aroon Down
+        output[i] = aroon_up - aroon_down
+
+
+@jit(nopython=True, cache=True)
+def _bop_numba(open_price: np.ndarray, high: np.ndarray, low: np.ndarray, 
+               close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled BOP (Balance of Power) calculation (in-place)
+    
+    Formula: BOP = (Close - Open) / (High - Low)
+    
+    When High equals Low (no price range), BOP is set to 0.
+    """
+    n = len(open_price)
+    
+    for i in range(n):
+        numerator = close[i] - open_price[i]
+        denominator = high[i] - low[i]
+        
+        # Handle division by zero when High == Low
+        if denominator == 0.0:
+            output[i] = 0.0
+        else:
+            output[i] = numerator / denominator
