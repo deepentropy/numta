@@ -6,7 +6,9 @@ This module implements volatility indicators compatible with TA-Lib.
 
 import numpy as np
 from typing import Union
-from numba import jit
+
+# Import CPU implementations
+from ..cpu.volatility_indicators import _trange_numba
 
 
 def NATR(high: Union[np.ndarray, list],
@@ -129,7 +131,7 @@ def NATR(high: Union[np.ndarray, list],
     if n == 0:
         return np.array([], dtype=np.float64)
 
-    # Import ATR from momentum_indicators
+    # Import ATR from momentum_indicators API
     from .momentum_indicators import ATR
 
     # Calculate ATR
@@ -144,22 +146,6 @@ def NATR(high: Union[np.ndarray, list],
             output[i] = (atr[i] / close[i]) * 100.0
 
     return output
-
-
-@jit(nopython=True, cache=True)
-def _trange_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray, output: np.ndarray) -> None:
-    """Numba-compiled TRANGE calculation (in-place)"""
-    n = len(high)
-
-    # First bar: just high - low
-    output[0] = high[0] - low[0]
-
-    # Subsequent bars: max of three ranges
-    for i in range(1, n):
-        hl = high[i] - low[i]
-        hc = abs(high[i] - close[i - 1])
-        lc = abs(low[i] - close[i - 1])
-        output[i] = max(hl, hc, lc)
 
 
 def TRANGE(high: Union[np.ndarray, list],

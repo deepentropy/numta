@@ -218,7 +218,7 @@ def SMA_auto(
     >>> sma_numba = SMA_auto(close, timeperiod=30, backend="numba")
     >>> sma_gpu = SMA_auto(close, timeperiod=30, backend="gpu")
     """
-    from .overlap import SMA  # Original implementation
+    from .api.overlap import SMA  # Original implementation
 
     close_arr = np.asarray(close, dtype=np.float64)
     n = len(close_arr)
