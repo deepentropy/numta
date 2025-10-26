@@ -4,6 +4,12 @@ talib-pure: Pure Python TA-Lib library with focus on performance
 Supports both CPU (Numba) and GPU (CuPy/CUDA) backends for accelerated computation.
 """
 
+# Add optimized versions to __all__ if available
+if HAS_NUMBA:
+    __all__.append("SMA_numba")
+
+if HAS_CUPY:
+    __all__.append("SMA_gpu")
 from .overlap import SMA, EMA, DEMA, BBANDS, KAMA, MA, MAMA, SAR, SAREXT, T3, TEMA, TRIMA, WMA
 from .statistics import STDDEV, TSF, VAR
 from .volatility_indicators import NATR, TRANGE
