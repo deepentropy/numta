@@ -77,12 +77,12 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Pattern Recognition | CDLDARKCLOUDCOVER | ✓ | ✗ | Bearish reversal - black candle penetrating into white candle body |
 | Pattern Recognition | CDLDOJI | ✓ | ✗ | Single candle with very small body (indecision) |
 | Pattern Recognition | CDLDOJISTAR | ✓ | ✗ | 2-candle reversal with doji gapping away from trend |
-| Pattern Recognition | CDLDRAGONFLYDOJI | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLENGULFING | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLEVENINGDOJISTAR | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLEVENINGSTAR | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLGAPSIDESIDEWHITE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLGRAVESTONEDOJI | ✗ | ✗ | Not yet implemented |
+| Pattern Recognition | CDLDRAGONFLYDOJI | ✓ | ✗ | Bullish doji with long lower shadow (T-shape) |
+| Pattern Recognition | CDLENGULFING | ✓ | ✗ | 2-candle reversal where second body engulfs first completely |
+| Pattern Recognition | CDLEVENINGDOJISTAR | ✓ | ✗ | Bearish 3-candle reversal with doji at top |
+| Pattern Recognition | CDLEVENINGSTAR | ✓ | ✗ | Bearish 3-candle reversal with small star at top |
+| Pattern Recognition | CDLGAPSIDESIDEWHITE | ✓ | ✗ | 3-candle continuation - two white candles side-by-side after gap |
+| Pattern Recognition | CDLGRAVESTONEDOJI | ✓ | ✗ | Bearish doji with long upper shadow (inverted T-shape) |
 | Pattern Recognition | CDLHAMMER | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLHANGINGMAN | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLHARAMI | ✗ | ✗ | Not yet implemented |
@@ -151,7 +151,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
 | Overlap | 13 | 13 (100%) | 12 (92%) |
-| Pattern Recognition | 60 | 38 (63%) | 22 (36%) |
+| Pattern Recognition | 60 | 44 (73%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
@@ -161,10 +161,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 112 (82%)
+- **CPU (Numba) Implementations**: 118 (87%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 6
-- **Fully Implemented**: 112
+- **Not Yet Implemented**: 18
+- **Fully Implemented**: 118
 
 ## Notes
 

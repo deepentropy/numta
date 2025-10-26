@@ -31,6 +31,12 @@ __all__ = [
     "_cdldarkcloudcover_numba",
     "_cdldoji_numba",
     "_cdldojistar_numba",
+    "_cdldragonflydoji_numba",
+    "_cdlengulfing_numba",
+    "_cdleveningdojistar_numba",
+    "_cdleveningstar_numba",
+    "_cdlgapsidesidewhite_numba",
+    "_cdlgravestonedoji_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -1956,6 +1962,303 @@ def _cdldojistar_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
         gap_up = high[i] < low[i-1]
 
         if is_white_1 and gap_up:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdldragonflydoji_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                            close: np.ndarray, output: np.ndarray) -> None:
+    """Dragonfly Doji: Single candle doji with long lower shadow
+
+    A doji where the open and close are at or very near the high of the candle,
+    creating a long lower shadow. Resembles a dragonfly with wings.
+    Indicates potential bullish reversal when appearing after downtrend.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Doji: body is very small
+        is_doji = body < range_ * 0.1 and body < avg_body * 0.1
+
+        if not is_doji:
+            output[i] = 0
+            continue
+
+        # Dragonfly: long lower shadow, minimal upper shadow
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Lower shadow should be significant (>60% of range)
+        # Upper shadow should be minimal (<10% of range)
+        if lower_shadow > range_ * 0.6 and upper_shadow < range_ * 0.1:
+            output[i] = 100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlengulfing_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                        close: np.ndarray, output: np.ndarray) -> None:
+    """Engulfing Pattern: 2-candle reversal where second candle engulfs first
+
+    Bullish Engulfing: Small black candle followed by larger white candle that
+    completely engulfs the first candle's body (opens below close, closes above open)
+
+    Bearish Engulfing: Small white candle followed by larger black candle that
+    completely engulfs the first candle's body (opens above close, closes below open)
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body_1 = close[i-1] - open_[i-1]
+        body_2 = close[i] - open_[i]
+
+        # Bullish Engulfing
+        is_black_1 = body_1 < 0
+        is_white_2 = body_2 > 0 and abs(body_2) > avg_body * 0.5
+        # Second candle opens at or below first's close and closes at or above first's open
+        engulfs_bull = open_[i] <= close[i-1] and close[i] >= open_[i-1]
+
+        if is_black_1 and is_white_2 and engulfs_bull:
+            output[i] = 100
+            continue
+
+        # Bearish Engulfing
+        is_white_1 = body_1 > 0
+        is_black_2 = body_2 < 0 and abs(body_2) > avg_body * 0.5
+        # Second candle opens at or above first's close and closes at or below first's open
+        engulfs_bear = open_[i] >= close[i-1] and close[i] <= open_[i-1]
+
+        if is_white_1 and is_black_2 and engulfs_bear:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdleveningdojistar_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                              close: np.ndarray, output: np.ndarray) -> None:
+    """Evening Doji Star: 3-candle bearish reversal pattern with doji
+
+    Pattern in uptrend:
+    - First candle: Long white candle
+    - Second candle: Doji that gaps up
+    - Third candle: Black candle closing well into first candle's body
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = abs(close[i-1] - open_[i-1])
+        body_3 = close[i] - open_[i]
+        range_2 = high[i-1] - low[i-1]
+
+        # First candle: Long white candle
+        is_white_1 = body_1 > 0 and abs(body_1) > avg_body * 0.7
+
+        # Second candle: Doji that gaps up from first candle
+        is_doji = range_2 > 1e-10 and body_2 < range_2 * 0.1 and body_2 < avg_body * 0.1
+        gap_up = low[i-1] > high[i-2]
+
+        # Third candle: Black candle closing into first body
+        is_black_3 = body_3 < 0 and abs(body_3) > avg_body * 0.5
+        closes_into_body = close[i] < (open_[i-2] + body_1 * 0.5)
+
+        if is_white_1 and is_doji and gap_up and is_black_3 and closes_into_body:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdleveningstar_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                          close: np.ndarray, output: np.ndarray) -> None:
+    """Evening Star: 3-candle bearish reversal pattern
+
+    Pattern in uptrend:
+    - First candle: Long white candle
+    - Second candle: Small-bodied candle (star) that gaps up
+    - Third candle: Black candle closing well into first candle's body
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = abs(close[i-1] - open_[i-1])
+        body_3 = close[i] - open_[i]
+
+        # First candle: Long white candle
+        is_white_1 = body_1 > 0 and abs(body_1) > avg_body * 0.7
+
+        # Second candle: Small body (star) that gaps up
+        is_star = body_2 < avg_body * 0.3
+        gap_up = low[i-1] > high[i-2]
+
+        # Third candle: Black candle closing into first body
+        is_black_3 = body_3 < 0 and abs(body_3) > avg_body * 0.5
+        closes_into_body = close[i] < (open_[i-2] + body_1 * 0.5)
+
+        if is_white_1 and is_star and gap_up and is_black_3 and closes_into_body:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlgapsidesidewhite_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                               close: np.ndarray, output: np.ndarray) -> None:
+    """Gap Side-by-Side White Lines: 3-candle continuation pattern
+
+    Bullish version (in uptrend):
+    - First candle: White candle
+    - Second candle: White candle gapping up
+    - Third candle: White candle of similar size next to second (side-by-side)
+
+    Bearish version (in downtrend):
+    - First candle: Black candle
+    - Second candle: White candle gapping down
+    - Third candle: White candle of similar size next to second
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        # Bullish version
+        is_white_1 = body_1 > 0
+        is_white_2 = body_2 > 0 and abs(body_2) > avg_body * 0.3
+        is_white_3 = body_3 > 0 and abs(body_3) > avg_body * 0.3
+        gap_up = low[i-1] > high[i-2]
+        # Second and third candles are similar size and side-by-side
+        similar_size = abs(abs(body_2) - abs(body_3)) < avg_body * 0.3
+        similar_open = abs(open_[i] - open_[i-1]) < avg_body * 0.2
+
+        if (is_white_1 and is_white_2 and is_white_3 and gap_up and
+            similar_size and similar_open):
+            output[i] = 100
+            continue
+
+        # Bearish version
+        is_black_1 = body_1 < 0
+        gap_down = high[i-1] < low[i-2]
+
+        if (is_black_1 and is_white_2 and is_white_3 and gap_down and
+            similar_size and similar_open):
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlgravestonedoji_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                             close: np.ndarray, output: np.ndarray) -> None:
+    """Gravestone Doji: Single candle doji with long upper shadow
+
+    A doji where the open and close are at or very near the low of the candle,
+    creating a long upper shadow. Resembles a gravestone.
+    Indicates potential bearish reversal when appearing after uptrend.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Doji: body is very small
+        is_doji = body < range_ * 0.1 and body < avg_body * 0.1
+
+        if not is_doji:
+            output[i] = 0
+            continue
+
+        # Gravestone: long upper shadow, minimal lower shadow
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Upper shadow should be significant (>60% of range)
+        # Lower shadow should be minimal (<10% of range)
+        if upper_shadow > range_ * 0.6 and lower_shadow < range_ * 0.1:
             output[i] = -100
         else:
             output[i] = 0
