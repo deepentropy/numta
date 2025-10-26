@@ -61,10 +61,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Overlap | TEMA | ✓ | ✓ | Uses EMA internally |
 | Overlap | TRIMA | ✓ | ✓ | Uses SMA internally (double smoothed) |
 | Overlap | WMA | ✓ | ✓ | - |
-| Pattern Recognition | CDL2CROWS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3BLACKCROWS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3INSIDE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3OUTSIDE | ✗ | ✗ | Not yet implemented |
+| Pattern Recognition | CDL2CROWS | ✓ | ✗ | Bearish reversal pattern |
+| Pattern Recognition | CDL3BLACKCROWS | ✓ | ✗ | Bearish reversal pattern |
+| Pattern Recognition | CDL3INSIDE | ✓ | ✗ | Bullish/Bearish reversal pattern |
+| Pattern Recognition | CDL3OUTSIDE | ✓ | ✗ | Bullish/Bearish reversal pattern |
 | Pattern Recognition | CDL3STARSINSOUTH | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDL3WHITESOLDIERS | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLABANDONEDBABY | ✗ | ✗ | Not yet implemented |
@@ -151,7 +151,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
 | Overlap | 13 | 13 (100%) | 12 (92%) |
-| Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
+| Pattern Recognition | 60 | 26 (43%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
@@ -161,9 +161,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 96 (71%)
+- **CPU (Numba) Implementations**: 100 (74%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 22
+- **Not Yet Implemented**: 18
 - **Fully Implemented**: 106
 
 ## Notes

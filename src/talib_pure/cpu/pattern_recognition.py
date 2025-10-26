@@ -15,6 +15,10 @@ from numba import jit
 
 
 __all__ = [
+    "_cdl2crows_numba",
+    "_cdl3blackcrows_numba",
+    "_cdl3inside_numba",
+    "_cdl3outside_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -1078,6 +1082,233 @@ def _cdlxsidegap3methods_numba(open_: np.ndarray, high: np.ndarray, low: np.ndar
 
         if is_black_1 and is_black_2 and gap_down and is_white_3 and opens_in_body_2_down and closes_in_body_1_down:
             output[i] = -100  # Bearish continuation
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdl2crows_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                     close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Two Crows: 3-candle bearish reversal pattern
+
+    Pattern appears after an uptrend with:
+    1. First candle: Long white candle (uptrend continuation)
+    2. Second candle: Black candle that gaps up, opens above first close, closes below first close
+    3. Third candle: Black candle that opens above second candle body, closes lower than second
+
+    Returns -100 for bearish pattern, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body size
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        # First candle: Long white candle
+        body_1 = close[i-2] - open_[i-2]
+        is_long_white_1 = body_1 > avg_body * 1.0 and body_1 > 0
+
+        # Second candle: Black candle that gaps up
+        body_2 = close[i-1] - open_[i-1]
+        is_black_2 = body_2 < 0
+        gaps_up = open_[i-1] > close[i-2]
+        closes_in_body_1 = close[i-1] < close[i-2] and close[i-1] > open_[i-2]
+
+        # Third candle: Black candle
+        body_3 = close[i] - open_[i]
+        is_black_3 = body_3 < 0
+        opens_above_body_2 = open_[i] > close[i-1] and open_[i] < open_[i-1]
+        closes_lower = close[i] < close[i-1]
+
+        if (is_long_white_1 and is_black_2 and gaps_up and closes_in_body_1 and
+            is_black_3 and opens_above_body_2 and closes_lower):
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdl3blackcrows_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                          close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Three Black Crows: 3-candle bearish reversal pattern
+
+    Pattern consists of three consecutive long black candles with:
+    - Each candle opens within the previous candle's body
+    - Each candle closes progressively lower
+    - Small or no upper shadows
+
+    Returns -100 for bearish pattern, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body size
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        # All three candles must be black (bearish)
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        are_all_black = body_1 < 0 and body_2 < 0 and body_3 < 0
+
+        # All candles should be reasonably long
+        are_all_long = (abs(body_1) > avg_body * 0.7 and
+                       abs(body_2) > avg_body * 0.7 and
+                       abs(body_3) > avg_body * 0.7)
+
+        # Each opens within previous body and closes lower
+        opens_in_body_2 = open_[i-1] < open_[i-2] and open_[i-1] > close[i-2]
+        opens_in_body_3 = open_[i] < open_[i-1] and open_[i] > close[i-1]
+
+        # Progressive lower closes
+        lower_closes = close[i-1] < close[i-2] and close[i] < close[i-1]
+
+        # Small upper shadows (characteristic of the pattern)
+        upper_shadow_1 = high[i-2] - open_[i-2]
+        upper_shadow_2 = high[i-1] - open_[i-1]
+        upper_shadow_3 = high[i] - open_[i]
+        small_shadows = (upper_shadow_1 < abs(body_1) * 0.3 and
+                        upper_shadow_2 < abs(body_2) * 0.3 and
+                        upper_shadow_3 < abs(body_3) * 0.3)
+
+        if (are_all_black and are_all_long and opens_in_body_2 and opens_in_body_3 and
+            lower_closes and small_shadows):
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdl3inside_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                      close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Three Inside Up/Down: 3-candle reversal pattern
+
+    Three Inside Up (bullish):
+    1. First candle: Long black candle
+    2. Second candle: White candle inside first (harami)
+    3. Third candle: White candle that closes above first high
+
+    Three Inside Down (bearish):
+    1. First candle: Long white candle
+    2. Second candle: Black candle inside first (harami)
+    3. Third candle: Black candle that closes below first low
+
+    Returns +100 for bullish, -100 for bearish, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body size
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        # Three Inside Up (bullish)
+        is_long_black_1 = body_1 < 0 and abs(body_1) > avg_body * 0.8
+        is_white_2 = body_2 > 0
+        inside_body_1 = (open_[i-1] < open_[i-2] and open_[i-1] > close[i-2] and
+                        close[i-1] > close[i-2] and close[i-1] < open_[i-2])
+        is_white_3 = body_3 > 0
+        closes_above_high_1 = close[i] > high[i-2]
+
+        if (is_long_black_1 and is_white_2 and inside_body_1 and
+            is_white_3 and closes_above_high_1):
+            output[i] = 100
+            continue
+
+        # Three Inside Down (bearish)
+        is_long_white_1 = body_1 > 0 and abs(body_1) > avg_body * 0.8
+        is_black_2 = body_2 < 0
+        inside_body_1_bear = (open_[i-1] > close[i-2] and open_[i-1] < open_[i-2] and
+                             close[i-1] < close[i-2] and close[i-1] > open_[i-2])
+        is_black_3 = body_3 < 0
+        closes_below_low_1 = close[i] < low[i-2]
+
+        if (is_long_white_1 and is_black_2 and inside_body_1_bear and
+            is_black_3 and closes_below_low_1):
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdl3outside_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                       close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Three Outside Up/Down: 3-candle reversal pattern
+
+    Three Outside Up (bullish):
+    1. First candle: Black candle
+    2. Second candle: White candle that engulfs first (bullish engulfing)
+    3. Third candle: White candle that closes higher than second
+
+    Three Outside Down (bearish):
+    1. First candle: White candle
+    2. Second candle: Black candle that engulfs first (bearish engulfing)
+    3. Third candle: Black candle that closes lower than second
+
+    Returns +100 for bullish, -100 for bearish, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        # Three Outside Up (bullish)
+        is_black_1 = body_1 < 0
+        is_white_2 = body_2 > 0
+        # Engulfing: second opens below first close, closes above first open
+        engulfs_bullish = (open_[i-1] < close[i-2] and close[i-1] > open_[i-2])
+        is_white_3 = body_3 > 0
+        closes_higher = close[i] > close[i-1]
+
+        if (is_black_1 and is_white_2 and engulfs_bullish and
+            is_white_3 and closes_higher):
+            output[i] = 100
+            continue
+
+        # Three Outside Down (bearish)
+        is_white_1 = body_1 > 0
+        is_black_2 = body_2 < 0
+        # Engulfing: second opens above first close, closes below first open
+        engulfs_bearish = (open_[i-1] > close[i-2] and close[i-1] < open_[i-2])
+        is_black_3 = body_3 < 0
+        closes_lower = close[i] < close[i-1]
+
+        if (is_white_1 and is_black_2 and engulfs_bearish and
+            is_black_3 and closes_lower):
+            output[i] = -100
         else:
             output[i] = 0
 

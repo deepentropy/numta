@@ -19,6 +19,235 @@ from ..gpu.pattern_recognition import *
 from ..backend import get_backend
 
 
+def CDL2CROWS(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Two Crows - 3-candle bearish reversal pattern
+
+    The Two Crows pattern is a bearish reversal that appears after an uptrend.
+    It consists of a long white candle followed by two black candles that gap up
+    but close progressively lower, warning of a potential reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Two Crows pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Long white candle (uptrend continuation)
+    2. Black candle that gaps up but closes within first candle body
+    3. Black candle that opens within second body, closes lower
+
+    The pattern suggests that bulls are losing control after the initial gap up,
+    warning of a potential bearish reversal.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl2crows_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl2crows_numba(open_, high, low, close, output)
+        return output
+
+
+def CDL3BLACKCROWS(open_: Union[np.ndarray, list],
+                   high: Union[np.ndarray, list],
+                   low: Union[np.ndarray, list],
+                   close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Black Crows - 3-candle bearish reversal pattern
+
+    The Three Black Crows is a powerful bearish reversal pattern consisting of
+    three consecutive long black candles. Each candle opens within the previous
+    candle's body and closes progressively lower, signaling strong selling pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Three Black Crows pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Three consecutive long black (bearish) candles
+    2. Each candle opens within the previous candle's body
+    3. Each candle closes progressively lower
+    4. Small or no upper shadows (showing no bullish pressure)
+
+    This pattern is one of the most reliable bearish reversal indicators and
+    suggests a strong shift from bullish to bearish sentiment.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3blackcrows_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3blackcrows_numba(open_, high, low, close, output)
+        return output
+
+
+def CDL3INSIDE(open_: Union[np.ndarray, list],
+               high: Union[np.ndarray, list],
+               low: Union[np.ndarray, list],
+               close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Inside Up/Down - 3-candle reversal pattern
+
+    The Three Inside pattern is a reversal pattern that combines a harami pattern
+    with a confirmation candle. It comes in bullish (Three Inside Up) and bearish
+    (Three Inside Down) versions.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three Inside Up pattern detected
+        -100: Bearish Three Inside Down pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Three Inside Up (Bullish):
+    1. Long black candle (downtrend)
+    2. White candle inside first candle (bullish harami)
+    3. White candle closing above first candle's high (confirmation)
+
+    Three Inside Down (Bearish):
+    1. Long white candle (uptrend)
+    2. Black candle inside first candle (bearish harami)
+    3. Black candle closing below first candle's low (confirmation)
+
+    The pattern provides stronger reversal signal than harami alone due to
+    the confirmation candle.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3inside_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3inside_numba(open_, high, low, close, output)
+        return output
+
+
+def CDL3OUTSIDE(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Outside Up/Down - 3-candle reversal pattern
+
+    The Three Outside pattern is a reversal pattern that combines an engulfing pattern
+    with a confirmation candle. It comes in bullish (Three Outside Up) and bearish
+    (Three Outside Down) versions.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three Outside Up pattern detected
+        -100: Bearish Three Outside Down pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Three Outside Up (Bullish):
+    1. Black candle (downtrend)
+    2. White candle that engulfs first candle (bullish engulfing)
+    3. White candle closing higher than second (confirmation)
+
+    Three Outside Down (Bearish):
+    1. White candle (uptrend)
+    2. Black candle that engulfs first candle (bearish engulfing)
+    3. Black candle closing lower than second (confirmation)
+
+    The pattern provides stronger reversal signal than engulfing alone due to
+    the confirmation candle.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3outside_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3outside_numba(open_, high, low, close, output)
+        return output
+
+
 def CDLMARUBOZU(open_: Union[np.ndarray, list],
                 high: Union[np.ndarray, list],
                 low: Union[np.ndarray, list],
@@ -933,22 +1162,6 @@ def CDLXSIDEGAP3METHODS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
         output = np.zeros(n, dtype=np.int32)
         _cdlxsidegap3methods_numba(open_, high, low, close, output)
         return output
-
-
-def CDL2CROWS(*args, **kwargs):
-    raise NotImplementedError("CDL2CROWS not yet implemented")
-
-
-def CDL3BLACKCROWS(*args, **kwargs):
-    raise NotImplementedError("CDL3BLACKCROWS not yet implemented")
-
-
-def CDL3INSIDE(*args, **kwargs):
-    raise NotImplementedError("CDL3INSIDE not yet implemented")
-
-
-def CDL3OUTSIDE(*args, **kwargs):
-    raise NotImplementedError("CDL3OUTSIDE not yet implemented")
 
 
 def CDL3STARSINSOUTH(*args, **kwargs):
