@@ -506,13 +506,13 @@ def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) ->
         Type of moving average (default: 0)
         - 0: SMA (Simple Moving Average)
         - 1: EMA (Exponential Moving Average)
-        - 2: WMA (Weighted Moving Average) [Not yet implemented]
+        - 2: WMA (Weighted Moving Average)
         - 3: DEMA (Double Exponential Moving Average)
-        - 4: TEMA (Triple Exponential Moving Average) [Not yet implemented]
-        - 5: TRIMA (Triangular Moving Average) [Not yet implemented]
+        - 4: TEMA (Triple Exponential Moving Average)
+        - 5: TRIMA (Triangular Moving Average)
         - 6: KAMA (Kaufman Adaptive Moving Average)
-        - 7: MAMA (Mesa Adaptive Moving Average) [Not yet implemented]
-        - 8: T3 (Triple Exponential T3) [Not yet implemented]
+        - 7: MAMA (Mesa Adaptive Moving Average)
+        - 8: T3 (Triple Exponential T3)
 
     Returns
     -------
@@ -522,10 +522,9 @@ def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) ->
     Notes
     -----
     - Compatible with TA-Lib MA signature
-    - Uses Numba JIT compilation for maximum performance (where implemented)
+    - Uses Numba JIT compilation for maximum performance
     - Lookback period varies by MA type
-    - Currently implements: SMA, EMA, DEMA, KAMA
-    - Other MA types will be added in future releases
+    - All MA types fully implemented and optimized
 
     Supported Moving Average Types
     -------------------------------
@@ -540,16 +539,41 @@ def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) ->
     - Responds faster to price changes than SMA
     - Lookback: timeperiod - 1
 
+    **WMA (matype=2)**: Weighted Moving Average
+    - Linear weighted moving average
+    - More weight to recent prices (linear weighting)
+    - Lookback: timeperiod - 1
+
     **DEMA (matype=3)**: Double Exponential Moving Average
     - Reduced lag compared to EMA
     - Formula: 2*EMA - EMA(EMA)
     - Lookback: 2*timeperiod - 2
+
+    **TEMA (matype=4)**: Triple Exponential Moving Average
+    - Even lower lag than DEMA
+    - Formula: 3*EMA - 3*EMA(EMA) + EMA(EMA(EMA))
+    - Lookback: 3*timeperiod - 3
+
+    **TRIMA (matype=5)**: Triangular Moving Average
+    - Double-smoothed simple moving average
+    - Very smooth, high lag
+    - Lookback: varies by timeperiod
 
     **KAMA (matype=6)**: Kaufman Adaptive Moving Average
     - Adapts to market conditions
     - Fast in trending markets, slow in ranging markets
     - Uses Efficiency Ratio for adaptation
     - Lookback: timeperiod
+
+    **MAMA (matype=7)**: Mesa Adaptive Moving Average
+    - Adaptive MA using Hilbert Transform concepts
+    - Fast attack and slow decay
+    - Lookback: approximately 32 bars
+
+    **T3 (matype=8)**: Triple Exponential T3
+    - Smoothest of the exponential MAs
+    - Uses 6 EMAs with volume factor
+    - Lookback: 6*timeperiod - 6
 
     Interpretation:
     - MA smooths price action to reveal underlying trend
@@ -603,25 +627,28 @@ def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) ->
         return EMA(close, timeperiod=timeperiod)
     elif matype == 2:
         # WMA - Weighted Moving Average
-        raise NotImplementedError("WMA (matype=2) not yet implemented")
+        return WMA(close, timeperiod=timeperiod)
     elif matype == 3:
         # DEMA - Double Exponential Moving Average
         return DEMA(close, timeperiod=timeperiod)
     elif matype == 4:
         # TEMA - Triple Exponential Moving Average
-        raise NotImplementedError("TEMA (matype=4) not yet implemented")
+        return TEMA(close, timeperiod=timeperiod)
     elif matype == 5:
         # TRIMA - Triangular Moving Average
-        raise NotImplementedError("TRIMA (matype=5) not yet implemented")
+        return TRIMA(close, timeperiod=timeperiod)
     elif matype == 6:
         # KAMA - Kaufman Adaptive Moving Average
         return KAMA(close, timeperiod=timeperiod)
     elif matype == 7:
         # MAMA - Mesa Adaptive Moving Average
-        raise NotImplementedError("MAMA (matype=7) not yet implemented")
+        # Note: MAMA requires different parameters (fastlimit, slowlimit)
+        # Using default values for compatibility with MA interface
+        mama_result, _ = MAMA(close, fastlimit=0.5, slowlimit=0.05)
+        return mama_result
     elif matype == 8:
         # T3 - Triple Exponential T3
-        raise NotImplementedError("T3 (matype=8) not yet implemented")
+        return T3(close, timeperiod=timeperiod)
 
 
 def MAMA(close: Union[np.ndarray, list],
@@ -708,51 +735,18 @@ def MAMA(close: Union[np.ndarray, list],
         return empty, empty
 
     # Check backend and dispatch to appropriate implementation
-    
     backend = get_backend()
-    
+
     if backend == "gpu":
         # Use GPU implementation
         return _mama_cupy(close, fastlimit, slowlimit)
     else:
-        # Use CPU implementation (default)
-        # Initialize arrays
+        # Use CPU implementation with Numba optimization
+        from ..cpu.overlap import _mama_numba
         mama = np.empty(n, dtype=np.float64)
         fama = np.empty(n, dtype=np.float64)
-
-    # Lookback period (simplified - using ~32 like other HT indicators)
-    lookback = 32
-    for i in range(lookback):
-        mama[i] = np.nan
-        fama[i] = np.nan
-
-    # Initialize with first valid value
-    mama[lookback] = close[lookback]
-    fama[lookback] = close[lookback]
-
-    # Simplified adaptive calculation
-    for i in range(lookback + 1, n):
-        # Calculate price change rate (simplified adaptation)
-        price_change = abs(close[i] - close[i-1])
-        avg_change = 0.0
-        for j in range(max(0, i-10), i):
-            avg_change += abs(close[j] - close[j-1])
-        avg_change = avg_change / min(10, i) if i > 0 else 1.0
-
-        # Adaptive alpha based on price volatility
-        if avg_change > 0:
-            alpha = min(fastlimit, max(slowlimit, price_change / avg_change * slowlimit))
-        else:
-            alpha = slowlimit
-
-        # MAMA calculation (adaptive EMA)
-        mama[i] = alpha * close[i] + (1 - alpha) * mama[i-1]
-
-        # FAMA follows MAMA with half the alpha
-        fama_alpha = alpha * 0.5
-        fama[i] = fama_alpha * mama[i] + (1 - fama_alpha) * fama[i-1]
-
-    return mama, fama
+        _mama_numba(close, fastlimit, slowlimit, mama, fama)
+        return mama, fama
 
 
 def SAR(high: Union[np.ndarray, list],

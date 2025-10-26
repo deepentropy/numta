@@ -52,8 +52,8 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Overlap | DEMA | ✓ | ✓ | - |
 | Overlap | EMA | ✓ | ✓ | - |
 | Overlap | KAMA | ✓ | ✓ | - |
-| Overlap | MA | ✗ | ✓ | Not yet implemented; Routes to SMA/EMA/DEMA/KAMA based on matype |
-| Overlap | MAMA | ✗ | ✓ | Simplified implementation |
+| Overlap | MA | ✓ | ✓ | Routes to all MA types (SMA/EMA/WMA/DEMA/TEMA/TRIMA/KAMA/MAMA/T3) |
+| Overlap | MAMA | ✓ | ✓ | Simplified adaptive implementation |
 | Overlap | SAR | ✓ | ✓ | - |
 | Overlap | SAREXT | ✓ | ✓ | - |
 | Overlap | SMA | ✓ | ✓ | - |
@@ -150,7 +150,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Cycle Indicators | 6 | 6 (100%) | 0 (0%) |
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
-| Overlap | 13 | 11 (84%) | 12 (92%) |
+| Overlap | 13 | 13 (100%) | 12 (92%) |
 | Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
@@ -161,9 +161,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 94 (69%)
+- **CPU (Numba) Implementations**: 96 (71%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 24
+- **Not Yet Implemented**: 22
 - **Fully Implemented**: 106
 
 ## Notes

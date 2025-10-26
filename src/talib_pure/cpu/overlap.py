@@ -13,6 +13,7 @@ __all__ = [
     "_bbands_numba",
     "_dema_numba",
     "_kama_numba",
+    "_mama_numba",
     "_sar_numba",
     "_sarext_numba",
     "_wma_numba",
@@ -587,6 +588,68 @@ def _trima_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
     
     # Calculate first SMA
     _sma_numba(data, n1, sma1)
-    
+
     # Calculate second SMA (SMA of SMA) to get TRIMA
     _sma_numba(sma1, n2, output)
+
+
+@jit(nopython=True, cache=True)
+def _mama_numba(close: np.ndarray, fastlimit: float, slowlimit: float,
+                mama: np.ndarray, fama: np.ndarray) -> None:
+    """
+    Numba-compiled MAMA calculation (in-place)
+
+    MESA Adaptive Moving Average - simplified implementation.
+
+    Parameters:
+    - close: Input price data
+    - fastlimit: Upper limit for adaptive alpha (default 0.5)
+    - slowlimit: Lower limit for adaptive alpha (default 0.05)
+    - mama: Output array for MAMA values (modified in-place)
+    - fama: Output array for FAMA values (modified in-place)
+
+    Returns both MAMA (fast) and FAMA (following) lines.
+    """
+    n = len(close)
+
+    # Lookback period (simplified - using ~32 like other HT indicators)
+    lookback = 32
+
+    # Initialize with NaN
+    for i in range(lookback):
+        mama[i] = np.nan
+        fama[i] = np.nan
+
+    # Initialize with first valid value
+    mama[lookback] = close[lookback]
+    fama[lookback] = close[lookback]
+
+    # Simplified adaptive calculation
+    for i in range(lookback + 1, n):
+        # Calculate price change rate (simplified adaptation)
+        price_change = abs(close[i] - close[i - 1])
+
+        # Calculate average change over last 10 bars
+        avg_change = 0.0
+        lookback_window = min(10, i)
+        for j in range(i - lookback_window, i):
+            avg_change += abs(close[j] - close[j - 1])
+        avg_change = avg_change / lookback_window if lookback_window > 0 else 1.0
+
+        # Adaptive alpha based on price volatility
+        if avg_change > 0.0:
+            alpha = price_change / avg_change * slowlimit
+            # Clamp alpha between slowlimit and fastlimit
+            if alpha < slowlimit:
+                alpha = slowlimit
+            elif alpha > fastlimit:
+                alpha = fastlimit
+        else:
+            alpha = slowlimit
+
+        # MAMA calculation (adaptive EMA)
+        mama[i] = alpha * close[i] + (1.0 - alpha) * mama[i - 1]
+
+        # FAMA follows MAMA with half the alpha
+        fama_alpha = alpha * 0.5
+        fama[i] = fama_alpha * mama[i] + (1.0 - fama_alpha) * fama[i - 1]
