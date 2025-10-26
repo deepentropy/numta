@@ -57,9 +57,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Overlap | SAR | ✓ | ✓ | - |
 | Overlap | SAREXT | ✓ | ✓ | - |
 | Overlap | SMA | ✓ | ✓ | - |
-| Overlap | T3 | ✗ | ✓ | Uses 6 EMAs with coefficients |
-| Overlap | TEMA | ✗ | ✓ | Uses EMA internally |
-| Overlap | TRIMA | ✗ | ✓ | Uses SMA internally (double smoothed) |
+| Overlap | T3 | ✓ | ✓ | Uses 6 EMAs with coefficients |
+| Overlap | TEMA | ✓ | ✓ | Uses EMA internally |
+| Overlap | TRIMA | ✓ | ✓ | Uses SMA internally (double smoothed) |
 | Overlap | WMA | ✓ | ✓ | - |
 | Pattern Recognition | CDL2CROWS | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDL3BLACKCROWS | ✗ | ✗ | Not yet implemented |
@@ -124,8 +124,8 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Price Transform | MEDPRICE | ✓ | ✗ | - |
 | Price Transform | MIDPOINT | ✓ | ✗ | - |
 | Price Transform | MIDPRICE | ✓ | ✗ | - |
-| Price Transform | TYPPRICE | ✗ | ✗ | - |
-| Price Transform | WCLPRICE | ✗ | ✗ | - |
+| Price Transform | TYPPRICE | ✓ | ✗ | - |
+| Price Transform | WCLPRICE | ✓ | ✗ | - |
 | Statistic Functions | BETA | ✗ | ✗ | Not yet implemented |
 | Statistic Functions | CORREL | ✓ | ✗ | - |
 | Statistic Functions | LINEARREG | ✓ | ✗ | - |
@@ -150,9 +150,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Cycle Indicators | 6 | 6 (100%) | 0 (0%) |
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 20 (64%) | 4 (12%) |
-| Overlap | 13 | 8 (61%) | 12 (92%) |
+| Overlap | 13 | 11 (84%) | 12 (92%) |
 | Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
-| Price Transform | 5 | 3 (60%) | 0 (0%) |
+| Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
 | Volatility Indicators | 2 | 1 (50%) | 0 (0%) |
@@ -161,10 +161,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 78 (57%)
+- **CPU (Numba) Implementations**: 83 (61%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 40
-- **Fully Implemented**: 96
+- **Not Yet Implemented**: 35
+- **Fully Implemented**: 101
 
 ## Notes
 
