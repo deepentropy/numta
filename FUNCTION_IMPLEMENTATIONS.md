@@ -65,12 +65,12 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Pattern Recognition | CDL3BLACKCROWS | ✓ | ✗ | Bearish reversal pattern |
 | Pattern Recognition | CDL3INSIDE | ✓ | ✗ | Bullish/Bearish reversal pattern |
 | Pattern Recognition | CDL3OUTSIDE | ✓ | ✗ | Bullish/Bearish reversal pattern |
-| Pattern Recognition | CDL3STARSINSOUTH | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3WHITESOLDIERS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLABANDONEDBABY | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLADVANCEBLOCK | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLBELTHOLD | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLBREAKAWAY | ✗ | ✗ | Not yet implemented |
+| Pattern Recognition | CDL3STARSINSOUTH | ✓ | ✗ | Bullish reversal - 3 black candles with progressively smaller bodies |
+| Pattern Recognition | CDL3WHITESOLDIERS | ✓ | ✗ | Bullish reversal - 3 consecutive white candles advancing progressively |
+| Pattern Recognition | CDLABANDONEDBABY | ✓ | ✗ | Reversal pattern with isolated doji (gap before and after) |
+| Pattern Recognition | CDLADVANCEBLOCK | ✓ | ✗ | Bearish warning - 3 white candles with decreasing bodies |
+| Pattern Recognition | CDLBELTHOLD | ✓ | ✗ | Reversal - marubozu opening on extreme (white on low/black on high) |
+| Pattern Recognition | CDLBREAKAWAY | ✓ | ✗ | 5-candle continuation pattern with gap closure |
 | Pattern Recognition | CDLCLOSINGMARUBOZU | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLCONCEALBABYSWALL | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLCOUNTERATTACK | ✗ | ✗ | Not yet implemented |
@@ -151,7 +151,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
 | Overlap | 13 | 13 (100%) | 12 (92%) |
-| Pattern Recognition | 60 | 26 (43%) | 22 (36%) |
+| Pattern Recognition | 60 | 32 (53%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
@@ -161,9 +161,9 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 100 (74%)
+- **CPU (Numba) Implementations**: 106 (78%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 18
+- **Not Yet Implemented**: 12
 - **Fully Implemented**: 106
 
 ## Notes

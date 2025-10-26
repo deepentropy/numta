@@ -1164,28 +1164,348 @@ def CDLXSIDEGAP3METHODS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
         return output
 
 
-def CDL3STARSINSOUTH(*args, **kwargs):
-    raise NotImplementedError("CDL3STARSINSOUTH not yet implemented")
+def CDL3STARSINSOUTH(open_: Union[np.ndarray, list],
+                     high: Union[np.ndarray, list],
+                     low: Union[np.ndarray, list],
+                     close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Stars in the South - 3-candle bullish reversal pattern
+
+    A rare bullish reversal pattern consisting of three black candles with
+    progressively smaller bodies and decreasing lower shadows, signaling
+    weakening bearish pressure and potential reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three Stars in the South pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Long black candle with long lower shadow
+    2. Smaller black candle within first candle's range
+    3. Short black marubozu within second candle's range
+
+    This pattern indicates that sellers are losing momentum despite continued
+    bearish candles, suggesting a potential bullish reversal.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3starsinsouth_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3starsinsouth_numba(open_, high, low, close, output)
+        return output
 
 
-def CDL3WHITESOLDIERS(*args, **kwargs):
-    raise NotImplementedError("CDL3WHITESOLDIERS not yet implemented")
+def CDL3WHITESOLDIERS(open_: Union[np.ndarray, list],
+                      high: Union[np.ndarray, list],
+                      low: Union[np.ndarray, list],
+                      close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three White Soldiers - 3-candle bullish reversal pattern
+
+    A powerful bullish reversal pattern consisting of three consecutive long
+    white candles. Each candle opens within the previous candle's body and
+    closes progressively higher, signaling strong buying pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three White Soldiers pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Three consecutive long white (bullish) candles
+    2. Each candle opens within the previous candle's body
+    3. Each candle closes progressively higher
+    4. Small or no lower shadows (showing no bearish pressure)
+
+    This pattern is the bullish counterpart to Three Black Crows and is
+    one of the most reliable bullish reversal indicators.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3whitesoldiers_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3whitesoldiers_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLABANDONEDBABY(*args, **kwargs):
-    raise NotImplementedError("CDLABANDONEDBABY not yet implemented")
+def CDLABANDONEDBABY(open_: Union[np.ndarray, list],
+                     high: Union[np.ndarray, list],
+                     low: Union[np.ndarray, list],
+                     close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Abandoned Baby - 3-candle reversal pattern with isolated doji
+
+    A rare and powerful reversal pattern featuring a doji that is isolated
+    from the surrounding candles by gaps on both sides, resembling an
+    "abandoned" baby.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Abandoned Baby pattern detected
+        -100: Bearish Abandoned Baby pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Bullish Abandoned Baby:
+    1. Black candle in downtrend
+    2. Gap down to a doji (isolated)
+    3. Gap up to a white candle
+
+    Bearish Abandoned Baby:
+    1. White candle in uptrend
+    2. Gap up to a doji (isolated)
+    3. Gap down to a black candle
+
+    The doji represents indecision and the gaps show a dramatic shift in
+    sentiment, making this a strong reversal signal.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdlabandonedbaby_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlabandonedbaby_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLADVANCEBLOCK(*args, **kwargs):
-    raise NotImplementedError("CDLADVANCEBLOCK not yet implemented")
+def CDLADVANCEBLOCK(open_: Union[np.ndarray, list],
+                    high: Union[np.ndarray, list],
+                    low: Union[np.ndarray, list],
+                    close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Advance Block - 3-candle bearish reversal warning pattern
+
+    A warning pattern that appears during an uptrend, consisting of three
+    white candles with progressively smaller bodies and increasing upper
+    shadows, signaling weakening bullish momentum.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Advance Block warning detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Three white candles in uptrend
+    2. Each candle has progressively smaller body
+    3. Increasing upper shadows
+    4. Each opens within previous candle's body
+
+    This pattern warns that despite continued upward movement, buyers are
+    losing strength, suggesting a potential reversal or consolidation.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdladvanceblock_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdladvanceblock_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLBELTHOLD(*args, **kwargs):
-    raise NotImplementedError("CDLBELTHOLD not yet implemented")
+def CDLBELTHOLD(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Belt Hold - Single candle reversal pattern
+
+    A strong single-candle reversal pattern characterized by a marubozu
+    candle opening at the extreme of the range.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Belt Hold pattern detected
+        -100: Bearish Belt Hold pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Bullish Belt Hold (Yorikiri):
+    - White marubozu opening on or near the low
+    - No or minimal lower shadow
+    - Strong buying from the open
+
+    Bearish Belt Hold (Yorikiri):
+    - Black marubozu opening on or near the high
+    - No or minimal upper shadow
+    - Strong selling from the open
+
+    This pattern shows strong directional conviction from the opening price.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n == 0:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdlbelthold_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlbelthold_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLBREAKAWAY(*args, **kwargs):
-    raise NotImplementedError("CDLBREAKAWAY not yet implemented")
+def CDLBREAKAWAY(open_: Union[np.ndarray, list],
+                 high: Union[np.ndarray, list],
+                 low: Union[np.ndarray, list],
+                 close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Breakaway - 5-candle continuation pattern
+
+    A continuation pattern that appears after a trend, featuring a gap
+    followed by continuation candles, then a strong candle closing back
+    into the initial gap.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Breakaway pattern detected
+        -100: Bearish Breakaway pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Bullish Breakaway:
+    1. Long black candle
+    2. Gap down
+    3. 2-3 candles continuing downward
+    4. Long white candle closing within the original gap
+
+    Bearish Breakaway:
+    1. Long white candle
+    2. Gap up
+    3. 2-3 candles continuing upward
+    4. Long black candle closing within the original gap
+
+    Despite the reversal-looking final candle, this is actually a
+    continuation pattern, suggesting the trend will resume.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 5:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdlbreakaway_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlbreakaway_numba(open_, high, low, close, output)
+        return output
 
 
 def CDLCLOSINGMARUBOZU(*args, **kwargs):

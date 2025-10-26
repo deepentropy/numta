@@ -19,6 +19,12 @@ __all__ = [
     "_cdl3blackcrows_numba",
     "_cdl3inside_numba",
     "_cdl3outside_numba",
+    "_cdl3starsinsouth_numba",
+    "_cdl3whitesoldiers_numba",
+    "_cdlabandonedbaby_numba",
+    "_cdladvanceblock_numba",
+    "_cdlbelthold_numba",
+    "_cdlbreakaway_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -1308,6 +1314,358 @@ def _cdl3outside_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
 
         if (is_white_1 and is_black_2 and engulfs_bearish and
             is_black_3 and closes_lower):
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdl3starsinsouth_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                            close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Three Stars in the South: 3-candle bullish reversal pattern
+
+    Pattern consists of three black candles with:
+    1. Long black candle with long lower shadow
+    2. Smaller black candle, opens and closes within first candle's range
+    3. Short black marubozu opening and closing within second candle's range
+
+    Returns +100 for bullish pattern, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body and range
+        avg_body = 0.0
+        avg_range = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            avg_range += high[j] - low[j]
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+        avg_range = avg_range / count if count > 0 else 1.0
+
+        # All three must be black
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        are_all_black = body_1 < 0 and body_2 < 0 and body_3 < 0
+
+        # First candle: Long black with long lower shadow
+        is_long_1 = abs(body_1) > avg_body * 0.8
+        lower_shadow_1 = min(open_[i-2], close[i-2]) - low[i-2]
+        has_long_lower_shadow = lower_shadow_1 > abs(body_1) * 0.5
+
+        # Second candle: Smaller body, within first candle's range
+        is_smaller_2 = abs(body_2) < abs(body_1)
+        within_range_2 = (open_[i-1] < open_[i-2] and close[i-1] > close[i-2])
+
+        # Third candle: Short marubozu within second candle's range
+        is_short_3 = abs(body_3) < abs(body_2)
+        lower_shadow_3 = close[i] - low[i]
+        is_marubozu_3 = lower_shadow_3 < abs(body_3) * 0.2
+        within_range_3 = (open_[i] < open_[i-1] and close[i] > close[i-1])
+
+        if (are_all_black and is_long_1 and has_long_lower_shadow and
+            is_smaller_2 and within_range_2 and is_short_3 and is_marubozu_3 and within_range_3):
+            output[i] = 100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdl3whitesoldiers_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                             close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Three White Soldiers: 3-candle bullish reversal pattern
+
+    Pattern consists of three consecutive long white candles with:
+    - Each candle opens within the previous candle's body
+    - Each candle closes progressively higher
+    - Small or no lower shadows
+
+    Returns +100 for bullish pattern, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body size
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        # All three candles must be white (bullish)
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        are_all_white = body_1 > 0 and body_2 > 0 and body_3 > 0
+
+        # All candles should be reasonably long
+        are_all_long = (abs(body_1) > avg_body * 0.7 and
+                       abs(body_2) > avg_body * 0.7 and
+                       abs(body_3) > avg_body * 0.7)
+
+        # Each opens within previous body and closes higher
+        opens_in_body_2 = open_[i-1] > close[i-2] and open_[i-1] < open_[i-2]
+        opens_in_body_3 = open_[i] > close[i-1] and open_[i] < open_[i-1]
+
+        # Progressive higher closes
+        higher_closes = close[i-1] > close[i-2] and close[i] > close[i-1]
+
+        # Small lower shadows (characteristic of the pattern)
+        lower_shadow_1 = open_[i-2] - low[i-2]
+        lower_shadow_2 = open_[i-1] - low[i-1]
+        lower_shadow_3 = open_[i] - low[i]
+        small_shadows = (lower_shadow_1 < abs(body_1) * 0.3 and
+                        lower_shadow_2 < abs(body_2) * 0.3 and
+                        lower_shadow_3 < abs(body_3) * 0.3)
+
+        if (are_all_white and are_all_long and opens_in_body_2 and opens_in_body_3 and
+            higher_closes and small_shadows):
+            output[i] = 100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlabandonedbaby_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                           close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Abandoned Baby: 3-candle reversal pattern with doji
+
+    Bullish: Black candle, gap down doji, gap up white candle
+    Bearish: White candle, gap up doji, gap down black candle
+
+    The middle doji is "abandoned" with gaps on both sides.
+
+    Returns +100 for bullish, -100 for bearish, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body and range
+        avg_body = 0.0
+        avg_range = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            avg_range += high[j] - low[j]
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+        avg_range = avg_range / count if count > 0 else 1.0
+
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        # Middle candle must be a doji
+        is_doji = abs(body_2) < avg_body * 0.1
+
+        # Bullish Abandoned Baby
+        is_black_1 = body_1 < 0
+        gap_down = high[i-1] < low[i-2]
+        is_white_3 = body_3 > 0
+        gap_up = low[i] > high[i-1]
+
+        if is_black_1 and gap_down and is_doji and gap_up and is_white_3:
+            output[i] = 100
+            continue
+
+        # Bearish Abandoned Baby
+        is_white_1 = body_1 > 0
+        gap_up_2 = low[i-1] > high[i-2]
+        is_black_3 = body_3 < 0
+        gap_down_3 = high[i] < low[i-1]
+
+        if is_white_1 and gap_up_2 and is_doji and gap_down_3 and is_black_3:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdladvanceblock_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                          close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Advance Block: 3-candle bearish reversal warning pattern
+
+    Pattern consists of three white candles with:
+    - Each candle has progressively smaller body
+    - Increasing upper shadows
+    - Opens within previous body
+
+    Signals weakening bullish momentum despite upward price movement.
+
+    Returns -100 for bearish warning, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 3:
+        return
+
+    for i in range(2, n):
+        # Calculate average body
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        # All three must be white candles
+        body_1 = close[i-2] - open_[i-2]
+        body_2 = close[i-1] - open_[i-1]
+        body_3 = close[i] - open_[i]
+
+        are_all_white = body_1 > 0 and body_2 > 0 and body_3 > 0
+
+        # Bodies should be progressively smaller
+        bodies_decreasing = abs(body_2) < abs(body_1) and abs(body_3) < abs(body_2)
+
+        # Each opens within previous body
+        opens_in_body_2 = open_[i-1] > close[i-2] and open_[i-1] < open_[i-2]
+        opens_in_body_3 = open_[i] > close[i-1] and open_[i] < open_[i-1]
+
+        # Upper shadows should be increasing
+        upper_shadow_1 = high[i-2] - close[i-2]
+        upper_shadow_2 = high[i-1] - close[i-1]
+        upper_shadow_3 = high[i] - close[i]
+        shadows_increasing = upper_shadow_2 >= upper_shadow_1 and upper_shadow_3 >= upper_shadow_2
+
+        # At least one significant upper shadow
+        has_shadows = upper_shadow_2 > avg_body * 0.2 or upper_shadow_3 > avg_body * 0.2
+
+        if (are_all_white and bodies_decreasing and opens_in_body_2 and opens_in_body_3 and
+            shadows_increasing and has_shadows):
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlbelthold_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                      close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Belt Hold: Single candle reversal pattern
+
+    Bullish Belt Hold: White marubozu opening on the low (no lower shadow)
+    Bearish Belt Hold: Black marubozu opening on the high (no upper shadow)
+
+    Returns +100 for bullish, -100 for bearish, 0 otherwise.
+    """
+    n = len(open_)
+
+    for i in range(n):
+        # Calculate average body
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        body = close[i] - open_[i]
+        total_range = high[i] - low[i]
+
+        if total_range == 0.0:
+            output[i] = 0
+            continue
+
+        # Bullish Belt Hold: White candle opening on low
+        if body > 0:
+            lower_shadow = open_[i] - low[i]
+            upper_shadow = high[i] - close[i]
+            # Long body with minimal lower shadow
+            is_long = abs(body) > avg_body * 1.0
+            opens_on_low = lower_shadow < total_range * 0.05
+            has_body = abs(body) > total_range * 0.6
+
+            if is_long and opens_on_low and has_body:
+                output[i] = 100
+                continue
+
+        # Bearish Belt Hold: Black candle opening on high
+        elif body < 0:
+            lower_shadow = min(open_[i], close[i]) - low[i]
+            upper_shadow = high[i] - open_[i]
+            # Long body with minimal upper shadow
+            is_long = abs(body) > avg_body * 1.0
+            opens_on_high = upper_shadow < total_range * 0.05
+            has_body = abs(body) > total_range * 0.6
+
+            if is_long and opens_on_high and has_body:
+                output[i] = -100
+                continue
+
+        output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlbreakaway_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                       close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Breakaway: 5-candle continuation pattern
+
+    Bullish: Black, gap down, 2-3 candles continuing down, white closing in first gap
+    Bearish: White, gap up, 2-3 candles continuing up, black closing in first gap
+
+    Returns +100 for bullish, -100 for bearish, 0 otherwise.
+    """
+    n = len(open_)
+    if n < 5:
+        return
+
+    for i in range(4, n):
+        # Calculate average body
+        avg_body = 0.0
+        count = 0
+        for j in range(max(0, i-10), i):
+            avg_body += abs(close[j] - open_[j])
+            count += 1
+        avg_body = avg_body / count if count > 0 else 1.0
+
+        body_1 = close[i-4] - open_[i-4]
+        body_2 = close[i-3] - open_[i-3]
+        body_5 = close[i] - open_[i]
+
+        # Bullish Breakaway
+        is_black_1 = body_1 < 0 and abs(body_1) > avg_body * 0.7
+        gap_down = high[i-3] < low[i-4]
+        is_white_5 = body_5 > 0 and abs(body_5) > avg_body * 0.7
+
+        # Fifth candle closes in the gap created by first two candles
+        closes_in_gap = close[i] > close[i-4] and close[i] < open_[i-4]
+
+        # Middle candles (2,3,4) should continue downward
+        continuing_down = close[i-2] <= close[i-3] or close[i-1] <= close[i-2]
+
+        if is_black_1 and gap_down and is_white_5 and closes_in_gap and continuing_down:
+            output[i] = 100
+            continue
+
+        # Bearish Breakaway
+        is_white_1 = body_1 > 0 and abs(body_1) > avg_body * 0.7
+        gap_up = low[i-3] > high[i-4]
+        is_black_5 = body_5 < 0 and abs(body_5) > avg_body * 0.7
+
+        # Fifth candle closes in the gap created by first two candles
+        closes_in_gap_bear = close[i] < close[i-4] and close[i] > open_[i-4]
+
+        # Middle candles (2,3,4) should continue upward
+        continuing_up = close[i-2] >= close[i-3] or close[i-1] >= close[i-2]
+
+        if is_white_1 and gap_up and is_black_5 and closes_in_gap_bear and continuing_up:
             output[i] = -100
         else:
             output[i] = 0
