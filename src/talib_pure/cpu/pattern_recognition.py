@@ -37,6 +37,11 @@ __all__ = [
     "_cdleveningstar_numba",
     "_cdlgapsidesidewhite_numba",
     "_cdlgravestonedoji_numba",
+    "_cdlhammer_numba",
+    "_cdlhangingman_numba",
+    "_cdlharami_numba",
+    "_cdlharamicross_numba",
+    "_cdlhighwave_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -2260,6 +2265,276 @@ def _cdlgravestonedoji_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarra
         # Lower shadow should be minimal (<10% of range)
         if upper_shadow > range_ * 0.6 and lower_shadow < range_ * 0.1:
             output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlhammer_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                     close: np.ndarray, output: np.ndarray) -> None:
+    """Hammer: Single candle bullish reversal with small body and long lower shadow
+
+    A candle with a small body at the upper end of the trading range and a long
+    lower shadow (at least 2x the body size). The color doesn't matter much, but
+    white hammers are slightly more bullish.
+
+    Indicates potential bullish reversal when appearing after a downtrend.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Calculate shadows
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Hammer: small body, long lower shadow, minimal upper shadow
+        # Body should be in upper part of range (small upper shadow)
+        # Lower shadow should be at least 2x body size
+        # Body should be relatively small (<30% of range)
+        small_body = body < range_ * 0.3
+        long_lower = lower_shadow > body * 2.0 and lower_shadow > range_ * 0.5
+        small_upper = upper_shadow < range_ * 0.2
+
+        if small_body and long_lower and small_upper:
+            output[i] = 100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlhangingman_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                         close: np.ndarray, output: np.ndarray) -> None:
+    """Hanging Man: Single candle bearish reversal with small body and long lower shadow
+
+    Visually identical to a hammer (small body at upper end, long lower shadow),
+    but appears at the top of an uptrend, signaling potential bearish reversal.
+
+    The long lower shadow shows that sellers pushed prices down significantly,
+    but buyers regained control. When appearing after an uptrend, this suggests
+    buying pressure may be weakening.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Calculate shadows
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Same criteria as hammer but bearish context
+        small_body = body < range_ * 0.3
+        long_lower = lower_shadow > body * 2.0 and lower_shadow > range_ * 0.5
+        small_upper = upper_shadow < range_ * 0.2
+
+        if small_body and long_lower and small_upper:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlharami_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                     close: np.ndarray, output: np.ndarray) -> None:
+    """Harami: 2-candle reversal where second candle is contained within first
+
+    The name "harami" means "pregnant" in Japanese, as the pattern resembles a
+    pregnant woman.
+
+    Bullish Harami: Large black candle followed by smaller white candle completely
+    contained within the first candle's body.
+
+    Bearish Harami: Large white candle followed by smaller black candle completely
+    contained within the first candle's body.
+
+    Signals potential trend reversal or consolidation.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body_1 = close[i-1] - open_[i-1]
+        body_2 = close[i] - open_[i]
+
+        # Bullish Harami
+        is_black_1 = body_1 < 0 and abs(body_1) > avg_body * 0.7
+        is_white_2 = body_2 > 0
+        # Second candle completely within first body
+        contained_bull = (open_[i] < open_[i-1] and open_[i] > close[i-1] and
+                         close[i] < open_[i-1] and close[i] > close[i-1])
+
+        if is_black_1 and is_white_2 and contained_bull:
+            output[i] = 100
+            continue
+
+        # Bearish Harami
+        is_white_1 = body_1 > 0 and abs(body_1) > avg_body * 0.7
+        is_black_2 = body_2 < 0
+        # Second candle completely within first body
+        contained_bear = (open_[i] > open_[i-1] and open_[i] < close[i-1] and
+                         close[i] > open_[i-1] and close[i] < close[i-1])
+
+        if is_white_1 and is_black_2 and contained_bear:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlharamicross_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                          close: np.ndarray, output: np.ndarray) -> None:
+    """Harami Cross: 2-candle reversal where second candle is a doji within first
+
+    A variation of the Harami pattern where the second candle is a doji (cross)
+    completely contained within the first candle's body.
+
+    Bullish Harami Cross: Large black candle followed by doji within its body.
+    Bearish Harami Cross: Large white candle followed by doji within its body.
+
+    This pattern is more significant than a regular Harami due to the strong
+    indecision signal from the doji.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body_1 = close[i-1] - open_[i-1]
+        body_2 = abs(close[i] - open_[i])
+        range_2 = high[i] - low[i]
+
+        # Second candle must be a doji
+        is_doji = range_2 > 1e-10 and body_2 < range_2 * 0.1 and body_2 < avg_body * 0.1
+
+        if not is_doji:
+            output[i] = 0
+            continue
+
+        # Bullish Harami Cross
+        is_black_1 = body_1 < 0 and abs(body_1) > avg_body * 0.7
+        # Doji completely within first body (both open and close within range)
+        doji_min = min(open_[i], close[i])
+        doji_max = max(open_[i], close[i])
+        contained_bull = doji_min > close[i-1] and doji_max < open_[i-1]
+
+        if is_black_1 and contained_bull:
+            output[i] = 100
+            continue
+
+        # Bearish Harami Cross
+        is_white_1 = body_1 > 0 and abs(body_1) > avg_body * 0.7
+        contained_bear = doji_min > open_[i-1] and doji_max < close[i-1]
+
+        if is_white_1 and contained_bear:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlhighwave_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                       close: np.ndarray, output: np.ndarray) -> None:
+    """High Wave: Doji with very long upper and lower shadows
+
+    A doji candle with both very long upper and lower shadows, resembling a wave.
+    The long shadows in both directions indicate extreme volatility and indecision.
+
+    This pattern suggests that neither buyers nor sellers are in control, and
+    can signal potential reversal or continuation depending on context.
+    Returns 100 as a neutral signal of high volatility/indecision.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Doji: body is very small
+        is_doji = body < range_ * 0.1 and body < avg_body * 0.1
+
+        if not is_doji:
+            output[i] = 0
+            continue
+
+        # High Wave: both shadows are significant
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Both shadows should be significant (>30% of range each)
+        # Total shadows should dominate the candle (>80% of range)
+        both_long = (lower_shadow > range_ * 0.3 and upper_shadow > range_ * 0.3 and
+                     (lower_shadow + upper_shadow) > range_ * 0.8)
+
+        if both_long:
+            output[i] = 100
         else:
             output[i] = 0
 

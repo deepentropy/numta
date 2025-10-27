@@ -2287,24 +2287,355 @@ def CDLGRAVESTONEDOJI(open_: Union[np.ndarray, list],
         return output
 
 
-def CDLHAMMER(*args, **kwargs):
-    raise NotImplementedError("CDLHAMMER not yet implemented")
+def CDLHAMMER(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Hammer - Single candle bullish reversal with small body and long lower shadow
+
+    A single candlestick pattern with a small body at the upper end of the
+    trading range and a long lower shadow (at least twice the body length).
+    The shape resembles a hammer.
+
+    This pattern indicates that although sellers pushed prices significantly lower
+    during the session, buyers regained control and pushed prices back up near
+    the open. When appearing after a downtrend, it signals potential bullish
+    reversal.
+
+    The color of the body is less important (can be white or black), though
+    white hammers are considered slightly more bullish.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Hammer pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Small body (<30% of range)
+    - Long lower shadow (>2x body size and >50% of range)
+    - Small upper shadow (<20% of range)
+    - Body in upper portion of range
+
+    The pattern is most significant when:
+    - Appearing after a sustained downtrend
+    - Followed by a gap up or strong white candle
+    - The lower shadow is very long relative to recent candles
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhammer_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhammer_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHANGINGMAN(*args, **kwargs):
-    raise NotImplementedError("CDLHANGINGMAN not yet implemented")
+def CDLHANGINGMAN(open_: Union[np.ndarray, list],
+                  high: Union[np.ndarray, list],
+                  low: Union[np.ndarray, list],
+                  close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Hanging Man - Single candle bearish reversal with small body and long lower shadow
+
+    A single candlestick pattern that is visually identical to the Hammer pattern
+    (small body at upper end, long lower shadow), but appears at the top of an
+    uptrend rather than after a downtrend, signaling potential bearish reversal.
+
+    The long lower shadow indicates that sellers pushed prices significantly lower
+    during the session, but buyers managed to push prices back up. When this occurs
+    after an uptrend, it suggests that buying pressure may be weakening and that
+    sellers are beginning to gain strength.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Hanging Man pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Small body (<30% of range)
+    - Long lower shadow (>2x body size and >50% of range)
+    - Small upper shadow (<20% of range)
+    - Body in upper portion of range
+
+    The pattern is most significant when:
+    - Appearing after a sustained uptrend
+    - Followed by a gap down or strong black candle
+    - Accompanied by high volume
+
+    Despite appearing at opposite trend positions, Hammer and Hanging Man
+    have identical visual characteristics. Context determines the interpretation.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhangingman_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhangingman_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHARAMI(*args, **kwargs):
-    raise NotImplementedError("CDLHARAMI not yet implemented")
+def CDLHARAMI(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Harami - 2-candle reversal where second candle is contained within first
+
+    A two-candle reversal pattern where the second candle's body is completely
+    contained within the first candle's body. The name "harami" is Japanese for
+    "pregnant," referring to the visual appearance of the pattern.
+
+    Bullish Harami: Occurs after a downtrend. A large black candle is followed
+    by a smaller white candle whose body is completely within the black candle's
+    body, suggesting potential upward reversal.
+
+    Bearish Harami: Occurs after an uptrend. A large white candle is followed
+    by a smaller black candle whose body is completely within the white candle's
+    body, suggesting potential downward reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Harami pattern detected
+        -100: Bearish Harami pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: Large body (>70% of average)
+    - Second candle: Body completely contained within first body
+    - Bullish: Black first, white second
+    - Bearish: White first, black second
+
+    The pattern signals indecision and potential reversal. The smaller the
+    second candle, the more significant the pattern. The Harami Cross
+    (where second candle is a doji) is an even stronger signal.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlharami_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlharami_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHARAMICROSS(*args, **kwargs):
-    raise NotImplementedError("CDLHARAMICROSS not yet implemented")
+def CDLHARAMICROSS(open_: Union[np.ndarray, list],
+                   high: Union[np.ndarray, list],
+                   low: Union[np.ndarray, list],
+                   close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Harami Cross - 2-candle reversal where second candle is a doji within first
+
+    A variation of the Harami pattern where the second candle is a doji (cross)
+    completely contained within the first candle's body. This pattern is more
+    significant than a regular Harami because the doji represents stronger
+    indecision and equilibrium between buyers and sellers.
+
+    Bullish Harami Cross: Large black candle followed by a doji completely
+    within its body, signaling potential bullish reversal after downtrend.
+
+    Bearish Harami Cross: Large white candle followed by a doji completely
+    within its body, signaling potential bearish reversal after uptrend.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Harami Cross pattern detected
+        -100: Bearish Harami Cross pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: Large body (>70% of average)
+    - Second candle: Doji (body <10% of range and average)
+    - Second candle (open and close) completely within first body
+    - Bullish: Black first, doji second
+    - Bearish: White first, doji second
+
+    This pattern is considered more reliable than a regular Harami due to
+    the strong indecision signal from the doji. It often precedes significant
+    reversals when appearing at the end of established trends.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlharamicross_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlharamicross_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHIGHWAVE(*args, **kwargs):
-    raise NotImplementedError("CDLHIGHWAVE not yet implemented")
+def CDLHIGHWAVE(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    High Wave - Doji with very long upper and lower shadows
+
+    A doji candlestick pattern with exceptionally long shadows in both
+    directions, resembling a wave. This pattern indicates extreme volatility
+    and strong indecision in the market.
+
+    The long shadows show that both buyers and sellers made significant moves
+    during the session, but neither group maintained control, resulting in a
+    close near the open. This extreme indecision can signal potential reversal
+    or continuation depending on the preceding trend and subsequent confirmation.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: High Wave pattern detected (indicates high volatility/indecision)
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Body must be very small (doji: <10% of range and average)
+    - Both upper and lower shadows must be significant (>30% of range each)
+    - Total shadows must dominate (>80% of range)
+
+    The pattern indicates:
+    - Extreme market indecision
+    - High volatility
+    - Battle between buyers and sellers
+    - Potential for significant move in either direction
+
+    This pattern is most significant when appearing at major support/resistance
+    levels or at the end of extended trends. Subsequent price action provides
+    the directional clue.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhighwave_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhighwave_numba(open_, high, low, close, output)
+        return output
 
 
 def CDLHIKKAKE(*args, **kwargs):
