@@ -4,6 +4,7 @@ Test suite for optimized SMA implementations
 
 import numpy as np
 import pytest
+from talib_pure import HAS_NUMBA, get_available_backends, SMA, SMA_cumsum, SMA_auto
 
 from numta import SMA_numba, HAS_NUMBA, SMA_cumsum, SMA_auto, get_available_backends, SMA
 
