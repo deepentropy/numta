@@ -40,16 +40,6 @@ dev = [
 numba = [
     "numba>=0.56.0",  # JIT compilation for faster execution
 ]
-gpu = [
-    "cupy>=12.0.0",  # GPU acceleration (requires CUDA)
-]
-all = [
-    "pytest>=7.0.0",
-    "pytest-benchmark>=4.0.0",
-    "TA-Lib>=0.4.0",
-    "numba>=0.56.0",
-    "cupy>=12.0.0",
-]
 
 [project.urls]
 Homepage = "https://github.com/houseofai/talib-pure"
