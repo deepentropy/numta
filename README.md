@@ -6,6 +6,8 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
 
 `talib-pure` aims to provide the same functionality as the popular TA-Lib library but implemented entirely in pure Python using NumPy for performance. This eliminates the need for complex C library dependencies while maintaining high performance through optimized NumPy operations.
 
+**Disclaimer**: This is an independent implementation inspired by TA-Lib. It is not affiliated with, endorsed by, or connected to the original TA-Lib project. The technical analysis algorithms implemented here are based on publicly available mathematical formulas and are compatible with TA-Lib's function signatures for ease of migration.
+
 ## Features
 
 - **Pure Python implementation** (no C dependencies)
@@ -310,8 +312,14 @@ MIT License - see LICENSE file for details
 
 ## Acknowledgments
 
-- Original TA-Lib library: https://ta-lib.org/
-- TA-Lib Python wrapper: https://github.com/TA-Lib/ta-lib-python
+This project implements technical analysis algorithms that are publicly available mathematical formulas. We acknowledge and credit:
+
+- **TA-Lib** - The original Technical Analysis Library (Copyright (c) 1999-2024, Mario Fortier)
+  - Website: https://ta-lib.org/
+  - Python wrapper: https://github.com/TA-Lib/ta-lib-python
+  - License: BSD 3-Clause
+
+`talib-pure` is an independent clean-room implementation and is not derived from TA-Lib's source code. All code in this repository is original work licensed under the MIT License (see LICENSE file).
 
 ## Roadmap
 
