@@ -1,7 +1,7 @@
 """
 talib-pure: Pure Python TA-Lib library with focus on performance
 
-Supports both CPU (Numba) and GPU (CuPy/CUDA) backends for accelerated computation.
+Optimized with Numba JIT compilation for fast CPU computation.
 """
 
 # Import from API layer
@@ -33,7 +33,6 @@ from .api.pattern_recognition import (
 from .backend import (
     set_backend,
     get_backend,
-    is_gpu_available,
     get_backend_info
 )
 
@@ -42,16 +41,12 @@ from .optimized import (
     SMA_cumsum,
     SMA_auto,
     get_available_backends,
-    HAS_NUMBA,
-    HAS_CUPY
+    HAS_NUMBA
 )
 
 # Conditional imports for optimized variants
 if HAS_NUMBA:
     from .optimized import SMA_numba
-
-if HAS_CUPY:
-    from .optimized import SMA_gpu
 
 __version__ = "0.1.0"
 
@@ -80,19 +75,14 @@ __all__ = [
     # Backend configuration
     "set_backend",
     "get_backend",
-    "is_gpu_available",
     "get_backend_info",
     # Optimized implementations
     "SMA_cumsum",
     "SMA_auto",
     "get_available_backends",
     "HAS_NUMBA",
-    "HAS_CUPY",
 ]
 
 # Add optimized versions to __all__ if available
 if HAS_NUMBA:
     __all__.append("SMA_numba")
-
-if HAS_CUPY:
-    __all__.append("SMA_gpu")

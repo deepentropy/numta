@@ -173,12 +173,8 @@ def test_all_patterns_input_validation():
 
 
 def test_all_patterns_backend_consistency():
-    """Test all patterns produce same results on CPU and GPU"""
     from talib_pure import (CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING,
-                           set_backend, is_gpu_available)
 
-    if not is_gpu_available():
-        pytest.skip("GPU not available")
 
     # Generate test data
     n = 50
@@ -196,13 +192,8 @@ def test_all_patterns_backend_consistency():
         else:
             cpu_result = pattern_func(open_, high, low, close)
 
-        set_backend("gpu")
         if pattern_func in [CDLMORNINGDOJISTAR, CDLMORNINGSTAR]:
-            gpu_result = pattern_func(open_, high, low, close, penetration=0.3)
         else:
-            gpu_result = pattern_func(open_, high, low, close)
 
-        np.testing.assert_array_equal(cpu_result, gpu_result,
-                                     err_msg=f"{pattern_func.__name__} CPU/GPU mismatch")
 
     set_backend("cpu")

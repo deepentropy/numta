@@ -12,12 +12,6 @@ try:
 except ImportError:
     HAS_NUMBA = False
 
-try:
-    import cupy as cp
-    HAS_CUPY = True
-except ImportError:
-    HAS_CUPY = False
-
 
 def SMA_cumsum(close: np.ndarray, timeperiod: int = 30) -> np.ndarray:
     """
@@ -126,64 +120,14 @@ if HAS_NUMBA:
         return _sma_numba_kernel(close, timeperiod)
 
 
-if HAS_CUPY:
-    def SMA_gpu(close: Union[np.ndarray, list, cp.ndarray], timeperiod: int = 30) -> np.ndarray:
-        """
-        GPU-accelerated SMA using CuPy
-
-        Best for very large datasets (>100k points) or batch processing.
-        Has overhead from CPU->GPU->CPU transfer for small datasets.
-
-        Parameters
-        ----------
-        close : array-like or cupy.ndarray
-            Close prices
-        timeperiod : int, optional
-            Number of periods (default: 30)
-
-        Returns
-        -------
-        np.ndarray
-            SMA values with NaN for lookback period
-        """
-        if timeperiod < 1:
-            raise ValueError("timeperiod must be >= 1")
-
-        # Convert to CuPy array if needed
-        if not isinstance(close, cp.ndarray):
-            close_gpu = cp.asarray(close, dtype=cp.float64)
-        else:
-            close_gpu = close
-
-        if len(close_gpu) == 0:
-            return np.array([])
-
-        output_gpu = cp.full(len(close_gpu), cp.nan, dtype=cp.float64)
-
-        if len(close_gpu) < timeperiod:
-            return cp.asnumpy(output_gpu)
-
-        # Use cumulative sum on GPU
-        cumsum_gpu = cp.cumsum(close_gpu)
-
-        # First SMA value
-        output_gpu[timeperiod - 1] = cumsum_gpu[timeperiod - 1] / timeperiod
-
-        # Remaining values
-        output_gpu[timeperiod:] = (cumsum_gpu[timeperiod:] - cumsum_gpu[:-timeperiod]) / timeperiod
-
-        # Transfer back to CPU
-        return cp.asnumpy(output_gpu)
-
-
 def SMA_auto(
     close: Union[np.ndarray, list],
     timeperiod: int = 30,
-    backend: Literal["auto", "numpy", "cumsum", "numba", "gpu"] = "auto"
+    backend: Literal["auto", "numpy", "cumsum", "numba"] = "auto"
 ) -> np.ndarray:
     """
     Automatically choose the best SMA implementation based on:
-    - Available libraries (Numba, CuPy)
+    - Available libraries (Numba)
     - Data size
     - User preference
 
@@ -199,7 +143,6 @@ def SMA_auto(
         - "numpy": Use np.convolve (original implementation)
         - "cumsum": Use cumulative sum (faster for most cases)
         - "numba": Use Numba JIT (if available)
-        - "gpu": Use GPU/CuPy (if available)
 
     Returns
     -------
@@ -216,7 +159,6 @@ def SMA_auto(
     >>>
     >>> # Force specific backend
     >>> sma_numba = SMA_auto(close, timeperiod=30, backend="numba")
-    >>> sma_gpu = SMA_auto(close, timeperiod=30, backend="gpu")
     """
     from .api.overlap import SMA  # Original implementation
 
@@ -232,17 +174,9 @@ def SMA_auto(
         if not HAS_NUMBA:
             raise ImportError("Numba is not installed. Install with: pip install numba")
         return SMA_numba(close_arr, timeperiod)
-    elif backend == "gpu":
-        if not HAS_CUPY:
-            raise ImportError("CuPy is not installed. Install with: pip install cupy")
-        return SMA_gpu(close_arr, timeperiod)
 
     # Auto-select best backend
     if backend == "auto":
-        # For very large datasets, prefer GPU if available
-        if HAS_CUPY and n > 100000:
-            return SMA_gpu(close_arr, timeperiod)
-
         # For medium to large datasets, prefer Numba if available
         if HAS_NUMBA and n > 1000:
             return SMA_numba(close_arr, timeperiod)
@@ -275,9 +209,5 @@ def get_available_backends():
         "numba": {
             "available": HAS_NUMBA,
             "description": "Numba JIT compilation (fastest for CPU)"
-        },
-        "gpu": {
-            "available": HAS_CUPY,
-            "description": "GPU acceleration via CuPy (fastest for large data)"
         }
     }

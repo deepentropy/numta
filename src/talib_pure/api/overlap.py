@@ -9,7 +9,6 @@ from typing import Union
 
 # Import backend implementations
 from ..cpu.overlap import *
-from ..gpu.overlap import *
 from ..backend import get_backend
 
 
@@ -63,11 +62,7 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-    if backend == "gpu":
-        # Use GPU implementation
-        return _sma_cupy(close, timeperiod)
-    else:
-        # Use CPU implementation (default)
+            # Use CPU implementation (default)
     # The Numba function handles NaN values and insufficient data
         output = np.empty(n, dtype=np.float64)
         _sma_numba(close, timeperiod, output)
@@ -137,11 +132,7 @@ def EMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-    if backend == "gpu":
-        # Use GPU implementation
-        return _ema_cupy(close, timeperiod)
-    else:
-        # Use CPU implementation (default)
+            # Use CPU implementation (default)
         output = np.empty(n, dtype=np.float64)
         _ema_numba(close, timeperiod, output)
         return output
@@ -478,11 +469,7 @@ def KAMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-    if backend == "gpu":
-        # Use GPU implementation
-        return _kama_cupy(close, timeperiod)
-    else:
-        # Use CPU implementation (default)
+            # Use CPU implementation (default)
         output = np.empty(n, dtype=np.float64)
         _kama_numba(close, timeperiod, output)
         return output
@@ -737,11 +724,7 @@ def MAMA(close: Union[np.ndarray, list],
     # Check backend and dispatch to appropriate implementation
     backend = get_backend()
 
-    if backend == "gpu":
-        # Use GPU implementation
-        return _mama_cupy(close, fastlimit, slowlimit)
-    else:
-        # Use CPU implementation with Numba optimization
+            # Use CPU implementation with Numba optimization
         from ..cpu.overlap import _mama_numba
         mama = np.empty(n, dtype=np.float64)
         fama = np.empty(n, dtype=np.float64)
@@ -891,11 +874,7 @@ def SAR(high: Union[np.ndarray, list],
     
     backend = get_backend()
     
-    if backend == "gpu":
-        # Use GPU implementation
-        return _sar_cupy(high, low, acceleration, maximum)
-    else:
-        # Use CPU implementation (default)
+            # Use CPU implementation (default)
         output = np.empty(n, dtype=np.float64)
         _sar_numba(high, low, acceleration, maximum, output)
         return output
@@ -972,13 +951,7 @@ def SAREXT(high: Union[np.ndarray, list],
 
     backend = get_backend()
 
-    if backend == "gpu":
-        # Use GPU implementation
-        return _sarext_cupy(high, low, startvalue, offsetonreverse,
-                           accelerationinit_long, accelerationlong, accelerationmax_long,
-                           accelerationinit_short, accelerationshort, accelerationmax_short)
-    else:
-        # Use CPU implementation (default)
+            # Use CPU implementation (default)
         output = np.empty(n, dtype=np.float64)
         _sarext_numba(high, low, startvalue, offsetonreverse,
                      accelerationinit_long, accelerationlong, accelerationmax_long,
@@ -1026,11 +999,7 @@ def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
 
     backend = get_backend()
 
-    if backend == "gpu":
-        # Use GPU implementation
-        return _tema_cupy(data, timeperiod)
-    else:
-        # Use CPU implementation with Numba
+            # Use CPU implementation with Numba
         output = np.empty(n, dtype=np.float64)
         _tema_numba(data, timeperiod, output)
         return output
@@ -1075,11 +1044,7 @@ def T3(data: Union[np.ndarray, list],
 
     backend = get_backend()
 
-    if backend == "gpu":
-        # Use GPU implementation
-        return _t3_cupy(data, timeperiod, vfactor)
-    else:
-        # Use CPU implementation with Numba
+            # Use CPU implementation with Numba
         output = np.empty(n, dtype=np.float64)
         _t3_numba(data, timeperiod, vfactor, output)
         return output
