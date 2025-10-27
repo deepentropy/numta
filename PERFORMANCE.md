@@ -146,7 +146,7 @@ ht_dcperiod = talib.HT_DCPERIOD
 Potential optimizations for slower functions:
 1. **HT_DCPERIOD**: Investigate alternative branching strategies or lookups for period detection
 2. **HT_PHASOR**: Optimize array operations for medium-sized datasets
-3. **GPU Support**: Implement CUDA/CuPy versions for 10-50x additional speedup on large datasets
+
 
 ## Reproducing These Results
 
@@ -327,7 +327,7 @@ Potential optimizations for Math Operators:
 
 1. **MAX/MIN Functions**: Investigate using more efficient data structures (e.g., deque with monotonic stack) to reduce window search time
 2. **INDEX Functions**: Optimize position tracking algorithm
-3. **GPU Support**: Implement CUDA/CuPy versions which could provide massive speedups for large datasets
+
 4. **Specialized Algorithms**: Consider using segment trees or other advanced data structures for range queries
 
 ## Reproducing These Results
@@ -549,7 +549,7 @@ Potential optimizations for Overlap indicators:
 1. **T3 Optimization**: Investigate more efficient nested EMA calculations or caching strategies
 2. **BBANDS Optimization**: Implement more efficient standard deviation calculation
 3. **TRIMA**: Optimize double-smoothing algorithm for large datasets
-4. **GPU Support**: All Overlap indicators except BBANDS have GPU (CuPy) implementations available, which could provide 10-50x additional speedup
+
 
 ## Reproducing These Results
 
@@ -761,7 +761,7 @@ Potential optimizations for Price Transform indicators:
 
 1. **MIDPRICE**: Investigate more efficient rolling min/max algorithms (e.g., monotonic deque)
 2. **Small Dataset Optimization**: Reduce JIT overhead for small datasets
-3. **GPU Support**: Implement CUDA/CuPy versions for massive parallel speedup
+
 4. **Batch Processing**: Optimize for multiple simultaneous calculations
 
 ## Reproducing These Results
@@ -1009,7 +1009,7 @@ Potential optimizations for Statistic Functions:
 1. **STDDEV/VAR**: Implement Welford's online algorithm for single-pass variance calculation
 2. **CORREL**: Use incremental correlation calculation to avoid recalculating from scratch each window
 3. **Linear Regression**: Investigate more efficient least squares implementations or cached computations
-4. **GPU Support**: Statistical functions are highly parallelizable - GPU implementations could provide 10-100x speedup
+
 5. **Algorithmic Optimization**: Review current implementations against TA-Lib's C code for optimization opportunities
 
 ## Reproducing These Results

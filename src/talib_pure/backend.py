@@ -1,44 +1,13 @@
 """
 Backend configuration for talib-pure
 
-Supports both CPU (Numba) and GPU (CuPy/CUDA) backends for accelerated computation.
+Uses CPU (Numba JIT) for accelerated computation.
 """
 
-import os
-from typing import Dict, Optional
+from typing import Dict
 
-# Current backend selection
+# Current backend selection (CPU only)
 _current_backend: str = "cpu"
-_gpu_available: Optional[bool] = None
-
-
-def is_gpu_available() -> bool:
-    """
-    Check if GPU (CuPy/CUDA) is available
-
-    Returns
-    -------
-    bool
-        True if CuPy and CUDA are available, False otherwise
-
-    Notes
-    -----
-    This function caches the result after the first check for performance.
-    """
-    global _gpu_available
-
-    if _gpu_available is not None:
-        return _gpu_available
-
-    try:
-        import cupy as cp
-        # Try a simple operation to verify CUDA is working
-        _ = cp.array([1.0])
-        _gpu_available = True
-    except (ImportError, Exception):
-        _gpu_available = False
-
-    return _gpu_available
 
 
 def set_backend(backend: str) -> None:
@@ -48,33 +17,24 @@ def set_backend(backend: str) -> None:
     Parameters
     ----------
     backend : str
-        Backend to use: "cpu" or "gpu"
+        Backend to use: only "cpu" is supported
 
     Raises
     ------
     ValueError
-        If backend is not "cpu" or "gpu"
-    RuntimeError
-        If "gpu" is selected but GPU is not available
+        If backend is not "cpu"
 
     Examples
     --------
     >>> from talib_pure import set_backend
     >>> set_backend("cpu")  # Use CPU with Numba
-    >>> set_backend("gpu")  # Use GPU with CuPy (if available)
     """
     global _current_backend
 
     backend = backend.lower()
 
-    if backend not in ("cpu", "gpu"):
-        raise ValueError(f"Invalid backend: {backend}. Must be 'cpu' or 'gpu'")
-
-    if backend == "gpu" and not is_gpu_available():
-        raise RuntimeError(
-            "GPU backend requested but CuPy/CUDA is not available. "
-            "Install CuPy with: pip install cupy-cuda11x (or appropriate CUDA version)"
-        )
+    if backend != "cpu":
+        raise ValueError(f"Invalid backend: {backend}. Only 'cpu' backend is supported")
 
     _current_backend = backend
 
@@ -86,7 +46,7 @@ def get_backend() -> str:
     Returns
     -------
     str
-        Current backend: "cpu" or "gpu"
+        Current backend (always "cpu")
 
     Examples
     --------
@@ -105,25 +65,20 @@ def get_backend_info() -> Dict[str, any]:
     -------
     dict
         Dictionary with backend information:
-        - 'current': Current backend ("cpu" or "gpu")
-        - 'gpu_available': Whether GPU/CuPy is available
+        - 'current': Current backend (always "cpu")
         - 'numba_available': Whether Numba is available
-        - 'cuda_version': CUDA version if GPU is available, None otherwise
-        - 'cupy_version': CuPy version if available, None otherwise
+        - 'numba_version': Numba version if available
 
     Examples
     --------
     >>> from talib_pure import get_backend_info
     >>> info = get_backend_info()
     >>> print(f"Current: {info['current']}")
-    >>> print(f"GPU Available: {info['gpu_available']}")
+    >>> print(f"Numba Available: {info['numba_available']}")
     """
     info = {
         'current': _current_backend,
-        'gpu_available': is_gpu_available(),
         'numba_available': False,
-        'cuda_version': None,
-        'cupy_version': None,
     }
 
     # Check Numba availability
@@ -134,21 +89,4 @@ def get_backend_info() -> Dict[str, any]:
     except ImportError:
         pass
 
-    # Get GPU info if available
-    if is_gpu_available():
-        try:
-            import cupy as cp
-            info['cupy_version'] = cp.__version__
-            info['cuda_version'] = cp.cuda.runtime.runtimeGetVersion()
-            info['device_name'] = cp.cuda.Device().name
-            info['device_compute_capability'] = cp.cuda.Device().compute_capability
-        except Exception:
-            pass
-
     return info
-
-
-# Auto-detect GPU on import if environment variable is set
-_auto_gpu = os.environ.get('TALIB_PURE_AUTO_GPU', '').lower() in ('1', 'true', 'yes')
-if _auto_gpu and is_gpu_available():
-    _current_backend = "gpu"

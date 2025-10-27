@@ -4,7 +4,6 @@ Comprehensive benchmark comparing all SMA implementations:
 - talib-pure original (np.convolve)
 - talib-pure cumsum (O(n) algorithm)
 - talib-pure Numba (JIT compiled)
-- talib-pure GPU (CuPy)
 """
 
 import numpy as np
@@ -12,14 +11,11 @@ import sys
 from talib_pure.benchmark import PerformanceMeasurement
 from talib_pure.optimized import (
     SMA_cumsum, SMA_auto, get_available_backends,
-    HAS_NUMBA, HAS_CUPY
 )
 
 if HAS_NUMBA:
     from talib_pure.optimized import SMA_numba
 
-if HAS_CUPY:
-    from talib_pure.optimized import SMA_gpu
 
 
 def print_backend_status():
@@ -69,8 +65,6 @@ def benchmark_implementations():
     if HAS_NUMBA:
         bench.add_function("talib-pure (Numba)", SMA_numba, data, timeperiod=timeperiod)
 
-    if HAS_CUPY:
-        bench.add_function("talib-pure (GPU)", SMA_gpu, data, timeperiod=timeperiod)
 
     results = bench.run(iterations=1000, warmup=50)
     bench.print_results(results)
@@ -91,8 +85,6 @@ def benchmark_implementations():
     if HAS_NUMBA:
         bench.add_function("talib-pure (Numba)", SMA_numba, data_large, timeperiod=timeperiod)
 
-    if HAS_CUPY:
-        bench.add_function("talib-pure (GPU)", SMA_gpu, data_large, timeperiod=timeperiod)
 
     results = bench.run(iterations=500, warmup=20)
     bench.print_results(results)
@@ -113,8 +105,6 @@ def benchmark_implementations():
     if HAS_NUMBA:
         bench.add_function("talib-pure (Numba)", SMA_numba, data_xlarge, timeperiod=timeperiod)
 
-    if HAS_CUPY:
-        bench.add_function("talib-pure (GPU)", SMA_gpu, data_xlarge, timeperiod=timeperiod)
 
     results = bench.run(iterations=100, warmup=10)
     bench.print_results(results)
@@ -176,15 +166,11 @@ def benchmark_implementations():
     print("\nFor best performance:")
     print("1. Small datasets (<1k):     Use cumsum or auto")
     print("2. Medium datasets (1k-100k): Use Numba if available, else cumsum")
-    print("3. Large datasets (>100k):    Use GPU if available, else Numba")
     print("4. Production use:            Use SMA_auto(backend='auto') for automatic selection")
 
     print("\nInstallation commands:")
     if not HAS_NUMBA:
         print("  pip install numba              # For Numba optimization")
-    if not HAS_CUPY:
-        print("  pip install cupy-cuda12x       # For GPU support (CUDA 12.x)")
-        print("  # Or see: https://docs.cupy.dev/en/stable/install.html")
 
     print("\nExample usage:")
     print("  from talib_pure.optimized import SMA_auto")

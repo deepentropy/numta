@@ -14,7 +14,6 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
   - Default NumPy implementation
   - Optimized cumsum algorithm (3x faster, no dependencies)
   - Numba JIT compilation (5-10x faster)
-  - GPU acceleration via CuPy (10-50x faster for large datasets)
 - **Automatic backend selection** for optimal performance
 - **Easy installation** via pip
 - **Comprehensive test suite** comparing outputs with original TA-Lib
@@ -39,9 +38,6 @@ pip install -e .
 ```bash
 # Install with Numba for 5-10x speedup
 pip install "talib-pure[numba]"
-
-# Install with GPU support for 10-50x speedup on large datasets
-pip install "talib-pure[gpu]"
 
 # Install everything (for development)
 pip install "talib-pure[all]"
@@ -76,11 +72,10 @@ from talib_pure import SMA_auto
 sma = SMA_auto(close_prices, timeperiod=30, backend='auto')
 
 # Or choose specific backend
-from talib_pure import SMA_cumsum, SMA_numba, SMA_gpu
+from talib_pure import SMA_cumsum, SMA_numba
 
 sma_fast = SMA_cumsum(close_prices, timeperiod=30)    # 3x faster, no deps
 sma_faster = SMA_numba(close_prices, timeperiod=30)   # 5-10x faster
-sma_fastest = SMA_gpu(close_prices, timeperiod=30)    # 10-50x faster
 ```
 
 ### Performance Comparison
@@ -90,7 +85,6 @@ sma_fastest = SMA_gpu(close_prices, timeperiod=30)    # 10-50x faster
 | **numpy (default)** | 1.0x (baseline) | None |
 | **cumsum** | **3.14x faster** | None |
 | **numba** | **5-10x faster** | `pip install numba` |
-| **gpu** | **10-50x faster** | `pip install cupy-cuda12x` |
 
 **Benchmark Results (10,000 points):**
 - Original (numpy): 0.154ms

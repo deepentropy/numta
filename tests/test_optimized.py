@@ -4,13 +4,10 @@ Test suite for optimized SMA implementations
 
 import numpy as np
 import pytest
-from talib_pure import SMA, SMA_cumsum, SMA_auto, HAS_NUMBA, HAS_CUPY, get_available_backends
 
 if HAS_NUMBA:
     from talib_pure import SMA_numba
 
-if HAS_CUPY:
-    from talib_pure import SMA_gpu
 
 
 def test_get_available_backends():
@@ -20,7 +17,6 @@ def test_get_available_backends():
     assert "numpy" in backends
     assert "cumsum" in backends
     assert "numba" in backends
-    assert "gpu" in backends
 
     assert backends["numpy"]["available"] is True
     assert backends["cumsum"]["available"] is True
@@ -115,52 +111,6 @@ def test_sma_numba_edge_cases():
     np.testing.assert_almost_equal(result[0], 100.0, decimal=10)
 
 
-@pytest.mark.skipif(not HAS_CUPY, reason="CuPy not installed")
-def test_sma_gpu_vs_original():
-    """Test GPU implementation matches original"""
-    close = np.random.uniform(100, 200, 1000)
-
-    original = SMA(close, timeperiod=30)
-    gpu = SMA_gpu(close, timeperiod=30)
-
-    np.testing.assert_array_almost_equal(
-        original, gpu, decimal=10,
-        err_msg="SMA_gpu differs from original SMA"
-    )
-
-
-@pytest.mark.skipif(not HAS_CUPY, reason="CuPy not installed")
-def test_sma_gpu_various_timeperiods():
-    """Test GPU with various timeperiods"""
-    close = np.random.uniform(100, 200, 500)
-
-    for timeperiod in [5, 10, 20, 50, 100]:
-        original = SMA(close, timeperiod=timeperiod)
-        gpu = SMA_gpu(close, timeperiod=timeperiod)
-
-        np.testing.assert_array_almost_equal(
-            original, gpu, decimal=10,
-            err_msg=f"SMA_gpu differs at timeperiod={timeperiod}"
-        )
-
-
-@pytest.mark.skipif(not HAS_CUPY, reason="CuPy not installed")
-def test_sma_gpu_edge_cases():
-    """Test GPU edge cases"""
-    # Empty array
-    assert len(SMA_gpu(np.array([]), timeperiod=5)) == 0
-
-    # Insufficient data
-    close = np.array([1, 2, 3], dtype=np.float64)
-    result = SMA_gpu(close, timeperiod=5)
-    assert all(np.isnan(result))
-
-    # Single element
-    close = np.array([100.0], dtype=np.float64)
-    result = SMA_gpu(close, timeperiod=1)
-    np.testing.assert_almost_equal(result[0], 100.0, decimal=10)
-
-
 def test_sma_auto_numpy_backend():
     """Test auto with numpy backend"""
     close = np.random.uniform(100, 200, 100)
@@ -192,17 +142,6 @@ def test_sma_auto_numba_backend():
     np.testing.assert_array_almost_equal(result_auto, result_original, decimal=10)
 
 
-@pytest.mark.skipif(not HAS_CUPY, reason="CuPy not installed")
-def test_sma_auto_gpu_backend():
-    """Test auto with GPU backend"""
-    close = np.random.uniform(100, 200, 100)
-
-    result_auto = SMA_auto(close, timeperiod=30, backend="gpu")
-    result_original = SMA(close, timeperiod=30)
-
-    np.testing.assert_array_almost_equal(result_auto, result_original, decimal=10)
-
-
 def test_sma_auto_auto_backend():
     """Test auto with automatic backend selection"""
     close = np.random.uniform(100, 200, 100)
@@ -229,9 +168,6 @@ def test_sma_auto_unavailable_backend():
         with pytest.raises(ImportError, match="Numba is not installed"):
             SMA_auto(close, timeperiod=30, backend="numba")
 
-    if not HAS_CUPY:
-        with pytest.raises(ImportError, match="CuPy is not installed"):
-            SMA_auto(close, timeperiod=30, backend="gpu")
 
 
 def test_sma_cumsum_invalid_timeperiod():
@@ -273,8 +209,3 @@ def test_all_implementations_agree():
     if HAS_NUMBA:
         numba = SMA_numba(close, timeperiod=timeperiod)
         np.testing.assert_array_almost_equal(original, numba, decimal=10)
-
-    # Test GPU if available
-    if HAS_CUPY:
-        gpu = SMA_gpu(close, timeperiod=timeperiod)
-        np.testing.assert_array_almost_equal(original, gpu, decimal=10)
