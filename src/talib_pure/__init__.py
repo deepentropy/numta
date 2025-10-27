@@ -5,11 +5,12 @@ Optimized with Numba JIT compilation for fast CPU computation.
 """
 
 # Import from API layer
+# TODO MACDFIX, MFI, MINUS_DI, MINUS_DM, MOM, PLUS_DI, PLUS_DM, PPO
 from .api.overlap import SMA, EMA, DEMA, BBANDS, KAMA, MA, MAMA, SAR, SAREXT, T3, TEMA, TRIMA, WMA
 from .api.statistics import STDDEV, TSF, VAR
 from .api.volatility_indicators import NATR, TRANGE
 from .api.volume_indicators import AD, OBV, ADOSC
-from .api.momentum_indicators import ADX, ADXR, APO, AROON, AROONOSC, ATR, BOP, CCI, CMO, DX, MACD, MACDEXT, MACDFIX, MFI, MINUS_DI, MINUS_DM, MOM, PLUS_DI, PLUS_DM, PPO, ROC, ROCP, ROCR, ROCR100, RSI, STOCH, STOCHF, STOCHRSI, TRIX, ULTOSC, WILLR
+from .api.momentum_indicators import ADX, ADXR, APO, AROON, AROONOSC, ATR, BOP, CCI, CMO, DX, MACD, MACDEXT, ROC, ROCP, ROCR, ROCR100, RSI, STOCH, STOCHF, STOCHRSI, TRIX, ULTOSC, WILLR
 from .api.cycle_indicators import HT_DCPERIOD, HT_DCPHASE, HT_PHASOR, HT_SINE, HT_TRENDLINE, HT_TRENDMODE
 from .api.statistic_functions import BETA, CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE
 from .api.math_operators import MAX, MAXINDEX, MIN, MININDEX, MINMAX, MINMAXINDEX, SUM
@@ -49,12 +50,12 @@ if HAS_NUMBA:
     from .optimized import SMA_numba
 
 __version__ = "0.1.0"
-
+# TODO "MACDFIX", "MFI", "MINUS_DI", "MINUS_DM", "MOM", "PLUS_DI", "PLUS_DM", "PPO",
 __all__ = [
     # Indicators
     "SMA", "EMA", "DEMA", "BBANDS", "KAMA", "MA", "MAMA", "SAR", "SAREXT", "T3", "TEMA", "TRIMA", "WMA",
     "AD", "OBV", "ADOSC",
-    "ADX", "ADXR", "APO", "AROON", "AROONOSC", "ATR", "BOP", "CCI", "CMO", "DX", "MACD", "MACDEXT", "MACDFIX", "MFI", "MINUS_DI", "MINUS_DM", "MOM", "NATR", "PLUS_DI", "PLUS_DM", "PPO", "ROC", "ROCP", "ROCR", "ROCR100", "RSI", "STDDEV", "STOCH", "STOCHF", "STOCHRSI", "TRANGE", "TRIX", "TSF", "ULTOSC", "VAR", "WILLR",
+    "ADX", "ADXR", "APO", "AROON", "AROONOSC", "ATR", "BOP", "CCI", "CMO", "DX", "MACD", "MACDEXT", "NATR", "ROC", "ROCP", "ROCR", "ROCR100", "RSI", "STDDEV", "STOCH", "STOCHF", "STOCHRSI", "TRANGE", "TRIX", "TSF", "ULTOSC", "VAR", "WILLR",
     "HT_DCPERIOD", "HT_DCPHASE", "HT_PHASOR", "HT_SINE", "HT_TRENDLINE", "HT_TRENDMODE",
     "BETA", "CORREL", "LINEARREG", "LINEARREG_ANGLE", "LINEARREG_INTERCEPT", "LINEARREG_SLOPE",
     "MAX", "MAXINDEX", "MIN", "MININDEX", "MINMAX", "MINMAXINDEX", "SUM",
