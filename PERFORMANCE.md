@@ -27,14 +27,14 @@ This document presents performance comparisons between **numta** (Numba/CPU impl
 
 The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
-| Function | 1K bars | 10K bars | 100K bars | Average |
-|----------|---------|----------|-----------|---------|
-| **HT_DCPERIOD** | 0.79x | 0.32x | 0.38x | **0.50x** |
-| **HT_DCPHASE** | 7.60x | 2.01x | 2.85x | **4.15x** |
-| **HT_PHASOR** | 3.21x | 0.52x | 0.87x | **1.53x** |
-| **HT_SINE** | 3.20x | 1.55x | 1.85x | **2.20x** |
-| **HT_TRENDLINE** | 26.08x | 46.59x | 36.64x | **36.44x** |
-| **HT_TRENDMODE** | 15.23x | 15.25x | 7.61x | **12.70x** |
+| Function         | 1K bars | 10K bars | 100K bars | Average    |
+|------------------|---------|----------|-----------|------------|
+| **HT_DCPERIOD**  | 0.79x   | 0.32x    | 0.38x     | **0.50x**  |
+| **HT_DCPHASE**   | 7.60x   | 2.01x    | 2.85x     | **4.15x**  |
+| **HT_PHASOR**    | 3.21x   | 0.52x    | 0.87x     | **1.53x**  |
+| **HT_SINE**      | 3.20x   | 1.55x    | 1.85x     | **2.20x**  |
+| **HT_TRENDLINE** | 26.08x  | 46.59x   | 36.64x    | **36.44x** |
+| **HT_TRENDMODE** | 15.23x  | 15.25x   | 7.61x     | **12.70x** |
 
 **Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
@@ -56,36 +56,36 @@ The following table shows the speedup factor (numta vs TA-Lib) across different 
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| HT_DCPERIOD | 0.0578 | 0.0734 | **0.79x** |
-| HT_DCPHASE | 0.2571 | 0.0338 | **7.60x** |
-| HT_PHASOR | 0.0575 | 0.0179 | **3.21x** |
-| HT_SINE | 0.3059 | 0.0956 | **3.20x** |
-| HT_TRENDLINE | 0.0580 | 0.0022 | **26.08x** |
-| HT_TRENDMODE | 0.3118 | 0.0205 | **15.23x** |
+| Function     | TA-Lib (ms) | numta (ms) | Speedup    |
+|--------------|-------------|------------|------------|
+| HT_DCPERIOD  | 0.0578      | 0.0734     | **0.79x**  |
+| HT_DCPHASE   | 0.2571      | 0.0338     | **7.60x**  |
+| HT_PHASOR    | 0.0575      | 0.0179     | **3.21x**  |
+| HT_SINE      | 0.3059      | 0.0956     | **3.20x**  |
+| HT_TRENDLINE | 0.0580      | 0.0022     | **26.08x** |
+| HT_TRENDMODE | 0.3118      | 0.0205     | **15.23x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| HT_DCPERIOD | 0.5839 | 1.8229 | **0.32x** |
-| HT_DCPHASE | 2.7919 | 1.3868 | **2.01x** |
-| HT_PHASOR | 0.5810 | 1.1187 | **0.52x** |
-| HT_SINE | 3.2005 | 2.0708 | **1.55x** |
-| HT_TRENDLINE | 0.6517 | 0.0140 | **46.59x** |
-| HT_TRENDMODE | 3.2921 | 0.2159 | **15.25x** |
+| Function     | TA-Lib (ms) | numta (ms) | Speedup    |
+|--------------|-------------|------------|------------|
+| HT_DCPERIOD  | 0.5839      | 1.8229     | **0.32x**  |
+| HT_DCPHASE   | 2.7919      | 1.3868     | **2.01x**  |
+| HT_PHASOR    | 0.5810      | 1.1187     | **0.52x**  |
+| HT_SINE      | 3.2005      | 2.0708     | **1.55x**  |
+| HT_TRENDLINE | 0.6517      | 0.0140     | **46.59x** |
+| HT_TRENDMODE | 3.2921      | 0.2159     | **15.25x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| HT_DCPERIOD | 5.9591 | 15.8113 | **0.38x** |
-| HT_DCPHASE | 28.9483 | 10.1458 | **2.85x** |
-| HT_PHASOR | 6.7063 | 7.6714 | **0.87x** |
-| HT_SINE | 35.2159 | 19.0322 | **1.85x** |
-| HT_TRENDLINE | 6.8711 | 0.1875 | **36.64x** |
-| HT_TRENDMODE | 33.3462 | 4.3796 | **7.61x** |
+| Function     | TA-Lib (ms) | numta (ms) | Speedup    |
+|--------------|-------------|------------|------------|
+| HT_DCPERIOD  | 5.9591      | 15.8113    | **0.38x**  |
+| HT_DCPHASE   | 28.9483     | 10.1458    | **2.85x**  |
+| HT_PHASOR    | 6.7063      | 7.6714     | **0.87x**  |
+| HT_SINE      | 35.2159     | 19.0322    | **1.85x**  |
+| HT_TRENDLINE | 6.8711      | 0.1875     | **36.64x** |
+| HT_TRENDMODE | 33.3462     | 4.3796     | **7.61x**  |
 
 ## Analysis
 
@@ -192,15 +192,15 @@ For typical use cases involving HT_TRENDLINE, HT_TRENDMODE, HT_DCPHASE, and HT_S
 
 The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
-| Function | 1K bars | 10K bars | 100K bars | Average |
-|----------|---------|----------|-----------|---------|
-| **MAX** | 0.20x | 0.15x | 0.24x | **0.20x** |
-| **MIN** | 0.17x | 0.15x | 0.25x | **0.19x** |
-| **MINMAX** | 0.20x | 0.18x | 0.40x | **0.26x** |
-| **MAXINDEX** | 0.13x | 0.13x | 0.14x | **0.13x** |
-| **MININDEX** | 0.13x | 0.11x | 0.14x | **0.13x** |
-| **MINMAXINDEX** | 0.14x | 0.11x | 0.14x | **0.13x** |
-| **SUM** | 0.80x | 1.02x | 1.24x | **1.02x** |
+| Function        | 1K bars | 10K bars | 100K bars | Average   |
+|-----------------|---------|----------|-----------|-----------|
+| **MAX**         | 0.20x   | 0.15x    | 0.24x     | **0.20x** |
+| **MIN**         | 0.17x   | 0.15x    | 0.25x     | **0.19x** |
+| **MINMAX**      | 0.20x   | 0.18x    | 0.40x     | **0.26x** |
+| **MAXINDEX**    | 0.13x   | 0.13x    | 0.14x     | **0.13x** |
+| **MININDEX**    | 0.13x   | 0.11x    | 0.14x     | **0.13x** |
+| **MINMAXINDEX** | 0.14x   | 0.11x    | 0.14x     | **0.13x** |
+| **SUM**         | 0.80x   | 1.02x    | 1.24x     | **1.02x** |
 
 **Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
@@ -217,39 +217,39 @@ The following table shows the speedup factor (numta vs TA-Lib) across different 
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MAX | 0.0041 | 0.0206 | **0.20x** |
-| MIN | 0.0035 | 0.0204 | **0.17x** |
-| MINMAX | 0.0047 | 0.0237 | **0.20x** |
-| MAXINDEX | 0.0039 | 0.0303 | **0.13x** |
-| MININDEX | 0.0040 | 0.0305 | **0.13x** |
-| MINMAXINDEX | 0.0062 | 0.0455 | **0.14x** |
-| SUM | 0.0028 | 0.0035 | **0.80x** |
+| Function    | TA-Lib (ms) | numta (ms) | Speedup   |
+|-------------|-------------|------------|-----------|
+| MAX         | 0.0041      | 0.0206     | **0.20x** |
+| MIN         | 0.0035      | 0.0204     | **0.17x** |
+| MINMAX      | 0.0047      | 0.0237     | **0.20x** |
+| MAXINDEX    | 0.0039      | 0.0303     | **0.13x** |
+| MININDEX    | 0.0040      | 0.0305     | **0.13x** |
+| MINMAXINDEX | 0.0062      | 0.0455     | **0.14x** |
+| SUM         | 0.0028      | 0.0035     | **0.80x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MAX | 0.0329 | 0.2191 | **0.15x** |
-| MIN | 0.0334 | 0.2194 | **0.15x** |
-| MINMAX | 0.0435 | 0.2353 | **0.18x** |
-| MAXINDEX | 0.0383 | 0.3058 | **0.13x** |
-| MININDEX | 0.0379 | 0.3403 | **0.11x** |
-| MINMAXINDEX | 0.0521 | 0.4545 | **0.11x** |
-| SUM | 0.0255 | 0.0250 | **1.02x** |
+| Function    | TA-Lib (ms) | numta (ms) | Speedup   |
+|-------------|-------------|------------|-----------|
+| MAX         | 0.0329      | 0.2191     | **0.15x** |
+| MIN         | 0.0334      | 0.2194     | **0.15x** |
+| MINMAX      | 0.0435      | 0.2353     | **0.18x** |
+| MAXINDEX    | 0.0383      | 0.3058     | **0.13x** |
+| MININDEX    | 0.0379      | 0.3403     | **0.11x** |
+| MINMAXINDEX | 0.0521      | 0.4545     | **0.11x** |
+| SUM         | 0.0255      | 0.0250     | **1.02x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MAX | 0.5125 | 2.1407 | **0.24x** |
-| MIN | 0.5107 | 2.0619 | **0.25x** |
-| MINMAX | 1.1511 | 2.8434 | **0.40x** |
-| MAXINDEX | 0.4467 | 3.1797 | **0.14x** |
-| MININDEX | 0.4389 | 3.1948 | **0.14x** |
-| MINMAXINDEX | 0.7230 | 5.1243 | **0.14x** |
-| SUM | 0.3793 | 0.3050 | **1.24x** |
+| Function    | TA-Lib (ms) | numta (ms) | Speedup   |
+|-------------|-------------|------------|-----------|
+| MAX         | 0.5125      | 2.1407     | **0.24x** |
+| MIN         | 0.5107      | 2.0619     | **0.25x** |
+| MINMAX      | 1.1511      | 2.8434     | **0.40x** |
+| MAXINDEX    | 0.4467      | 3.1797     | **0.14x** |
+| MININDEX    | 0.4389      | 3.1948     | **0.14x** |
+| MINMAXINDEX | 0.7230      | 5.1243     | **0.14x** |
+| SUM         | 0.3793      | 0.3050     | **1.24x** |
 
 ## Analysis
 
@@ -376,20 +376,20 @@ The numta Numba/CPU implementation shows **mixed performance** for Math Operator
 
 The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
-| Function | 1K bars | 10K bars | 100K bars | Average |
-|----------|---------|----------|-----------|---------|
-| **SMA** | 0.65x | 0.83x | 1.17x | **0.88x** |
-| **EMA** | 0.73x | 0.83x | 0.92x | **0.83x** |
-| **WMA** | 0.75x | 0.94x | 1.17x | **0.95x** |
-| **DEMA** | 0.81x | 0.86x | 1.52x | **1.06x** |
-| **TEMA** | 0.76x | 0.82x | 0.96x | **0.85x** |
-| **TRIMA** | 0.66x | 0.91x | 0.42x | **0.66x** |
-| **KAMA** | 0.77x | 0.91x | 1.20x | **0.96x** |
-| **MAMA** | 2.88x | 2.55x | 2.31x | **2.58x** |
-| **T3** | 0.18x | 0.18x | 0.10x | **0.15x** |
-| **BBANDS** | 0.19x | 0.17x | 0.32x | **0.23x** |
-| **SAR** | 0.58x | 0.94x | 1.13x | **0.88x** |
-| **SAREXT** | 0.62x | 0.76x | 1.09x | **0.83x** |
+| Function   | 1K bars | 10K bars | 100K bars | Average   |
+|------------|---------|----------|-----------|-----------|
+| **SMA**    | 0.65x   | 0.83x    | 1.17x     | **0.88x** |
+| **EMA**    | 0.73x   | 0.83x    | 0.92x     | **0.83x** |
+| **WMA**    | 0.75x   | 0.94x    | 1.17x     | **0.95x** |
+| **DEMA**   | 0.81x   | 0.86x    | 1.52x     | **1.06x** |
+| **TEMA**   | 0.76x   | 0.82x    | 0.96x     | **0.85x** |
+| **TRIMA**  | 0.66x   | 0.91x    | 0.42x     | **0.66x** |
+| **KAMA**   | 0.77x   | 0.91x    | 1.20x     | **0.96x** |
+| **MAMA**   | 2.88x   | 2.55x    | 2.31x     | **2.58x** |
+| **T3**     | 0.18x   | 0.18x    | 0.10x     | **0.15x** |
+| **BBANDS** | 0.19x   | 0.17x    | 0.32x     | **0.23x** |
+| **SAR**    | 0.58x   | 0.94x    | 1.13x     | **0.88x** |
+| **SAREXT** | 0.62x   | 0.76x    | 1.09x     | **0.83x** |
 
 **Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
@@ -416,54 +416,54 @@ The following table shows the speedup factor (numta vs TA-Lib) across different 
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| SMA | 0.0027 | 0.0042 | **0.65x** |
-| EMA | 0.0039 | 0.0053 | **0.73x** |
-| WMA | 0.0029 | 0.0039 | **0.75x** |
-| DEMA | 0.0080 | 0.0099 | **0.81x** |
-| TEMA | 0.0112 | 0.0147 | **0.76x** |
-| TRIMA | 0.0042 | 0.0064 | **0.66x** |
-| KAMA | 0.0041 | 0.0053 | **0.77x** |
-| MAMA | 0.0632 | 0.0219 | **2.88x** |
-| T3 | 0.0052 | 0.0293 | **0.18x** |
-| BBANDS | 0.0080 | 0.0411 | **0.19x** |
-| SAR | 0.0035 | 0.0061 | **0.58x** |
-| SAREXT | 0.0039 | 0.0063 | **0.62x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| SMA      | 0.0027      | 0.0042     | **0.65x** |
+| EMA      | 0.0039      | 0.0053     | **0.73x** |
+| WMA      | 0.0029      | 0.0039     | **0.75x** |
+| DEMA     | 0.0080      | 0.0099     | **0.81x** |
+| TEMA     | 0.0112      | 0.0147     | **0.76x** |
+| TRIMA    | 0.0042      | 0.0064     | **0.66x** |
+| KAMA     | 0.0041      | 0.0053     | **0.77x** |
+| MAMA     | 0.0632      | 0.0219     | **2.88x** |
+| T3       | 0.0052      | 0.0293     | **0.18x** |
+| BBANDS   | 0.0080      | 0.0411     | **0.19x** |
+| SAR      | 0.0035      | 0.0061     | **0.58x** |
+| SAREXT   | 0.0039      | 0.0063     | **0.62x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| SMA | 0.0244 | 0.0293 | **0.83x** |
-| EMA | 0.0361 | 0.0434 | **0.83x** |
-| WMA | 0.0248 | 0.0262 | **0.94x** |
-| DEMA | 0.0763 | 0.0891 | **0.86x** |
-| TEMA | 0.1137 | 0.1393 | **0.82x** |
-| TRIMA | 0.0454 | 0.0500 | **0.91x** |
-| KAMA | 0.0378 | 0.0416 | **0.91x** |
-| MAMA | 0.6653 | 0.2604 | **2.55x** |
-| T3 | 0.0511 | 0.2841 | **0.18x** |
-| BBANDS | 0.0642 | 0.3741 | **0.17x** |
-| SAR | 0.0396 | 0.0423 | **0.94x** |
-| SAREXT | 0.0454 | 0.0594 | **0.76x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| SMA      | 0.0244      | 0.0293     | **0.83x** |
+| EMA      | 0.0361      | 0.0434     | **0.83x** |
+| WMA      | 0.0248      | 0.0262     | **0.94x** |
+| DEMA     | 0.0763      | 0.0891     | **0.86x** |
+| TEMA     | 0.1137      | 0.1393     | **0.82x** |
+| TRIMA    | 0.0454      | 0.0500     | **0.91x** |
+| KAMA     | 0.0378      | 0.0416     | **0.91x** |
+| MAMA     | 0.6653      | 0.2604     | **2.55x** |
+| T3       | 0.0511      | 0.2841     | **0.18x** |
+| BBANDS   | 0.0642      | 0.3741     | **0.17x** |
+| SAR      | 0.0396      | 0.0423     | **0.94x** |
+| SAREXT   | 0.0454      | 0.0594     | **0.76x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| SMA | 0.3913 | 0.3335 | **1.17x** |
-| EMA | 0.5116 | 0.5583 | **0.92x** |
-| WMA | 0.3778 | 0.3226 | **1.17x** |
-| DEMA | 2.3650 | 1.5513 | **1.52x** |
-| TEMA | 3.1520 | 3.2938 | **0.96x** |
-| TRIMA | 0.5212 | 1.2526 | **0.42x** |
-| KAMA | 0.5352 | 0.4454 | **1.20x** |
-| MAMA | 8.0934 | 3.5074 | **2.31x** |
-| T3 | 0.6133 | 6.1001 | **0.10x** |
-| BBANDS | 1.4770 | 4.5768 | **0.32x** |
-| SAR | 0.8558 | 0.7585 | **1.13x** |
-| SAREXT | 0.8343 | 0.7651 | **1.09x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| SMA      | 0.3913      | 0.3335     | **1.17x** |
+| EMA      | 0.5116      | 0.5583     | **0.92x** |
+| WMA      | 0.3778      | 0.3226     | **1.17x** |
+| DEMA     | 2.3650      | 1.5513     | **1.52x** |
+| TEMA     | 3.1520      | 3.2938     | **0.96x** |
+| TRIMA    | 0.5212      | 1.2526     | **0.42x** |
+| KAMA     | 0.5352      | 0.4454     | **1.20x** |
+| MAMA     | 8.0934      | 3.5074     | **2.31x** |
+| T3       | 0.6133      | 6.1001     | **0.10x** |
+| BBANDS   | 1.4770      | 4.5768     | **0.32x** |
+| SAR      | 0.8558      | 0.7585     | **1.13x** |
+| SAREXT   | 0.8343      | 0.7651     | **1.09x** |
 
 ## Analysis
 
@@ -641,33 +641,33 @@ The following table shows the speedup factor (numta vs TA-Lib) across different 
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MEDPRICE | 0.0026 | 0.0076 | **0.34x** |
-| TYPPRICE | 0.0026 | 0.0044 | **0.60x** |
-| WCLPRICE | 0.0030 | 0.0088 | **0.34x** |
-| MIDPOINT | 0.0025 | 0.0032 | **0.79x** |
-| MIDPRICE | 0.0026 | 0.0046 | **0.57x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| MEDPRICE | 0.0026      | 0.0076     | **0.34x** |
+| TYPPRICE | 0.0026      | 0.0044     | **0.60x** |
+| WCLPRICE | 0.0030      | 0.0088     | **0.34x** |
+| MIDPOINT | 0.0025      | 0.0032     | **0.79x** |
+| MIDPRICE | 0.0026      | 0.0046     | **0.57x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MEDPRICE | 0.0250 | 0.0267 | **0.94x** |
-| TYPPRICE | 0.0253 | 0.0267 | **0.95x** |
-| WCLPRICE | 0.0269 | 0.0292 | **0.92x** |
-| MIDPOINT | 0.0247 | 0.0132 | **1.87x** |
-| MIDPRICE | 0.0237 | 0.0427 | **0.55x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| MEDPRICE | 0.0250      | 0.0267     | **0.94x** |
+| TYPPRICE | 0.0253      | 0.0267     | **0.95x** |
+| WCLPRICE | 0.0269      | 0.0292     | **0.92x** |
+| MIDPOINT | 0.0247      | 0.0132     | **1.87x** |
+| MIDPRICE | 0.0237      | 0.0427     | **0.55x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MEDPRICE | 0.4024 | 0.2252 | **1.79x** |
-| TYPPRICE | 0.4175 | 0.3260 | **1.28x** |
-| WCLPRICE | 0.4293 | 0.3512 | **1.22x** |
-| MIDPOINT | 0.3921 | 0.2162 | **1.81x** |
-| MIDPRICE | 0.4081 | 0.6290 | **0.65x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| MEDPRICE | 0.4024      | 0.2252     | **1.79x** |
+| TYPPRICE | 0.4175      | 0.3260     | **1.28x** |
+| WCLPRICE | 0.4293      | 0.3512     | **1.22x** |
+| MIDPOINT | 0.3921      | 0.2162     | **1.81x** |
+| MIDPRICE | 0.4081      | 0.6290     | **0.65x** |
 
 ## Analysis
 
@@ -851,16 +851,16 @@ The following table shows the speedup factor (numta vs TA-Lib) across different 
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | numta (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| CORREL | 0.0082 | 0.0522 | **0.16x** |
-| LINEARREG | 0.0146 | 0.0209 | **0.70x** |
-| LINEARREG_ANGLE | 0.0216 | 0.0311 | **0.69x** |
-| LINEARREG_INTERCEPT | 0.0152 | 0.0220 | **0.69x** |
-| LINEARREG_SLOPE | 0.0122 | 0.0200 | **0.61x** |
-| STDDEV | 0.0040 | 0.0594 | **0.07x** |
-| TSF | 0.0152 | 0.0158 | **0.97x** |
-| VAR | 0.0031 | 0.0560 | **0.06x** |
+| Function            | TA-Lib (ms) | numta (ms) | Speedup   |
+|---------------------|-------------|------------|-----------|
+| CORREL              | 0.0082      | 0.0522     | **0.16x** |
+| LINEARREG           | 0.0146      | 0.0209     | **0.70x** |
+| LINEARREG_ANGLE     | 0.0216      | 0.0311     | **0.69x** |
+| LINEARREG_INTERCEPT | 0.0152      | 0.0220     | **0.69x** |
+| LINEARREG_SLOPE     | 0.0122      | 0.0200     | **0.61x** |
+| STDDEV              | 0.0040      | 0.0594     | **0.07x** |
+| TSF                 | 0.0152      | 0.0158     | **0.97x** |
+| VAR                 | 0.0031      | 0.0560     | **0.06x** |
 
 ### Dataset: 10,000 bars
 

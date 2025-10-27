@@ -82,11 +82,11 @@ sma_faster = SMA_numba(close_prices, timeperiod=30)   # 5-10x faster
 
 ### Performance Comparison
 
-| Implementation | Speed vs Original | Requirements |
-|---------------|------------------|--------------|
-| **numpy (default)** | 1.0x (baseline) | None |
-| **cumsum** | **3.14x faster** | None |
-| **numba** | **5-10x faster** | `pip install numba` |
+| Implementation      | Speed vs Original | Requirements        |
+|---------------------|-------------------|---------------------|
+| **numpy (default)** | 1.0x (baseline)   | None                |
+| **cumsum**          | **3.14x faster**  | None                |
+| **numba**           | **5-10x faster**  | `pip install numba` |
 
 **Benchmark Results (10,000 points):**
 - Original (numpy): 0.154ms
@@ -240,14 +240,14 @@ pytest tests/test_benchmark.py
 
 `numta` maintains full API compatibility with TA-Lib:
 
-| Feature | TA-Lib | numta |
-|---------|--------|------------|
-| Function signatures | ✓ | ✓ |
-| Return values | ✓ | ✓ |
-| NaN handling | ✓ | ✓ |
-| NumPy array support | ✓ | ✓ |
-| List support | ✓ | ✓ |
-| Default parameters | ✓ | ✓ |
+| Feature             | TA-Lib | numta |
+|---------------------|--------|-------|
+| Function signatures | ✓      | ✓     |
+| Return values       | ✓      | ✓     |
+| NaN handling        | ✓      | ✓     |
+| NumPy array support | ✓      | ✓     |
+| List support        | ✓      | ✓     |
+| Default parameters  | ✓      | ✓     |
 
 ## Development
 
