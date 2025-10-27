@@ -8,7 +8,7 @@ import time
 
 def benchmark_ht_phasor():
     """Benchmark HT_PHASOR"""
-    from talib_pure import HT_PHASOR
+    from numta import HT_PHASOR
 
     print("=" * 80)
     print("HT_PHASOR Benchmark")

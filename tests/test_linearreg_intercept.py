@@ -7,7 +7,7 @@ import pytest
 
 def test_linearreg_intercept_basic():
     """Test LINEARREG_INTERCEPT basic calculation"""
-    from talib_pure import LINEARREG_INTERCEPT
+    from numta import LINEARREG_INTERCEPT
 
     # Linear uptrend
     close = np.linspace(100, 120, 20)
@@ -22,7 +22,7 @@ def test_linearreg_intercept_basic():
 
 def test_linearreg_intercept_relationship():
     """Test relationship between LINEARREG, INTERCEPT, and SLOPE"""
-    from talib_pure import LINEARREG, LINEARREG_INTERCEPT, LINEARREG_SLOPE
+    from numta import LINEARREG, LINEARREG_INTERCEPT, LINEARREG_SLOPE
 
     close = np.linspace(100, 120, 30)
     timeperiod = 10
@@ -40,7 +40,7 @@ def test_linearreg_intercept_relationship():
 
 def test_linearreg_intercept_empty_input():
     """Test LINEARREG_INTERCEPT with empty array"""
-    from talib_pure import LINEARREG_INTERCEPT
+    from numta import LINEARREG_INTERCEPT
 
     empty = np.array([])
     result = LINEARREG_INTERCEPT(empty)
@@ -49,7 +49,7 @@ def test_linearreg_intercept_empty_input():
 
 def test_linearreg_intercept_input_validation():
     """Test LINEARREG_INTERCEPT validates input"""
-    from talib_pure import LINEARREG_INTERCEPT
+    from numta import LINEARREG_INTERCEPT
 
     close = np.array([100, 105])
 

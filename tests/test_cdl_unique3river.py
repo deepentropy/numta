@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlunique3river_pattern():
     """Test Unique 3 River pattern detection"""
-    from talib_pure import CDLUNIQUE3RIVER
+    from numta import CDLUNIQUE3RIVER
 
     # Build context + unique 3 river (long black, black harami, small white)
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlunique3river_pattern():
 
 def test_cdlunique3river_no_pattern():
     """Test no pattern when not matching criteria"""
-    from talib_pure import CDLUNIQUE3RIVER
+    from numta import CDLUNIQUE3RIVER
 
     open_ = np.array([90, 91, 110, 105, 104])
     high = np.array([91, 92, 110, 106, 105])

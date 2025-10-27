@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlrisefall3methods_rising():
     """Test Rising Three Methods pattern detection"""
-    from talib_pure import CDLRISEFALL3METHODS
+    from numta import CDLRISEFALL3METHODS
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlrisefall3methods_rising():
 
 def test_cdlrisefall3methods_falling():
     """Test Falling Three Methods pattern detection"""
-    from talib_pure import CDLRISEFALL3METHODS
+    from numta import CDLRISEFALL3METHODS
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -43,7 +43,7 @@ def test_cdlrisefall3methods_falling():
 
 def test_cdlrisefall3methods_no_pattern():
     """Test no pattern when conditions not met"""
-    from talib_pure import CDLRISEFALL3METHODS
+    from numta import CDLRISEFALL3METHODS
 
     # Wrong colors
     open_ = np.array([90, 91, 100, 101, 102, 103, 104])

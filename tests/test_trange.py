@@ -4,7 +4,7 @@ Test suite for TRANGE
 
 import numpy as np
 import pytest
-from talib_pure import TRANGE
+from numta import TRANGE
 
 class TestTRANGE:
     """Tests for TRANGE"""

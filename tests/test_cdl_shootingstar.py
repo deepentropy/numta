@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlshootingstar_pattern():
     """Test Shooting Star pattern detection"""
-    from talib_pure import CDLSHOOTINGSTAR
+    from numta import CDLSHOOTINGSTAR
 
     # Build context + pattern (need larger body context candles)
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
@@ -25,7 +25,7 @@ def test_cdlshootingstar_pattern():
 
 def test_cdlshootingstar_no_gap():
     """Test no pattern without gap"""
-    from talib_pure import CDLSHOOTINGSTAR
+    from numta import CDLSHOOTINGSTAR
 
     open_ = np.array([90, 91, 100])  # No gap
     high = np.array([91, 92, 115])

@@ -7,7 +7,7 @@ import pytest
 
 def test_cdltasukigap_upside():
     """Test Upside Tasuki Gap pattern"""
-    from talib_pure import CDLTASUKIGAP
+    from numta import CDLTASUKIGAP
 
     # Build context + upside tasuki gap (bodies must be similar size)
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdltasukigap_upside():
 
 def test_cdltasukigap_downside():
     """Test Downside Tasuki Gap pattern"""
-    from talib_pure import CDLTASUKIGAP
+    from numta import CDLTASUKIGAP
 
     # Build context + downside tasuki gap (bodies must be similar size)
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -43,7 +43,7 @@ def test_cdltasukigap_downside():
 
 def test_cdltasukigap_no_pattern():
     """Test no pattern when gap is closed"""
-    from talib_pure import CDLTASUKIGAP
+    from numta import CDLTASUKIGAP
 
     open_ = np.array([90, 91, 100, 106, 107])
     high = np.array([91, 92, 105, 110, 108])

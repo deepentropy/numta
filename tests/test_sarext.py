@@ -4,7 +4,7 @@ Test suite for SAREXT
 
 import numpy as np
 import pytest
-from talib_pure import SAREXT
+from numta import SAREXT
 
 class TestSAREXT:
     """Tests for SAREXT (Parabolic SAR Extended)"""

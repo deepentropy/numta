@@ -5,7 +5,7 @@ for Cycle Indicators
 
 import numpy as np
 import talib
-from talib_pure import (
+from numta import (
     HT_DCPERIOD, HT_DCPHASE, HT_PHASOR, HT_SINE, HT_TRENDLINE, HT_TRENDMODE
 )
 

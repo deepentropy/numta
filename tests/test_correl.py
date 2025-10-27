@@ -7,7 +7,7 @@ import pytest
 
 def test_correl_perfect_positive():
     """Test CORREL with perfect positive correlation"""
-    from talib_pure import CORREL
+    from numta import CORREL
 
     # High and low perfectly correlated
     high = np.array([105, 106, 107, 108, 109, 110, 111, 112, 113, 114])
@@ -23,7 +23,7 @@ def test_correl_perfect_positive():
 
 def test_correl_no_correlation():
     """Test CORREL with no correlation"""
-    from talib_pure import CORREL
+    from numta import CORREL
 
     # Random, uncorrelated data
     np.random.seed(42)
@@ -38,7 +38,7 @@ def test_correl_no_correlation():
 
 def test_correl_empty_input():
     """Test CORREL with empty arrays"""
-    from talib_pure import CORREL
+    from numta import CORREL
 
     empty = np.array([])
     result = CORREL(empty, empty)
@@ -47,7 +47,7 @@ def test_correl_empty_input():
 
 def test_correl_input_validation():
     """Test CORREL validates input lengths"""
-    from talib_pure import CORREL
+    from numta import CORREL
 
     high = np.array([105, 106])
     low = np.array([100])  # Wrong length

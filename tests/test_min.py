@@ -4,7 +4,7 @@ Test suite for MIN
 
 import numpy as np
 import pytest
-from talib_pure import MIN
+from numta import MIN
 
 class TestMIN:
     """Tests for MIN (Lowest value over period)"""

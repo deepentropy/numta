@@ -7,7 +7,7 @@ import pytest
 
 def test_linearreg_slope_basic():
     """Test LINEARREG_SLOPE basic calculation"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     # Linear uptrend
     close = np.linspace(100, 120, 30)
@@ -22,7 +22,7 @@ def test_linearreg_slope_basic():
 
 def test_linearreg_slope_uptrend():
     """Test LINEARREG_SLOPE shows positive slope in uptrend"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     # Strong uptrend
     close = np.linspace(100, 150, 30)
@@ -36,7 +36,7 @@ def test_linearreg_slope_uptrend():
 
 def test_linearreg_slope_downtrend():
     """Test LINEARREG_SLOPE shows negative slope in downtrend"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     # Downtrend
     close = np.linspace(150, 100, 30)
@@ -50,7 +50,7 @@ def test_linearreg_slope_downtrend():
 
 def test_linearreg_slope_flat():
     """Test LINEARREG_SLOPE shows near-zero slope for flat data"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     # Flat market
     close = np.ones(30) * 100
@@ -64,7 +64,7 @@ def test_linearreg_slope_flat():
 
 def test_linearreg_slope_empty_input():
     """Test LINEARREG_SLOPE with empty array"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     empty = np.array([])
     result = LINEARREG_SLOPE(empty)
@@ -73,7 +73,7 @@ def test_linearreg_slope_empty_input():
 
 def test_linearreg_slope_input_validation():
     """Test LINEARREG_SLOPE validates input"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     close = np.array([100, 105])
 

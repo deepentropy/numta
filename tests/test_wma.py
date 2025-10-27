@@ -4,7 +4,7 @@ Test suite for WMA
 
 import numpy as np
 import pytest
-from talib_pure import WMA, SMA
+from numta import WMA, SMA
 
 class TestWMA:
     """Tests for WMA"""
@@ -32,7 +32,7 @@ class TestWMA:
 
     def test_wma_vs_sma(self):
         """Test that WMA is more responsive than SMA"""
-        from talib_pure import SMA
+        from numta import SMA
 
         # Create data with sudden jump
         close = np.concatenate([

@@ -1,10 +1,10 @@
-# talib-pure
+# numta
 
 A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus on performance and compatibility.
 
 ## Overview
 
-`talib-pure` aims to provide the same functionality as the popular TA-Lib library but implemented entirely in pure Python using NumPy for performance. This eliminates the need for complex C library dependencies while maintaining high performance through optimized NumPy operations.
+`numta` (NumPy Technical Analysis) provides the same functionality as the popular TA-Lib library but implemented entirely in Python using NumPy and Numba for performance. This eliminates the need for complex C library dependencies while maintaining high performance through optimized NumPy operations and JIT compilation.
 
 **Disclaimer**: This is an independent implementation inspired by TA-Lib. It is not affiliated with, endorsed by, or connected to the original TA-Lib project. The technical analysis algorithms implemented here are based on publicly available mathematical formulas and are compatible with TA-Lib's function signatures for ease of migration.
 
@@ -27,11 +27,11 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
 
 ```bash
 # From PyPI (when published)
-pip install talib-pure
+pip install numta
 
 # From source
-git clone https://github.com/houseofai/talib-pure.git
-cd talib-pure
+git clone https://github.com/houseofai/numta.git
+cd numta
 pip install -e .
 ```
 
@@ -39,17 +39,17 @@ pip install -e .
 
 ```bash
 # Install with Numba for 5-10x speedup
-pip install "talib-pure[numba]"
+pip install "numta[numba]"
 
 # Install development dependencies
-pip install "talib-pure[dev]"
+pip install "numta[dev]"
 ```
 
 ## Quick Start
 
 ```python
 import numpy as np
-from talib_pure import SMA
+from numta import SMA
 
 # Create sample price data
 close_prices = np.random.uniform(100, 200, 100)
@@ -65,16 +65,16 @@ print(f"SMA values: {sma[-5:]}")  # Last 5 values
 
 ## Performance Optimization 🚀
 
-talib-pure can match or exceed TA-Lib's performance using optional optimization backends:
+numta can match or exceed TA-Lib's performance using optional optimization backends:
 
 ```python
-from talib_pure import SMA_auto
+from numta import SMA_auto
 
 # Automatic backend selection (recommended)
 sma = SMA_auto(close_prices, timeperiod=30, backend='auto')
 
 # Or choose specific backend
-from talib_pure import SMA_cumsum, SMA_numba
+from numta import SMA_cumsum, SMA_numba
 
 sma_fast = SMA_cumsum(close_prices, timeperiod=30)    # 3x faster, no deps
 sma_faster = SMA_numba(close_prices, timeperiod=30)   # 5-10x faster
@@ -134,7 +134,7 @@ MEDPRICE, MIDPOINT, MIDPRICE, TYPPRICE, WCLPRICE
 
 ```python
 import numpy as np
-from talib_pure import SMA
+from numta import SMA
 
 # Generate sample data
 close = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
@@ -150,7 +150,7 @@ result = SMA(close, timeperiod=3)
 
 ```python
 import numpy as np
-from talib_pure import SMA
+from numta import SMA
 
 # Example with stock prices
 close_prices = np.array([
@@ -168,12 +168,12 @@ for i, (price, sma) in enumerate(zip(close_prices, sma_5)):
 
 ## Performance Benchmarking
 
-`talib-pure` includes a powerful benchmarking class to compare performance with the original TA-Lib:
+`numta` includes a powerful benchmarking class to compare performance with the original TA-Lib:
 
 ```python
 import numpy as np
-from talib_pure import SMA as SMA_pure
-from talib_pure.benchmark import PerformanceMeasurement
+from numta import SMA as SMA_numta
+from numta.benchmark import PerformanceMeasurement
 import talib
 
 # Create test data
@@ -181,7 +181,7 @@ data = np.random.uniform(100, 200, 10000)
 
 # Setup benchmark
 bench = PerformanceMeasurement()
-bench.add_function("talib-pure SMA", SMA_pure, data, timeperiod=30)
+bench.add_function("numta SMA", SMA_numta, data, timeperiod=30)
 bench.add_function("TA-Lib SMA", talib.SMA, data, timeperiod=30)
 
 # Run benchmark
@@ -238,9 +238,9 @@ pytest tests/test_benchmark.py
 
 ## API Compatibility
 
-`talib-pure` maintains full API compatibility with TA-Lib:
+`numta` maintains full API compatibility with TA-Lib:
 
-| Feature | TA-Lib | talib-pure |
+| Feature | TA-Lib | numta |
 |---------|--------|------------|
 | Function signatures | ✓ | ✓ |
 | Return values | ✓ | ✓ |
@@ -254,9 +254,9 @@ pytest tests/test_benchmark.py
 ### Project Structure
 
 ```
-talib-pure/
+numta/
 ├── src/
-│   └── talib_pure/
+│   └── numta/
 │       ├── __init__.py           # Main package exports
 │       ├── backend.py            # Backend selection logic
 │       ├── benchmark.py          # Performance measurement tools
@@ -334,7 +334,7 @@ Contributions are welcome! Please:
 
 ## Performance
 
-`talib-pure` uses NumPy's optimized functions (like `convolve`) to achieve performance competitive with the C-based TA-Lib. Benchmark results:
+`numta` uses NumPy's optimized functions and Numba JIT compilation to achieve performance competitive with the C-based TA-Lib. Benchmark results:
 
 - **SMA**: Comparable performance to TA-Lib for large datasets
 - **Lookback handling**: Efficient NaN placement
@@ -366,7 +366,7 @@ This project implements technical analysis algorithms that are publicly availabl
   - Python wrapper: https://github.com/TA-Lib/ta-lib-python
   - License: BSD 3-Clause
 
-`talib-pure` is an independent clean-room implementation and is not derived from TA-Lib's source code. All code in this repository is original work licensed under the MIT License (see LICENSE file).
+`numta` is an independent clean-room implementation and is not derived from TA-Lib's source code. All code in this repository is original work licensed under the MIT License (see LICENSE file).
 
 ## Roadmap
 
@@ -398,17 +398,17 @@ This project implements technical analysis algorithms that are publicly availabl
 ## Support
 
 For issues, questions, or contributions, please visit:
-https://github.com/houseofai/talib-pure/issues
+https://github.com/houseofai/numta/issues
 
 ## Citation
 
 If you use this library in your research or project, please cite:
 
 ```
-@software{talib_pure,
-  title={talib-pure: Pure Python Technical Analysis Library},
-  author={talib-pure contributors},
-  url={https://github.com/houseofai/talib-pure},
+@software{numta,
+  title={numta: NumPy-based Technical Analysis Library},
+  author={numta contributors},
+  url={https://github.com/houseofai/numta},
   year={2025}
 }
 ```

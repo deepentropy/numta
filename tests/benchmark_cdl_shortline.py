@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlshortline():
     """Benchmark CDLSHORTLINE"""
-    from talib_pure import CDLSHORTLINE
+    from numta import CDLSHORTLINE
 
     print("=" * 80)
     print("CDLSHORTLINE Benchmark")

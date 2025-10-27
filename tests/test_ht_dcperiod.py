@@ -7,7 +7,7 @@ import pytest
 
 def test_ht_dcperiod_basic():
     """Test HT_DCPERIOD basic calculation"""
-    from talib_pure import HT_DCPERIOD
+    from numta import HT_DCPERIOD
 
     # Create sine wave to simulate a cycle
     n = 100
@@ -31,7 +31,7 @@ def test_ht_dcperiod_basic():
 
 def test_ht_dcperiod_empty_input():
     """Test HT_DCPERIOD with empty array"""
-    from talib_pure import HT_DCPERIOD
+    from numta import HT_DCPERIOD
 
     empty = np.array([])
     result = HT_DCPERIOD(empty)

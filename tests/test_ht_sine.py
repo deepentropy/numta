@@ -7,7 +7,7 @@ import pytest
 
 def test_ht_sine_basic():
     """Test HT_SINE basic calculation"""
-    from talib_pure import HT_SINE
+    from numta import HT_SINE
 
     # Create sine wave to simulate a cycle
     n = 100
@@ -31,7 +31,7 @@ def test_ht_sine_basic():
 
 def test_ht_sine_lead_relationship():
     """Test that leadsine leads sine by ~45 degrees"""
-    from talib_pure import HT_SINE
+    from numta import HT_SINE
 
     n = 100
     close = np.sin(np.linspace(0, 4*np.pi, n)) * 10 + 100
@@ -47,7 +47,7 @@ def test_ht_sine_lead_relationship():
 
 def test_ht_sine_empty_input():
     """Test HT_SINE with empty array"""
-    from talib_pure import HT_SINE
+    from numta import HT_SINE
 
     empty = np.array([])
     sine, leadsine = HT_SINE(empty)

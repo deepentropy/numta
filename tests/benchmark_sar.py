@@ -8,7 +8,7 @@ import time
 
 def benchmark_sar():
     """Benchmark SAR"""
-    from talib_pure import SAR
+    from numta import SAR
 
     print("=" * 80)
     print("SAR Benchmark")

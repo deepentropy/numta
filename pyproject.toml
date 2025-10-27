@@ -3,14 +3,14 @@ requires = ["setuptools>=61.0", "wheel"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "talib-pure"
+name = "numta"
 version = "0.1.0"
-description = "Pure Python TA-Lib library with focus on performance"
+description = "NumPy-based Technical Analysis library with focus on performance"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "talib-pure contributors"}
+    {name = "numta contributors"}
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -44,8 +44,8 @@ numba = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/houseofai/talib-pure"
-Repository = "https://github.com/houseofai/talib-pure"
+Homepage = "https://github.com/houseofai/numta"
+Repository = "https://github.com/houseofai/numta"
 
 [tool.setuptools.packages.find]
 where = ["src"]

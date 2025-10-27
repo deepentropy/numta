@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlstalledpattern_pattern():
     """Test Stalled Pattern detection"""
-    from talib_pure import CDLSTALLEDPATTERN
+    from numta import CDLSTALLEDPATTERN
 
     # Build context + three white soldiers with stall
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlstalledpattern_pattern():
 
 def test_cdlstalledpattern_no_pattern():
     """Test no pattern when not three white"""
-    from talib_pure import CDLSTALLEDPATTERN
+    from numta import CDLSTALLEDPATTERN
 
     open_ = np.array([90, 91, 100, 105, 109])
     high = np.array([91, 92, 105, 110, 114])

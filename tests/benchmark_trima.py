@@ -8,7 +8,7 @@ import time
 
 def benchmark_trima():
     """Benchmark TRIMA"""
-    from talib_pure import TRIMA
+    from numta import TRIMA
 
     print("=" * 80)
     print("TRIMA Benchmark")

@@ -8,7 +8,7 @@ import time
 
 def benchmark_natr():
     """Benchmark NATR"""
-    from talib_pure import NATR
+    from numta import NATR
 
     print("=" * 80)
     print("NATR Benchmark")

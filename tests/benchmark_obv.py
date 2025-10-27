@@ -8,7 +8,7 @@ import time
 
 def benchmark_obv():
     """Benchmark OBV"""
-    from talib_pure import OBV
+    from numta import OBV
 
     print("=" * 80)
     print("OBV Benchmark")

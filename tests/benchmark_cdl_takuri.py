@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdltakuri():
     """Benchmark CDLTAKURI"""
-    from talib_pure import CDLTAKURI
+    from numta import CDLTAKURI
 
     print("=" * 80)
     print("CDLTAKURI Benchmark")

@@ -8,7 +8,7 @@ import time
 
 def benchmark_max():
     """Benchmark MAX"""
-    from talib_pure import MAX
+    from numta import MAX
 
     print("=" * 80)
     print("MAX Benchmark")

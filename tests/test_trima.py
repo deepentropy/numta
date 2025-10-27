@@ -4,7 +4,7 @@ Test suite for TRIMA
 
 import numpy as np
 import pytest
-from talib_pure import TRIMA, SMA
+from numta import TRIMA, SMA
 
 class TestTRIMA:
     """Tests for TRIMA"""
@@ -16,7 +16,7 @@ class TestTRIMA:
 
         assert len(result) == len(close)
         # TRIMA should match double SMA formula
-        from talib_pure import SMA
+        from numta import SMA
         n1 = 10 // 2
         n2 = n1 + 1
         sma1 = SMA(close, timeperiod=n1)
@@ -25,7 +25,7 @@ class TestTRIMA:
 
     def test_trima_smoother_than_sma(self):
         """Test that TRIMA is smoother than SMA"""
-        from talib_pure import SMA
+        from numta import SMA
 
         # Create data with some noise
         close = np.linspace(100, 120, 50) + np.random.randn(50) * 2

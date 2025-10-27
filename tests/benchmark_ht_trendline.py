@@ -8,7 +8,7 @@ import time
 
 def benchmark_ht_trendline():
     """Benchmark HT_TRENDLINE"""
-    from talib_pure import HT_TRENDLINE
+    from numta import HT_TRENDLINE
 
     print("=" * 80)
     print("HT_TRENDLINE Benchmark")

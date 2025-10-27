@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlsticksandwich_pattern():
     """Test Stick Sandwich pattern detection"""
-    from talib_pure import CDLSTICKSANDWICH
+    from numta import CDLSTICKSANDWICH
 
     # Build context + stick sandwich (black-white-black with matching closes)
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlsticksandwich_pattern():
 
 def test_cdlsticksandwich_no_pattern():
     """Test no pattern when closes don't match"""
-    from talib_pure import CDLSTICKSANDWICH
+    from numta import CDLSTICKSANDWICH
 
     open_ = np.array([90, 91, 110, 95, 110])
     high = np.array([91, 92, 110, 105, 110])

@@ -4,7 +4,7 @@ Test suite for SMA
 
 import numpy as np
 import pytest
-from talib_pure import SMA
+from numta import SMA
 
 class TestSMA:
     """Tests for SMA (Simple Moving Average)"""

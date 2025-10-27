@@ -4,7 +4,7 @@ Test suite for MINMAXINDEX
 
 import numpy as np
 import pytest
-from talib_pure import MINMAXINDEX
+from numta import MINMAXINDEX
 
 class TestMINMAXINDEX:
     """Tests for MINMAXINDEX (Indexes of lowest and highest values)"""

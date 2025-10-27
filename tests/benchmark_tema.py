@@ -8,7 +8,7 @@ import time
 
 def benchmark_tema():
     """Benchmark TEMA"""
-    from talib_pure import TEMA
+    from numta import TEMA
 
     print("=" * 80)
     print("TEMA Benchmark")

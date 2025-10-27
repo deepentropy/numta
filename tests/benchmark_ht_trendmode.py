@@ -8,7 +8,7 @@ import time
 
 def benchmark_ht_trendmode():
     """Benchmark HT_TRENDMODE"""
-    from talib_pure import HT_TRENDMODE
+    from numta import HT_TRENDMODE
 
     print("=" * 80)
     print("HT_TRENDMODE Benchmark")

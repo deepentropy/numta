@@ -4,7 +4,7 @@ Test suite for STDDEV
 
 import numpy as np
 import pytest
-from talib_pure import STDDEV
+from numta import STDDEV
 
 class TestSTDDEV:
     """Tests for STDDEV (Standard Deviation)"""

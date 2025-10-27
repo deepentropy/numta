@@ -1,6 +1,6 @@
 # Development Tools
 
-This folder contains development and testing utilities for the talib-pure project.
+This folder contains development and testing utilities for the numta project.
 
 ## Contents
 

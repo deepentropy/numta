@@ -4,7 +4,7 @@ Test suite for the performance measurement class
 
 import numpy as np
 import pytest
-from talib_pure.benchmark import PerformanceMeasurement
+from numta.benchmark import PerformanceMeasurement
 
 
 def dummy_function_fast(data, param=10):

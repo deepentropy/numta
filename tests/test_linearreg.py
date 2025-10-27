@@ -7,7 +7,7 @@ import pytest
 
 def test_linearreg_basic():
     """Test LINEARREG basic calculation"""
-    from talib_pure import LINEARREG
+    from numta import LINEARREG
 
     # Linear uptrend
     close = np.linspace(100, 120, 20)
@@ -22,7 +22,7 @@ def test_linearreg_basic():
 
 def test_linearreg_trending():
     """Test LINEARREG follows trend"""
-    from talib_pure import LINEARREG
+    from numta import LINEARREG
 
     # Uptrend
     close = np.linspace(100, 120, 30)
@@ -35,7 +35,7 @@ def test_linearreg_trending():
 
 def test_linearreg_vs_price():
     """Test LINEARREG relationship with price"""
-    from talib_pure import LINEARREG
+    from numta import LINEARREG
 
     # Create data with known linear trend
     close = np.array([100, 101, 102, 103, 104, 105, 106, 107, 108, 109,
@@ -50,7 +50,7 @@ def test_linearreg_vs_price():
 
 def test_linearreg_empty_input():
     """Test LINEARREG with empty array"""
-    from talib_pure import LINEARREG
+    from numta import LINEARREG
 
     empty = np.array([])
     result = LINEARREG(empty)
@@ -59,7 +59,7 @@ def test_linearreg_empty_input():
 
 def test_linearreg_input_validation():
     """Test LINEARREG validates input"""
-    from talib_pure import LINEARREG
+    from numta import LINEARREG
 
     close = np.array([100, 105])
 

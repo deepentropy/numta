@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlseparatinglines_bullish():
     """Test Separating Lines bullish pattern detection"""
-    from talib_pure import CDLSEPARATINGLINES
+    from numta import CDLSEPARATINGLINES
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlseparatinglines_bullish():
 
 def test_cdlseparatinglines_bearish():
     """Test Separating Lines bearish pattern detection"""
-    from talib_pure import CDLSEPARATINGLINES
+    from numta import CDLSEPARATINGLINES
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -43,7 +43,7 @@ def test_cdlseparatinglines_bearish():
 
 def test_cdlseparatinglines_no_pattern():
     """Test no pattern when opens don't match"""
-    from talib_pure import CDLSEPARATINGLINES
+    from numta import CDLSEPARATINGLINES
 
     open_ = np.array([90, 91, 110, 105])  # Opens don't match
     high = np.array([91, 92, 110, 115])

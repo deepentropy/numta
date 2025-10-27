@@ -8,7 +8,7 @@ import time
 
 def benchmark_linearreg():
     """Benchmark LINEARREG"""
-    from talib_pure import LINEARREG
+    from numta import LINEARREG
 
     print("=" * 80)
     print("LINEARREG Benchmark")

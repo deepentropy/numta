@@ -8,7 +8,7 @@ import time
 
 def benchmark_ht_dcperiod():
     """Benchmark HT_DCPERIOD"""
-    from talib_pure import HT_DCPERIOD
+    from numta import HT_DCPERIOD
 
     print("=" * 80)
     print("HT_DCPERIOD Benchmark")

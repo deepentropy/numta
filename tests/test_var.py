@@ -4,7 +4,7 @@ Test suite for VAR
 
 import numpy as np
 import pytest
-from talib_pure import VAR, STDDEV
+from numta import VAR, STDDEV
 
 class TestVAR:
     """Tests for VAR"""
@@ -29,7 +29,7 @@ class TestVAR:
 
     def test_var_relationship_to_stddev(self):
         """Test VAR = STDDEV²"""
-        from talib_pure import STDDEV
+        from numta import STDDEV
 
         data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
 

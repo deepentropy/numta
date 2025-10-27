@@ -8,7 +8,7 @@ import time
 
 def benchmark_linearreg_intercept():
     """Benchmark LINEARREG_INTERCEPT"""
-    from talib_pure import LINEARREG_INTERCEPT
+    from numta import LINEARREG_INTERCEPT
 
     print("=" * 80)
     print("LINEARREG_INTERCEPT Benchmark")

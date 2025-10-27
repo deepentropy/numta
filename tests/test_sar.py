@@ -4,7 +4,7 @@ Test suite for SAR
 
 import numpy as np
 import pytest
-from talib_pure import SAR
+from numta import SAR
 
 class TestSAR:
     """Tests for SAR (Parabolic SAR)"""

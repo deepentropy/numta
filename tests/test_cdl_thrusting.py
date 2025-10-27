@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlthrusting_pattern():
     """Test Thrusting Pattern detection"""
-    from talib_pure import CDLTHRUSTING
+    from numta import CDLTHRUSTING
 
     # Build context + thrusting pattern (black, white closes below midpoint)
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlthrusting_pattern():
 
 def test_cdlthrusting_no_pattern():
     """Test no pattern when white closes above midpoint"""
-    from talib_pure import CDLTHRUSTING
+    from numta import CDLTHRUSTING
 
     open_ = np.array([90, 91, 110, 101])
     high = np.array([91, 92, 110, 106])

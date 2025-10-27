@@ -8,7 +8,7 @@ import time
 
 def benchmark_wclprice():
     """Benchmark WCLPRICE"""
-    from talib_pure import WCLPRICE
+    from numta import WCLPRICE
 
     print("=" * 80)
     print("WCLPRICE Benchmark")

@@ -6,7 +6,7 @@ import numpy as np
 import pytest
 
 if HAS_NUMBA:
-    from talib_pure import SMA_numba
+    from numta import SMA_numba
 
 
 

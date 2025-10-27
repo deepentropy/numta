@@ -7,7 +7,7 @@ import pytest
 
 def test_ht_trendline_basic():
     """Test HT_TRENDLINE basic calculation"""
-    from talib_pure import HT_TRENDLINE
+    from numta import HT_TRENDLINE
 
     # Create trending data
     close = np.linspace(100, 120, 100)
@@ -25,7 +25,7 @@ def test_ht_trendline_basic():
 
 def test_ht_trendline_smoothing():
     """Test that HT_TRENDLINE smooths price action"""
-    from talib_pure import HT_TRENDLINE
+    from numta import HT_TRENDLINE
 
     # Create noisy data with underlying trend
     np.random.seed(42)
@@ -42,7 +42,7 @@ def test_ht_trendline_smoothing():
 
 def test_ht_trendline_empty_input():
     """Test HT_TRENDLINE with empty array"""
-    from talib_pure import HT_TRENDLINE
+    from numta import HT_TRENDLINE
 
     empty = np.array([])
     result = HT_TRENDLINE(empty)

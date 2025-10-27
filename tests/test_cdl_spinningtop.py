@@ -7,7 +7,7 @@ import pytest
 
 def test_cdlspinningtop_white():
     """Test Spinning Top white pattern"""
-    from talib_pure import CDLSPINNINGTOP
+    from numta import CDLSPINNINGTOP
 
     # Build context + spinning top
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
@@ -25,7 +25,7 @@ def test_cdlspinningtop_white():
 
 def test_cdlspinningtop_black():
     """Test Spinning Top black pattern"""
-    from talib_pure import CDLSPINNINGTOP
+    from numta import CDLSPINNINGTOP
 
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
                       100.5])
@@ -42,7 +42,7 @@ def test_cdlspinningtop_black():
 
 def test_cdlspinningtop_no_pattern():
     """Test no pattern when shadows not long enough"""
-    from talib_pure import CDLSPINNINGTOP
+    from numta import CDLSPINNINGTOP
 
     open_ = np.array([90, 91, 100])
     high = np.array([91, 92, 100.05])  # Upper shadow = 0.05

@@ -7,7 +7,7 @@ import pytest
 
 def test_linearreg_angle_basic():
     """Test LINEARREG_ANGLE basic calculation"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     # Linear uptrend
     close = np.linspace(100, 120, 30)
@@ -22,7 +22,7 @@ def test_linearreg_angle_basic():
 
 def test_linearreg_angle_uptrend():
     """Test LINEARREG_ANGLE shows positive angle in uptrend"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     # Strong uptrend
     close = np.linspace(100, 150, 30)
@@ -36,7 +36,7 @@ def test_linearreg_angle_uptrend():
 
 def test_linearreg_angle_downtrend():
     """Test LINEARREG_ANGLE shows negative angle in downtrend"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     # Downtrend
     close = np.linspace(150, 100, 30)
@@ -50,7 +50,7 @@ def test_linearreg_angle_downtrend():
 
 def test_linearreg_angle_flat():
     """Test LINEARREG_ANGLE shows near-zero angle for flat data"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     # Flat market
     close = np.ones(30) * 100
@@ -64,7 +64,7 @@ def test_linearreg_angle_flat():
 
 def test_linearreg_angle_range():
     """Test LINEARREG_ANGLE values are in valid range"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     np.random.seed(42)
     close = np.random.randn(50) * 10 + 100
@@ -79,7 +79,7 @@ def test_linearreg_angle_range():
 
 def test_linearreg_angle_empty_input():
     """Test LINEARREG_ANGLE with empty array"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     empty = np.array([])
     result = LINEARREG_ANGLE(empty)
@@ -88,7 +88,7 @@ def test_linearreg_angle_empty_input():
 
 def test_linearreg_angle_input_validation():
     """Test LINEARREG_ANGLE validates input"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     close = np.array([100, 105])
 

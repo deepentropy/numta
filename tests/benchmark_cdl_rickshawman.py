@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlrickshawman():
     """Benchmark CDLRICKSHAWMAN"""
-    from talib_pure import CDLRICKSHAWMAN
+    from numta import CDLRICKSHAWMAN
 
     print("=" * 80)
     print("CDLRICKSHAWMAN Benchmark")

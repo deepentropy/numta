@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlspinningtop():
     """Benchmark CDLSPINNINGTOP"""
-    from talib_pure import CDLSPINNINGTOP
+    from numta import CDLSPINNINGTOP
 
     print("=" * 80)
     print("CDLSPINNINGTOP Benchmark")

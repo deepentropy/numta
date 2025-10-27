@@ -7,7 +7,7 @@ import pytest
 
 def test_midpoint_basic():
     """Test MIDPOINT basic calculation"""
-    from talib_pure import MIDPOINT
+    from numta import MIDPOINT
 
     close = np.array([100, 105, 103, 108, 106, 110, 107, 109, 104, 111, 113])
     result = MIDPOINT(close, timeperiod=5)
@@ -18,7 +18,7 @@ def test_midpoint_basic():
 
 def test_midpoint_calculation():
     """Test MIDPOINT calculates correctly"""
-    from talib_pure import MIDPOINT
+    from numta import MIDPOINT
 
     # Simple test case
     data = np.array([100, 110, 105, 115, 100])
@@ -30,7 +30,7 @@ def test_midpoint_calculation():
 
 def test_midpoint_empty_input():
     """Test MIDPOINT with empty array"""
-    from talib_pure import MIDPOINT
+    from numta import MIDPOINT
 
     empty = np.array([])
     result = MIDPOINT(empty)
@@ -39,7 +39,7 @@ def test_midpoint_empty_input():
 
 def test_midpoint_input_validation():
     """Test MIDPOINT validates input"""
-    from talib_pure import MIDPOINT
+    from numta import MIDPOINT
 
     data = np.array([100, 105])
     with pytest.raises(ValueError):

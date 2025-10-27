@@ -4,7 +4,7 @@ Test suite for WCLPRICE
 
 import numpy as np
 import pytest
-from talib_pure import WCLPRICE
+from numta import WCLPRICE
 
 class TestWCLPRICE:
     """Tests for WCLPRICE"""
@@ -38,7 +38,7 @@ class TestWCLPRICE:
 
     def test_wclprice_close_emphasis(self):
         """Test that WCLPRICE emphasizes close"""
-        from talib_pure import TYPPRICE
+        from numta import TYPPRICE
 
         high = np.array([110, 112, 114], dtype=np.float64)
         low = np.array([100, 102, 104], dtype=np.float64)

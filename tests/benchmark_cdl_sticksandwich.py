@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlsticksandwich():
     """Benchmark CDLSTICKSANDWICH"""
-    from talib_pure import CDLSTICKSANDWICH
+    from numta import CDLSTICKSANDWICH
 
     print("=" * 80)
     print("CDLSTICKSANDWICH Benchmark")

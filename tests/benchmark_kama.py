@@ -8,7 +8,7 @@ import time
 
 def benchmark_kama():
     """Benchmark KAMA"""
-    from talib_pure import KAMA
+    from numta import KAMA
 
     print("=" * 80)
     print("KAMA Benchmark")

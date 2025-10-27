@@ -8,7 +8,7 @@ import time
 
 def benchmark_stddev():
     """Benchmark STDDEV"""
-    from talib_pure import STDDEV
+    from numta import STDDEV
 
     print("=" * 80)
     print("STDDEV Benchmark")

@@ -8,7 +8,7 @@ import time
 
 def benchmark_sum():
     """Benchmark SUM"""
-    from talib_pure import SUM
+    from numta import SUM
 
     print("=" * 80)
     print("SUM Benchmark")
