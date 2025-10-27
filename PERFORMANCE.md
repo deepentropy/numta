@@ -328,7 +328,7 @@ Potential optimizations for Math Operators:
 1. **MAX/MIN Functions**: Investigate using more efficient data structures (e.g., deque with monotonic stack) to reduce window search time
 2. **INDEX Functions**: Optimize position tracking algorithm
 
-4. **Specialized Algorithms**: Consider using segment trees or other advanced data structures for range queries
+3. **Specialized Algorithms**: Consider using segment trees or other advanced data structures for range queries
 
 ## Reproducing These Results
 
@@ -762,7 +762,7 @@ Potential optimizations for Price Transform indicators:
 1. **MIDPRICE**: Investigate more efficient rolling min/max algorithms (e.g., monotonic deque)
 2. **Small Dataset Optimization**: Reduce JIT overhead for small datasets
 
-4. **Batch Processing**: Optimize for multiple simultaneous calculations
+3. **Batch Processing**: Optimize for multiple simultaneous calculations
 
 ## Reproducing These Results
 
@@ -1010,7 +1010,7 @@ Potential optimizations for Statistic Functions:
 2. **CORREL**: Use incremental correlation calculation to avoid recalculating from scratch each window
 3. **Linear Regression**: Investigate more efficient least squares implementations or cached computations
 
-5. **Algorithmic Optimization**: Review current implementations against TA-Lib's C code for optimization opportunities
+4. **Algorithmic Optimization**: Review current implementations against TA-Lib's C code for optimization opportunities
 
 ## Reproducing These Results
 

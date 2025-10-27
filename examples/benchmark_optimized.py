@@ -10,7 +10,7 @@ import numpy as np
 
 from numta.benchmark import PerformanceMeasurement
 from numta.optimized import (
-    SMA_cumsum, get_available_backends,
+    SMA_cumsum, get_available_backends, HAS_NUMBA,
 )
 
 if HAS_NUMBA:

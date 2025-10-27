@@ -5,9 +5,7 @@ Test suite for optimized SMA implementations
 import numpy as np
 import pytest
 
-if HAS_NUMBA:
-    from numta import SMA_numba
-
+from numta import SMA_numba, HAS_NUMBA, SMA_cumsum, SMA_auto, get_available_backends, SMA
 
 
 def test_get_available_backends():

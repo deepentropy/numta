@@ -926,7 +926,7 @@ SAREXT = talib.SAREXT  # Wrong implementation in talib-pure
    - Test with various parameter combinations
 
 **Documentation Enhancement :**
-2. **MAMA**: Document that it uses simplified EMA-based implementation
+1. **MAMA**: Document that it uses simplified EMA-based implementation
    - Add note about differences from MESA algorithm
    - Provide guidance on when simplified version is acceptable
 
