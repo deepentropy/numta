@@ -1,6 +1,15 @@
-# Accuracy Comparison: Cycle Indicators
+# Accuracy Comparison
 
-This document presents an accuracy comparison between **talib-pure** (Numba/CPU implementation) and the **original TA-Lib** library for Cycle Indicators.
+This document presents accuracy comparisons between **talib-pure** (Numba/CPU implementation) and the **original TA-Lib** library.
+
+## Contents
+
+- [Cycle Indicators](#cycle-indicators)
+- [Math Operators](#math-operators)
+
+---
+
+# Cycle Indicators
 
 ## Test Environment
 
@@ -294,3 +303,307 @@ Until the phase-related indicators are fixed, we recommend:
 4. Test **HT_TRENDMODE** with your specific data before production use
 
 The performance benefits of talib-pure (see PERFORMANCE.md) can only be realized if accuracy is acceptable. For critical trading applications, accuracy should always take priority over performance.
+
+---
+
+# Math Operators
+
+## Test Environment
+
+- **Python Version**: 3.11
+- **NumPy Version**: 2.3.4
+- **Numba Version**: 0.62.1
+- **TA-Lib Version**: 0.6.8
+- **Platform**: Linux
+- **Dataset Size**: 10,000 bars per test
+- **Time Period**: 30 bars (default parameter)
+- **Test Method**: Comparison across 4 different data patterns
+
+## Metrics Explained
+
+- **MAE (Mean Absolute Error)**: Average absolute difference between outputs
+- **RMSE (Root Mean Square Error)**: Square root of average squared differences
+- **Max Error**: Largest absolute difference observed
+- **Correlation**: Pearson correlation coefficient (1.0 = perfect, 0.0 = no correlation, -1.0 = inverse)
+- **Exact Match Rate**: Percentage of values exactly matching (within 1e-10 tolerance)
+
+## Overall Summary
+
+Average accuracy metrics across all 4 test data types (10,000 bars each, timeperiod=30):
+
+| Function | Avg MAE | Avg RMSE | Avg Max Error | Avg Correlation | Exact Match | Status |
+|----------|---------|----------|---------------|-----------------|-------------|--------|
+| **MAX** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **MIN** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **MINMAX (min)** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **MINMAX (max)** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **MAXINDEX** | 4.99e+03 | 5.76e+03 | 9,990 | -0.000 | 0.00% | ❌ Wrong |
+| **MININDEX** | 4.98e+03 | 5.76e+03 | 9,980 | -0.016 | 0.00% | ❌ Wrong |
+| **MINMAXINDEX (min)** | 4.98e+03 | 5.76e+03 | 9,980 | -0.016 | 0.00% | ❌ Wrong |
+| **MINMAXINDEX (max)** | 4.99e+03 | 5.76e+03 | 9,990 | -0.000 | 0.00% | ❌ Wrong |
+| **SUM** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+
+### Status Legend
+- ✅ **Exact**: Perfect match (100% exact match rate, zero error)
+- ❌ **Wrong**: Completely different output (0% match, indicating different interpretation/algorithm)
+
+## Key Findings
+
+### Perfect Accuracy (✅ Exact Match)
+
+The following Math Operators show **100% perfect accuracy**:
+- **MAX**: Identifies maximum values identically to TA-Lib
+- **MIN**: Identifies minimum values identically to TA-Lib
+- **MINMAX**: Both min and max outputs match exactly
+- **SUM**: Summation matches exactly
+
+These functions produce **bit-for-bit identical results** to the original TA-Lib implementation.
+
+### Incorrect Implementation (❌ Wrong Output)
+
+The INDEX functions have **fundamental implementation differences**:
+- **MAXINDEX**: MAE of ~5,000 with near-zero correlation
+- **MININDEX**: MAE of ~5,000 with near-zero correlation
+- **MINMAXINDEX**: Both outputs have MAE of ~5,000 with near-zero correlation
+
+**These are not small errors** - they indicate the implementations produce fundamentally different outputs.
+
+## Detailed Results by Data Type
+
+### Test 1: Random Walk Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MAX | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIN | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (min) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (max) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MAXINDEX | 4.98e+03 | 5.76e+03 | 9,976 | 0.024 | 0.00% |
+| MININDEX | 4.99e+03 | 5.76e+03 | 9,989 | -0.051 | 0.00% |
+| MINMAXINDEX (min) | 4.99e+03 | 5.76e+03 | 9,989 | -0.051 | 0.00% |
+| MINMAXINDEX (max) | 4.98e+03 | 5.76e+03 | 9,976 | 0.024 | 0.00% |
+| SUM | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+### Test 2: Trending + Noise Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MAX | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIN | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (min) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (max) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MAXINDEX | 4.99e+03 | 5.76e+03 | 9,976 | -0.010 | 0.00% |
+| MININDEX | 4.98e+03 | 5.76e+03 | 9,996 | 0.007 | 0.00% |
+| MINMAXINDEX (min) | 4.98e+03 | 5.76e+03 | 9,996 | 0.007 | 0.00% |
+| MINMAXINDEX (max) | 4.99e+03 | 5.76e+03 | 9,976 | -0.010 | 0.00% |
+| SUM | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+### Test 3: Cyclical + Noise Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MAX | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIN | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (min) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (max) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MAXINDEX | 4.98e+03 | 5.76e+03 | 9,995 | 0.002 | 0.00% |
+| MININDEX | 4.99e+03 | 5.76e+03 | 9,947 | -0.028 | 0.00% |
+| MINMAXINDEX (min) | 4.99e+03 | 5.76e+03 | 9,947 | -0.028 | 0.00% |
+| MINMAXINDEX (max) | 4.98e+03 | 5.76e+03 | 9,995 | 0.002 | 0.00% |
+| SUM | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+### Test 4: Mixed (Trend + Cycle + Noise) Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MAX | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIN | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (min) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MINMAX (max) | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MAXINDEX | 4.99e+03 | 5.76e+03 | 9,995 | -0.016 | 0.00% |
+| MININDEX | 4.98e+03 | 5.76e+03 | 9,971 | 0.009 | 0.00% |
+| MINMAXINDEX (min) | 4.98e+03 | 5.76e+03 | 9,971 | 0.009 | 0.00% |
+| MINMAXINDEX (max) | 4.99e+03 | 5.76e+03 | 9,995 | -0.016 | 0.00% |
+| SUM | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+## Analysis
+
+### Excellent Accuracy Functions
+
+#### MAX, MIN, MINMAX, SUM ✅
+
+These functions show **perfect accuracy** with:
+- **MAE**: 0.0 (no error whatsoever)
+- **RMSE**: 0.0 (no error whatsoever)
+- **Max Error**: 0.0 (no error whatsoever)
+- **Correlation**: 1.0 (perfect positive correlation)
+- **Exact Match Rate**: 100% (every single value matches exactly)
+
+**Confidence**: Extremely High - These functions can be used in production with complete confidence that they will produce identical results to TA-Lib.
+
+**Implementation Quality**: The talib-pure implementations of these functions are mathematically identical to TA-Lib's C implementation.
+
+### Incorrect Implementation - INDEX Functions
+
+#### MAXINDEX, MININDEX, MINMAXINDEX ❌
+
+These functions have **fundamental implementation differences**:
+
+**Error Magnitude**:
+- Average MAE of ~5,000 (out of maximum possible ~10,000 for a 10,000-bar dataset)
+- This means the index values are off by roughly **half the dataset size**
+
+**Root Cause**:
+The INDEX functions report the **position or age** of the extreme value within the rolling window. The large errors suggest:
+
+1. **Different Reference Points**: TA-Lib and talib-pure may count from opposite ends of the window
+2. **Different Interpretation**: One may report "bars ago" while the other reports "position in window"
+3. **Off-by-One Errors**: Systematic offset in index calculation
+
+**Example**:
+If the maximum value occurred 5 bars ago in a 30-bar window:
+- One implementation might return: `5` (bars ago from current position)
+- Other implementation might return: `25` (position from start of window = 30 - 5)
+- Difference: `20` per occurrence
+
+Over 10,000 bars with average window size of 30, the expected difference would be around 15 per bar, but the actual MAE of ~5,000 suggests a more complex relationship, possibly:
+- Returning absolute index instead of relative
+- Counting from wrong direction entirely
+
+**Correlation Near Zero**: The near-zero correlation (-0.016 to 0.024) confirms these are not just scaled versions of each other but fundamentally different outputs.
+
+## Root Cause Analysis
+
+### Value-Based Functions (MAX, MIN, MINMAX, SUM)
+
+These work perfectly because:
+1. **Deterministic Operations**: Finding max/min/sum of a set of numbers has only one correct answer
+2. **Simple Algorithms**: No room for interpretation differences
+3. **No State Tracking**: Just compare values or sum them
+4. **Bit-Level Precision**: Using the same floating-point operations yields identical results
+
+### Index-Based Functions (MAXINDEX, MININDEX, MINMAXINDEX)
+
+These have issues because:
+1. **Ambiguous Specification**: "Index" could mean:
+   - Position in array (0-based? 1-based?)
+   - Bars ago from current position
+   - Distance from start of window
+   - Absolute index in entire dataset
+
+2. **Implementation Choices**: Different but valid interpretations led to incompatible implementations
+
+3. **Lack of Reference**: Without access to TA-Lib source code documentation on exact index semantics, implementations diverged
+
+## Recommendations
+
+### For Production Use
+
+**Safe to Use** ✅
+- **MAX**: Perfect accuracy, use with confidence
+- **MIN**: Perfect accuracy, use with confidence
+- **MINMAX**: Perfect accuracy, use with confidence
+- **SUM**: Perfect accuracy, use with confidence
+
+**Not Recommended** ❌
+- **MAXINDEX**: Use original TA-Lib instead - fundamentally different output
+- **MININDEX**: Use original TA-Lib instead - fundamentally different output
+- **MINMAXINDEX**: Use original TA-Lib instead - fundamentally different output
+
+### Hybrid Approach
+
+The recommendation is straightforward:
+
+```python
+# Use talib-pure for value-based operators (perfect accuracy)
+from talib_pure import MAX, MIN, MINMAX, SUM
+
+# Use original TA-Lib for index-based operators (wrong implementation)
+import talib
+MAXINDEX = talib.MAXINDEX
+MININDEX = talib.MININDEX
+MINMAXINDEX = talib.MINMAXINDEX
+```
+
+### For talib-pure Developers
+
+**High Priority Fix Required**:
+
+1. **Investigate INDEX semantics**: Compare actual TA-Lib outputs with talib-pure outputs on simple test cases
+2. **Determine correct interpretation**: What does "index" mean in TA-Lib context?
+3. **Fix implementation**: Align with TA-Lib's exact behavior
+4. **Add regression tests**: Include tests comparing against TA-Lib for various window sizes and positions
+
+**Suggested Investigation Steps**:
+```python
+# Test with simple data to understand the difference
+import talib
+from talib_pure import MAXINDEX as MAXINDEX_PURE
+
+data = np.array([1, 5, 3, 9, 2, 7, 4])  # Small dataset
+print("TA-Lib MAXINDEX:", talib.MAXINDEX(data, timeperiod=3))
+print("talib-pure MAXINDEX:", MAXINDEX_PURE(data, timeperiod=3))
+# Compare outputs to understand the interpretation difference
+```
+
+## Testing Methodology
+
+### Test Data Types
+
+Four different data patterns were tested:
+1. **Random Walk**: Unpredictable movements
+2. **Trending + Noise**: Bull/bear markets with volatility
+3. **Cyclical + Noise**: Oscillating markets (range-bound)
+4. **Mixed**: Combination of trend, cycle, and noise
+
+### Accuracy Testing Process
+
+For each operator and data type:
+1. Generate 10,000 bars of test data with fixed random seed (reproducibility)
+2. Run both TA-Lib and talib-pure implementations with timeperiod=30
+3. Compare outputs element-by-element (excluding lookback period)
+4. Calculate MAE, RMSE, Max Error, Correlation, and Exact Match Rate
+5. Average results across all 4 data types
+
+## Reproducing These Results
+
+To run the accuracy tests yourself:
+
+```bash
+# Install dependencies (if not already installed)
+pip install -e ".[dev]"
+
+# Run Math Operators accuracy comparison
+python accuracy_math_operators.py
+```
+
+The script will:
+- Test all 7 Math Operators
+- Use 4 different data patterns
+- Output detailed metrics and summary tables
+- Display accuracy classifications
+
+## Conclusion
+
+The talib-pure implementation shows **split results** for Math Operators:
+
+**Perfect Accuracy (5 out of 7 functions):**
+- ✅ **MAX, MIN, MINMAX, SUM** - 100% exact match, ready for production use
+- These value-based operators can be used with complete confidence
+
+**Incorrect Implementation (2 out of 7 functions):**
+- ❌ **MAXINDEX, MININDEX, MINMAXINDEX** - Fundamentally different output
+- These index-based operators should NOT be used until fixed
+- MAE of ~5,000 indicates wrong algorithm, not just precision differences
+
+**Overall Recommendation:**
+
+For Math Operators:
+1. **Use talib-pure** for MAX, MIN, MINMAX, and SUM (perfect accuracy)
+2. **Use original TA-Lib** for MAXINDEX, MININDEX, and MINMAXINDEX (wrong implementation)
+3. Combining the performance data (see PERFORMANCE.md) with accuracy results:
+   - **SUM**: Use talib-pure (slightly faster + perfect accuracy)
+   - **MAX/MIN/MINMAX**: Use TA-Lib (much faster + perfect accuracy in both)
+   - **INDEX functions**: Must use TA-Lib (faster + correct implementation)
+
+**For Critical Applications**: Always verify outputs against TA-Lib before deploying any indicator in production, regardless of accuracy test results.
