@@ -64,10 +64,10 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
             # Use CPU implementation (default)
     # The Numba function handles NaN values and insufficient data
-        output = np.empty(n, dtype=np.float64)
-        _sma_numba(close, timeperiod, output)
+    output = np.empty(n, dtype=np.float64)
+    _sma_numba(close, timeperiod, output)
 
-        return output
+    return output
 
 
 def EMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -132,10 +132,10 @@ def EMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _ema_numba(close, timeperiod, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _ema_numba(close, timeperiod, output)
+    return output
 
 
 def BBANDS(close: Union[np.ndarray, list],
@@ -469,10 +469,10 @@ def KAMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _kama_numba(close, timeperiod, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _kama_numba(close, timeperiod, output)
+    return output
 
 
 def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) -> np.ndarray:
@@ -724,12 +724,12 @@ def MAMA(close: Union[np.ndarray, list],
     # Check backend and dispatch to appropriate implementation
     backend = get_backend()
 
-            # Use CPU implementation with Numba optimization
-        from ..cpu.overlap import _mama_numba
-        mama = np.empty(n, dtype=np.float64)
-        fama = np.empty(n, dtype=np.float64)
-        _mama_numba(close, fastlimit, slowlimit, mama, fama)
-        return mama, fama
+    # Use CPU implementation with Numba optimization
+    from ..cpu.overlap import _mama_numba
+    mama = np.empty(n, dtype=np.float64)
+    fama = np.empty(n, dtype=np.float64)
+    _mama_numba(close, fastlimit, slowlimit, mama, fama)
+    return mama, fama
 
 
 def SAR(high: Union[np.ndarray, list],
@@ -874,10 +874,10 @@ def SAR(high: Union[np.ndarray, list],
     
     backend = get_backend()
     
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _sar_numba(high, low, acceleration, maximum, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _sar_numba(high, low, acceleration, maximum, output)
+    return output
 
 
 def SAREXT(high: Union[np.ndarray, list],
@@ -951,13 +951,13 @@ def SAREXT(high: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _sarext_numba(high, low, startvalue, offsetonreverse,
-                     accelerationinit_long, accelerationlong, accelerationmax_long,
-                     accelerationinit_short, accelerationshort, accelerationmax_short,
-                     output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _sarext_numba(high, low, startvalue, offsetonreverse,
+                 accelerationinit_long, accelerationlong, accelerationmax_long,
+                 accelerationinit_short, accelerationshort, accelerationmax_short,
+                 output)
+    return output
 
 
 def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -999,10 +999,10 @@ def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
 
     backend = get_backend()
 
-            # Use CPU implementation with Numba
-        output = np.empty(n, dtype=np.float64)
-        _tema_numba(data, timeperiod, output)
-        return output
+    # Use CPU implementation with Numba
+    output = np.empty(n, dtype=np.float64)
+    _tema_numba(data, timeperiod, output)
+    return output
 
 
 def T3(data: Union[np.ndarray, list],
@@ -1044,10 +1044,10 @@ def T3(data: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation with Numba
-        output = np.empty(n, dtype=np.float64)
-        _t3_numba(data, timeperiod, vfactor, output)
-        return output
+    # Use CPU implementation with Numba
+    output = np.empty(n, dtype=np.float64)
+    _t3_numba(data, timeperiod, vfactor, output)
+    return output
 
 
 def TRIMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:

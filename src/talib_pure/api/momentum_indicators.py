@@ -1281,12 +1281,12 @@ def RSI(data: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarray:
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output array and run Numba-optimized calculation
-        output = np.empty(n, dtype=np.float64)
-        _rsi_numba(data, timeperiod, output)
+    # Use CPU implementation (default)
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _rsi_numba(data, timeperiod, output)
 
-        return output
+    return output
 
 
 def STOCHF(high: Union[np.ndarray, list],
@@ -1604,12 +1604,12 @@ def CMO(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output array and run Numba-optimized calculation
-        output = np.empty(n, dtype=np.float64)
-        _cmo_numba(close, timeperiod, output)
+    # Use CPU implementation (default)
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _cmo_numba(close, timeperiod, output)
 
-        return output
+    return output
 
 
 def DX(high: Union[np.ndarray, list],
@@ -1736,12 +1736,12 @@ def DX(high: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output array and run Numba-optimized calculation
-        output = np.empty(n, dtype=np.float64)
-        _dx_numba(high, low, close, timeperiod, output)
+    # Use CPU implementation (default)
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _dx_numba(high, low, close, timeperiod, output)
 
-        return output
+    return output
 
 
 def MACD(close: Union[np.ndarray, list],
@@ -1883,15 +1883,15 @@ def MACD(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output arrays
-        macd = np.empty(n, dtype=np.float64)
-        signal = np.empty(n, dtype=np.float64)
-        hist = np.empty(n, dtype=np.float64)
+    # Use CPU implementation (default)
+    # Pre-allocate output arrays
+    macd = np.empty(n, dtype=np.float64)
+    signal = np.empty(n, dtype=np.float64)
+    hist = np.empty(n, dtype=np.float64)
 
-        _macd_numba(close, fastperiod, slowperiod, signalperiod, macd, signal, hist)
+    _macd_numba(close, fastperiod, slowperiod, signalperiod, macd, signal, hist)
 
-        return macd, signal, hist
+    return macd, signal, hist
 
 
 def MACDEXT(close: Union[np.ndarray, list],
@@ -1981,7 +1981,7 @@ def MACDEXT(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-                fastk[i] = ((close[i] - lowest) / (highest - lowest)) * 100.0
+    fastk[i] = ((close[i] - lowest) / (highest - lowest)) * 100.0
 
     # Calculate Fast %D (SMA of Fast %K)
     from .overlap import SMA
