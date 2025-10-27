@@ -216,6 +216,9 @@ pip install -e ".[dev]"
 # Run all tests
 pytest
 
+# Optional: Install TA-Lib for comparison tests (requires TA-Lib C library)
+pip install -e ".[comparison]"
+
 # Run specific test file
 pytest tests/test_sma.py
 
@@ -346,9 +349,9 @@ Run `python examples/benchmark_sma.py` to see detailed benchmarks on your system
 
 ### Optional Dependencies
 
-- TA-Lib >= 0.4.0 (for comparison tests only)
-- pytest >= 7.0.0 (for running tests)
-- pytest-benchmark >= 4.0.0 (for benchmark tests)
+- **Testing**: pytest >= 7.0.0, pytest-benchmark >= 4.0.0
+- **Performance**: numba >= 0.56.0 (for JIT compilation, 5-10x speedup)
+- **Comparison**: TA-Lib >= 0.4.0 (only for development/comparison scripts, requires C library)
 
 ## License
 

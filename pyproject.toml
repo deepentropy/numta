@@ -35,7 +35,9 @@ dependencies = [
 dev = [
     "pytest>=7.0.0",
     "pytest-benchmark>=4.0.0",
-    "TA-Lib>=0.4.0",  # For comparison tests
+]
+comparison = [
+    "TA-Lib>=0.4.0",  # For comparison with original TA-Lib (requires C library)
 ]
 numba = [
     "numba>=0.56.0",  # JIT compilation for faster execution

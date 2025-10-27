@@ -40,9 +40,18 @@ python development/benchmark_comparison.py
 ```
 
 ## Requirements
+
 These tools require the original TA-Lib library installed for comparison:
+
 ```bash
-pip install TA-Lib
+# Install from project root with comparison dependencies
+pip install -e ".[comparison]"
 ```
 
-Note: Installing TA-Lib may require C dependencies. See [TA-Lib installation guide](https://github.com/TA-Lib/ta-lib-python) for details.
+**Note**: Installing TA-Lib requires the TA-Lib C library to be installed on your system first. See the [TA-Lib installation guide](https://github.com/TA-Lib/ta-lib-python) for platform-specific instructions:
+
+- **macOS**: `brew install ta-lib`
+- **Linux**: Download and compile from source (see TA-Lib website)
+- **Windows**: Use pre-built binaries or conda
+
+These comparison tools are **optional** - the main library works without TA-Lib.
