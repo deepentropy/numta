@@ -6,7 +6,6 @@ to compare the performance of numta against the original TA-Lib.
 """
 
 import numpy as np
-import sys
 
 
 def main():

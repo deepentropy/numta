@@ -219,7 +219,7 @@ For best results, use a combination:
 
 ```python
 # Use talib-pure for accurate functions
-from talib_pure import HT_TRENDLINE
+from numta import HT_TRENDLINE
 
 # Use original TA-Lib for problematic functions
 import talib
@@ -233,7 +233,7 @@ ht_sine = talib.HT_SINE
 Priority fixes needed:
 
 1. **High Priority**: Fix HT_DCPHASE, HT_PHASOR, and HT_SINE implementations
-   - Review phase angle calculations (src/talib_pure/cpu/cycle_indicators.py)
+   - Review phase angle calculations (src/numta/cpu/cycle_indicators.py)
    - Compare step-by-step intermediate values against TA-Lib
    - Check arctangent quadrant adjustments
    - Verify angle wrapping behavior
@@ -519,7 +519,7 @@ The recommendation is straightforward:
 
 ```python
 # Use talib-pure for value-based operators (perfect accuracy)
-from talib_pure import MAX, MIN, MINMAX, SUM
+from numta import MAX, MIN, MINMAX, SUM
 
 # Use original TA-Lib for index-based operators (wrong implementation)
 import talib
@@ -541,7 +541,7 @@ MINMAXINDEX = talib.MINMAXINDEX
 ```python
 # Test with simple data to understand the difference
 import talib
-from talib_pure import MAXINDEX as MAXINDEX_PURE
+from numta import MAXINDEX as MAXINDEX_PURE
 
 data = np.array([1, 5, 3, 9, 2, 7, 4])  # Small dataset
 print("TA-Lib MAXINDEX:", talib.MAXINDEX(data, timeperiod=3))
@@ -906,10 +906,10 @@ For best results:
 
 ```python
 # Use talib-pure for accurate and fast functions
-from talib_pure import SMA, EMA, WMA, DEMA, TEMA, TRIMA, T3, BBANDS, KAMA, SAR
+from numta import SMA, EMA, WMA, DEMA, TEMA, TRIMA, T3, BBANDS, KAMA, SAR
 
 # Use talib-pure MAMA only if performance is critical
-from talib_pure import MAMA  # 2.5x faster but different algorithm
+from numta import MAMA  # 2.5x faster but different algorithm
 
 # Use original TA-Lib for problematic functions
 import talib
@@ -925,7 +925,7 @@ SAREXT = talib.SAREXT  # Wrong implementation in talib-pure
    - Add detailed logging of internal states
    - Test with various parameter combinations
 
-**Documentation Enhancement**:
+**Documentation Enhancement :**
 2. **MAMA**: Document that it uses simplified EMA-based implementation
    - Add note about differences from MESA algorithm
    - Provide guidance on when simplified version is acceptable
@@ -1160,7 +1160,7 @@ The perfect accuracy indicates:
 Every single Price Transform indicator can be used in production with **complete confidence**:
 
 ```python
-from talib_pure import MEDPRICE, TYPPRICE, WCLPRICE, MIDPOINT, MIDPRICE
+from numta import MEDPRICE, TYPPRICE, WCLPRICE, MIDPOINT, MIDPRICE
 
 # All of these will produce IDENTICAL results to TA-Lib
 # Use them freely in production systems
@@ -1196,7 +1196,7 @@ Unlike other categories, you don't need a hybrid approach:
 
 ```python
 # Simple: Just use talib-pure for everything
-from talib_pure import MEDPRICE, TYPPRICE, WCLPRICE, MIDPOINT, MIDPRICE
+from numta import MEDPRICE, TYPPRICE, WCLPRICE, MIDPOINT, MIDPRICE
 
 # No need to fall back to TA-Lib for any Price Transform indicator
 # All are perfectly accurate!
@@ -1527,7 +1527,7 @@ The near-perfect accuracy across all Statistic Functions indicates:
 Every single Statistic Function can be used in production with **complete confidence in accuracy**:
 
 ```python
-from talib_pure import (
+from numta import (
     CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT,
     LINEARREG_SLOPE, STDDEV, TSF, VAR
 )

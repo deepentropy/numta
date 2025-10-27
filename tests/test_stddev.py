@@ -3,8 +3,9 @@ Test suite for STDDEV
 """
 
 import numpy as np
-import pytest
+
 from numta import STDDEV
+
 
 class TestSTDDEV:
     """Tests for STDDEV (Standard Deviation)"""

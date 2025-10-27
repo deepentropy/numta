@@ -103,7 +103,7 @@ def NATR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import NATR
+    >>> from numta import NATR
     >>> high = np.array([110, 112, 111, 113, 115, 114, 116, 118])
     >>> low = np.array([100, 102, 101, 103, 105, 104, 106, 108])
     >>> close = np.array([105, 107, 106, 108, 110, 109, 111, 113])

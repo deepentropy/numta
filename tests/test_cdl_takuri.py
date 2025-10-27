@@ -3,7 +3,7 @@ Test suite for CDLTAKURI
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdltakuri_pattern():
     """Test Takuri (Dragonfly Doji) pattern detection"""

@@ -3,7 +3,7 @@ Test suite for CDLUNIQUE3RIVER
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlunique3river_pattern():
     """Test Unique 3 River pattern detection"""

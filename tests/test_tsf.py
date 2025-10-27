@@ -3,8 +3,9 @@ Test suite for TSF
 """
 
 import numpy as np
-import pytest
-from numta import TSF, SMA
+
+from numta import TSF
+
 
 class TestTSF:
     """Tests for TSF"""

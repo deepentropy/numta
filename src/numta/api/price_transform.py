@@ -82,7 +82,7 @@ def MEDPRICE(high: Union[np.ndarray, list], low: Union[np.ndarray, list]) -> np.
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MEDPRICE
+    >>> from numta import MEDPRICE
     >>> high = np.array([105, 106, 108, 107, 109])
     >>> low = np.array([100, 101, 103, 102, 104])
     >>> medprice = MEDPRICE(high, low)
@@ -190,7 +190,7 @@ def MIDPOINT(data: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MIDPOINT
+    >>> from numta import MIDPOINT
     >>> close = np.array([100, 105, 103, 108, 106, 110, 107, 109, 104, 111,
     ...                   113, 112, 115, 114, 116])
     >>> midpoint = MIDPOINT(close, timeperiod=14)
@@ -308,7 +308,7 @@ def MIDPRICE(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MIDPRICE
+    >>> from numta import MIDPRICE
     >>> high = np.array([105, 106, 108, 107, 109, 110, 111, 112, 113, 114,
     ...                  115, 116, 117, 118, 119])
     >>> low = np.array([100, 101, 103, 102, 104, 105, 106, 107, 108, 109,
@@ -416,7 +416,7 @@ def TYPPRICE(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import TYPPRICE
+    >>> from numta import TYPPRICE
     >>> high = np.array([110, 112, 111, 113, 115])
     >>> low = np.array([100, 102, 101, 103, 105])
     >>> close = np.array([105, 107, 106, 108, 110])
@@ -520,7 +520,7 @@ def WCLPRICE(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import WCLPRICE
+    >>> from numta import WCLPRICE
     >>> high = np.array([110, 112, 111, 113, 115])
     >>> low = np.array([100, 102, 101, 103, 105])
     >>> close = np.array([105, 107, 106, 108, 110])

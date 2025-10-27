@@ -3,8 +3,9 @@ Test suite for SUM
 """
 
 import numpy as np
-import pytest
-from numta import SUM, SMA
+
+from numta import SUM
+
 
 class TestSUM:
     """Tests for SUM"""

@@ -7,31 +7,31 @@ The **rolling window approach** (current implementation) is **consistently faste
 ## Performance Comparison
 
 ### Small Dataset (100 bars)
-| Timeperiod | Rolling | Cumsum | TA-Lib | Winner |
-|------------|---------|--------|--------|--------|
-| 14 | 2.25µs | 2.90µs | 3.77µs | **Rolling (1.67x faster than TA-Lib)** |
-| 50 | 2.91µs | 3.22µs | 2.92µs | **Rolling (1.00x vs TA-Lib)** |
+| Timeperiod | Rolling | Cumsum | TA-Lib | Winner                                 |
+|------------|---------|--------|--------|----------------------------------------|
+| 14         | 2.25µs  | 2.90µs | 3.77µs | **Rolling (1.67x faster than TA-Lib)** |
+| 50         | 2.91µs  | 3.22µs | 2.92µs | **Rolling (1.00x vs TA-Lib)**          |
 
 ### Medium Dataset (1,000 bars)
-| Timeperiod | Rolling | Cumsum | TA-Lib | Winner |
-|------------|---------|--------|--------|--------|
-| 14 | 4.19µs | 6.65µs | 5.08µs | **Rolling (1.21x faster than TA-Lib)** |
-| 50 | 4.17µs | 4.37µs | 5.52µs | **Rolling (1.33x faster than TA-Lib)** |
-| 200 | 3.76µs | 4.70µs | 4.81µs | **Rolling (1.28x faster than TA-Lib)** |
+| Timeperiod | Rolling | Cumsum | TA-Lib | Winner                                 |
+|------------|---------|--------|--------|----------------------------------------|
+| 14         | 4.19µs  | 6.65µs | 5.08µs | **Rolling (1.21x faster than TA-Lib)** |
+| 50         | 4.17µs  | 4.37µs | 5.52µs | **Rolling (1.33x faster than TA-Lib)** |
+| 200        | 3.76µs  | 4.70µs | 4.81µs | **Rolling (1.28x faster than TA-Lib)** |
 
 ### Large Dataset (10,000 bars)
-| Timeperiod | Rolling | Cumsum | TA-Lib | Winner |
-|------------|---------|--------|--------|--------|
-| 14 | 25.82µs | 29.71µs | 28.60µs | **Rolling (1.11x faster than TA-Lib)** |
-| 50 | 26.42µs | 27.81µs | 28.02µs | **Rolling (1.06x faster than TA-Lib)** |
-| 200 | 25.61µs | 29.43µs | 27.04µs | **Rolling (1.06x faster than TA-Lib)** |
+| Timeperiod | Rolling | Cumsum  | TA-Lib  | Winner                                 |
+|------------|---------|---------|---------|----------------------------------------|
+| 14         | 25.82µs | 29.71µs | 28.60µs | **Rolling (1.11x faster than TA-Lib)** |
+| 50         | 26.42µs | 27.81µs | 28.02µs | **Rolling (1.06x faster than TA-Lib)** |
+| 200        | 25.61µs | 29.43µs | 27.04µs | **Rolling (1.06x faster than TA-Lib)** |
 
 ### Very Large Dataset (100,000 bars)
-| Timeperiod | Rolling | Cumsum | TA-Lib | Winner |
-|------------|---------|--------|--------|--------|
-| 14 | 239.85µs | 246.72µs | 243.10µs | **Rolling (1.01x faster than TA-Lib)** |
-| 50 | 248.18µs | **238.34µs** | 254.43µs | **Cumsum (1.07x faster than TA-Lib)** |
-| 200 | 244.68µs | 255.38µs | 255.99µs | **Rolling (1.05x faster than TA-Lib)** |
+| Timeperiod | Rolling  | Cumsum       | TA-Lib   | Winner                                 |
+|------------|----------|--------------|----------|----------------------------------------|
+| 14         | 239.85µs | 246.72µs     | 243.10µs | **Rolling (1.01x faster than TA-Lib)** |
+| 50         | 248.18µs | **238.34µs** | 254.43µs | **Cumsum (1.07x faster than TA-Lib)**  |
+| 200        | 244.68µs | 255.38µs     | 255.99µs | **Rolling (1.05x faster than TA-Lib)** |
 
 ## Key Findings
 

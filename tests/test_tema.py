@@ -3,8 +3,9 @@ Test suite for TEMA
 """
 
 import numpy as np
-import pytest
-from numta import TEMA, EMA
+
+from numta import TEMA
+
 
 class TestTEMA:
     """Tests for TEMA"""

@@ -62,7 +62,7 @@ def HT_DCPERIOD(close: Union[np.ndarray, list]) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import HT_DCPERIOD
+    >>> from numta import HT_DCPERIOD
     >>> close = np.random.randn(100) + 100
     >>> period = HT_DCPERIOD(close)
     >>> print(period)
@@ -129,7 +129,7 @@ def HT_DCPHASE(close: Union[np.ndarray, list]) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import HT_DCPHASE
+    >>> from numta import HT_DCPHASE
     >>> close = np.random.randn(100) + 100
     >>> phase = HT_DCPHASE(close)
     >>> print(phase)
@@ -203,7 +203,7 @@ def HT_PHASOR(close: Union[np.ndarray, list]) -> Tuple[np.ndarray, np.ndarray]:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import HT_PHASOR
+    >>> from numta import HT_PHASOR
     >>> close = np.random.randn(100) + 100
     >>> inphase, quadrature = HT_PHASOR(close)
     >>> magnitude = np.sqrt(inphase**2 + quadrature**2)

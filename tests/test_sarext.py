@@ -3,8 +3,9 @@ Test suite for SAREXT
 """
 
 import numpy as np
-import pytest
+
 from numta import SAREXT
+
 
 class TestSAREXT:
     """Tests for SAREXT (Parabolic SAR Extended)"""

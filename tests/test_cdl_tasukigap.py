@@ -3,7 +3,7 @@ Test suite for CDLTASUKIGAP
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdltasukigap_upside():
     """Test Upside Tasuki Gap pattern"""

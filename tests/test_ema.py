@@ -3,7 +3,7 @@ Test suite for EMA
 """
 
 import numpy as np
-import pytest
+
 
 def test_ema_basic():
     """Test EMA basic calculation"""

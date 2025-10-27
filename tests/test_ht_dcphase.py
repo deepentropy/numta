@@ -3,7 +3,7 @@ Test suite for HT_DCPHASE
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_dcphase_basic():
     """Test HT_DCPHASE basic calculation"""

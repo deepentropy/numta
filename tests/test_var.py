@@ -3,8 +3,9 @@ Test suite for VAR
 """
 
 import numpy as np
-import pytest
-from numta import VAR, STDDEV
+
+from numta import VAR
+
 
 class TestVAR:
     """Tests for VAR"""

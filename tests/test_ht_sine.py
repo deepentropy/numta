@@ -3,7 +3,7 @@ Test suite for HT_SINE
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_sine_basic():
     """Test HT_SINE basic calculation"""

@@ -3,8 +3,9 @@ Test suite for STOCH
 """
 
 import numpy as np
-import pytest
+
 from numta import STOCH, STOCHF
+
 
 class TestSTOCH:
     """Tests for STOCH (Stochastic)"""

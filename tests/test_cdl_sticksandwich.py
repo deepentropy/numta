@@ -3,7 +3,7 @@ Test suite for CDLSTICKSANDWICH
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlsticksandwich_pattern():
     """Test Stick Sandwich pattern detection"""

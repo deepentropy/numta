@@ -3,7 +3,7 @@ Test suite for CDLTHRUSTING
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlthrusting_pattern():
     """Test Thrusting Pattern detection"""

@@ -85,7 +85,7 @@ def ADX(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ADX
+    >>> from numta import ADX
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> close = np.array([9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
@@ -180,7 +180,7 @@ def ADXR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ADXR
+    >>> from numta import ADXR
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> close = np.array([9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
@@ -279,7 +279,7 @@ def APO(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import APO
+    >>> from numta import APO
     >>> close = np.array([100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
     >>> apo = APO(close, fastperiod=3, slowperiod=5)
     >>> print(apo)
@@ -376,7 +376,7 @@ def AROON(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import AROON
+    >>> from numta import AROON
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> aroondown, aroonup = AROON(high, low, timeperiod=5)
@@ -470,7 +470,7 @@ def AROONOSC(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import AROONOSC
+    >>> from numta import AROONOSC
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> aroonosc = AROONOSC(high, low, timeperiod=5)
@@ -574,7 +574,7 @@ def ATR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ATR
+    >>> from numta import ATR
     >>> high = np.array([48, 49, 50, 51, 52, 51, 50, 49, 50, 51, 52])
     >>> low = np.array([46, 47, 48, 49, 50, 49, 48, 47, 48, 49, 50])
     >>> close = np.array([47, 48, 49, 50, 51, 50, 49, 48, 49, 50, 51])
@@ -682,7 +682,7 @@ def BOP(open_price: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import BOP
+    >>> from numta import BOP
     >>> open_price = np.array([100, 101, 102, 103, 104])
     >>> high = np.array([105, 106, 107, 108, 109])
     >>> low = np.array([99, 100, 101, 102, 103])
@@ -797,7 +797,7 @@ def CCI(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CCI
+    >>> from numta import CCI
     >>> high = np.array([83, 84, 85, 86, 87])
     >>> low = np.array([81, 82, 83, 84, 85])
     >>> close = np.array([82, 83, 84, 85, 86])
@@ -919,7 +919,7 @@ def ROC(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROC
+    >>> from numta import ROC
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> roc = ROC(close, timeperiod=10)
     >>> print(roc)
@@ -986,7 +986,7 @@ def ROCP(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROCP
+    >>> from numta import ROCP
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> rocp = ROCP(close, timeperiod=10)
     >>> # rocp[10] = (111 - 100) / 100 = 0.11 (11%)
@@ -1043,7 +1043,7 @@ def ROCR(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROCR
+    >>> from numta import ROCR
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> rocr = ROCR(close, timeperiod=10)
     >>> # rocr[10] = 111 / 100 = 1.11
@@ -1101,7 +1101,7 @@ def ROCR100(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROCR100
+    >>> from numta import ROCR100
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> rocr100 = ROCR100(close, timeperiod=10)
     >>> # rocr100[10] = (111 / 100) * 100 = 111
@@ -1249,7 +1249,7 @@ def RSI(data: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import RSI
+    >>> from numta import RSI
     >>> close = np.array([44, 44.5, 45, 45.5, 45, 44.5, 44, 44.5, 45, 45.5,
     ...                   46, 46.5, 47, 47.5, 48])
     >>> rsi = RSI(close, timeperiod=14)
@@ -1281,12 +1281,12 @@ def RSI(data: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarray:
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output array and run Numba-optimized calculation
-        output = np.empty(n, dtype=np.float64)
-        _rsi_numba(data, timeperiod, output)
+    # Use CPU implementation (default)
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _rsi_numba(data, timeperiod, output)
 
-        return output
+    return output
 
 
 def STOCHF(high: Union[np.ndarray, list],
@@ -1572,7 +1572,7 @@ def CMO(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CMO
+    >>> from numta import CMO
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
     ...                   111, 110, 112, 114, 113])
     >>> cmo = CMO(close, timeperiod=14)
@@ -1604,12 +1604,12 @@ def CMO(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output array and run Numba-optimized calculation
-        output = np.empty(n, dtype=np.float64)
-        _cmo_numba(close, timeperiod, output)
+    # Use CPU implementation (default)
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _cmo_numba(close, timeperiod, output)
 
-        return output
+    return output
 
 
 def DX(high: Union[np.ndarray, list],
@@ -1697,7 +1697,7 @@ def DX(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import DX
+    >>> from numta import DX
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> close = np.array([9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
@@ -1736,12 +1736,12 @@ def DX(high: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output array and run Numba-optimized calculation
-        output = np.empty(n, dtype=np.float64)
-        _dx_numba(high, low, close, timeperiod, output)
+    # Use CPU implementation (default)
+    # Pre-allocate output array and run Numba-optimized calculation
+    output = np.empty(n, dtype=np.float64)
+    _dx_numba(high, low, close, timeperiod, output)
 
-        return output
+    return output
 
 
 def MACD(close: Union[np.ndarray, list],
@@ -1845,7 +1845,7 @@ def MACD(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MACD
+    >>> from numta import MACD
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
     ...                   110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
     ...                   120, 122, 121, 123, 125, 124, 126, 128, 127, 129,
@@ -1883,15 +1883,15 @@ def MACD(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        # Pre-allocate output arrays
-        macd = np.empty(n, dtype=np.float64)
-        signal = np.empty(n, dtype=np.float64)
-        hist = np.empty(n, dtype=np.float64)
+    # Use CPU implementation (default)
+    # Pre-allocate output arrays
+    macd = np.empty(n, dtype=np.float64)
+    signal = np.empty(n, dtype=np.float64)
+    hist = np.empty(n, dtype=np.float64)
 
-        _macd_numba(close, fastperiod, slowperiod, signalperiod, macd, signal, hist)
+    _macd_numba(close, fastperiod, slowperiod, signalperiod, macd, signal, hist)
 
-        return macd, signal, hist
+    return macd, signal, hist
 
 
 def MACDEXT(close: Union[np.ndarray, list],
@@ -1960,7 +1960,7 @@ def MACDEXT(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MACDEXT
+    >>> from numta import MACDEXT
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
     ...                   110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
     ...                   120, 122, 121, 123, 125, 124, 126, 128, 127, 129,
@@ -1981,13 +1981,41 @@ def MACDEXT(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-                fastk[i] = ((close[i] - lowest) / (highest - lowest)) * 100.0
 
-    # Calculate Fast %D (SMA of Fast %K)
-    from .overlap import SMA
-    fastd = SMA(fastk, timeperiod=fastd_period)
+    # Import MA function from overlap module
 
-    return fastk, fastd
+    # Validate inputs
+    if fastperiod < 2:
+        raise ValueError("fastperiod must be >= 2")
+    if slowperiod < 2:
+        raise ValueError("slowperiod must be >= 2")
+    if signalperiod < 1:
+        raise ValueError("signalperiod must be >= 1")
+    if fastperiod >= slowperiod:
+        raise ValueError("fastperiod must be < slowperiod")
+
+    # Convert to numpy array if needed
+    close = np.asarray(close, dtype=np.float64)
+
+    n = len(close)
+    if n == 0:
+        empty = np.array([], dtype=np.float64)
+        return empty, empty, empty
+
+    # Calculate fast and slow MAs
+    fast_ma = MA(close, timeperiod=fastperiod, matype=fastmatype)
+    slow_ma = MA(close, timeperiod=slowperiod, matype=slowmatype)
+
+    # Calculate MACD line
+    macd = fast_ma - slow_ma
+
+    # Calculate signal line (MA of MACD)
+    signal = MA(macd, timeperiod=signalperiod, matype=signalmatype)
+
+    # Calculate histogram
+    hist = macd - signal
+
+    return macd, signal, hist
 
 
 def STOCH(high: Union[np.ndarray, list],
@@ -2107,7 +2135,7 @@ def STOCH(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import STOCH
+    >>> from numta import STOCH
     >>> high = np.array([110, 112, 111, 113, 115, 114, 116, 118])
     >>> low = np.array([100, 102, 101, 103, 105, 104, 106, 108])
     >>> close = np.array([105, 107, 106, 108, 110, 109, 111, 113])
@@ -2300,7 +2328,7 @@ def TRIX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import TRIX
+    >>> from numta import TRIX
     >>> close = np.linspace(100, 120, 100)
     >>> trix = TRIX(close, timeperiod=15)
 
@@ -2424,7 +2452,7 @@ def ULTOSC(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ULTOSC
+    >>> from numta import ULTOSC
     >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
     >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
     >>> close = np.array([105, 107, 109, 108, 110, 112, 111])
@@ -2566,7 +2594,7 @@ def WILLR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import WILLR
+    >>> from numta import WILLR
     >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
     >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
     >>> close = np.array([105, 107, 109, 108, 110, 112, 111])

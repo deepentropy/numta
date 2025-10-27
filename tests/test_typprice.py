@@ -3,8 +3,9 @@ Test suite for TYPPRICE
 """
 
 import numpy as np
-import pytest
+
 from numta import TYPPRICE
+
 
 class TestTYPPRICE:
     """Tests for TYPPRICE"""

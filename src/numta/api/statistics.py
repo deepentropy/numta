@@ -122,13 +122,13 @@ def STDDEV(data: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import STDDEV
+    >>> from numta import STDDEV
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108])
     >>> stddev = STDDEV(close, timeperiod=5, nbdev=1.0)
     >>> # Higher values indicate higher volatility
 
     >>> # Bollinger Bands calculation
-    >>> from talib_pure import SMA
+    >>> from numta import SMA
     >>> middle = SMA(close, timeperiod=20)
     >>> std = STDDEV(close, timeperiod=20, nbdev=2.0)
     >>> upper = middle + std
@@ -232,7 +232,7 @@ def TSF(data: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import TSF
+    >>> from numta import TSF
     >>> close = np.linspace(100, 120, 50)
     >>> tsf = TSF(close, timeperiod=14)
 
@@ -321,7 +321,7 @@ def VAR(data: Union[np.ndarray, list], timeperiod: int = 5, nbdev: float = 1.0) 
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import VAR
+    >>> from numta import VAR
     >>> data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     >>> var = VAR(data, timeperiod=5)
 

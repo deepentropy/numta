@@ -3,7 +3,7 @@ Test suite for CDLSHORTLINE
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlshortline_white():
     """Test Short Line white candle detection"""

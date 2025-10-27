@@ -3,8 +3,9 @@ Test suite for WMA
 """
 
 import numpy as np
-import pytest
-from numta import WMA, SMA
+
+from numta import WMA
+
 
 class TestWMA:
     """Tests for WMA"""

@@ -3,7 +3,7 @@ Test suite for CDLSTALLEDPATTERN
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlstalledpattern_pattern():
     """Test Stalled Pattern detection"""

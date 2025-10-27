@@ -3,7 +3,7 @@ Test suite for CDLSPINNINGTOP
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlspinningtop_white():
     """Test Spinning Top white pattern"""

@@ -3,8 +3,9 @@ Test suite for TRANGE
 """
 
 import numpy as np
-import pytest
+
 from numta import TRANGE
+
 
 class TestTRANGE:
     """Tests for TRANGE"""

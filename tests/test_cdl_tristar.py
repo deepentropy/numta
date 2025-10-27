@@ -3,7 +3,7 @@ Test suite for CDLTRISTAR
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdltristar_bearish():
     """Test Bearish Tristar (gap up, three dojis)"""

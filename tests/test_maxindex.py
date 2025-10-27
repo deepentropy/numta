@@ -3,7 +3,7 @@ Test suite for MAXINDEX
 """
 
 import numpy as np
-import pytest
+
 
 def test_maxindex_basic():
     """Test MAXINDEX basic calculation"""

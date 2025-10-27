@@ -3,7 +3,7 @@ Test suite for CDLUPSIDEGAP2CROWS
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlupsidegap2crows_pattern():
     """Test Upside Gap Two Crows pattern detection"""

@@ -3,8 +3,9 @@ Test suite for MIN
 """
 
 import numpy as np
-import pytest
+
 from numta import MIN
+
 
 class TestMIN:
     """Tests for MIN (Lowest value over period)"""

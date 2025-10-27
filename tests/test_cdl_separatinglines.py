@@ -3,7 +3,7 @@ Test suite for CDLSEPARATINGLINES
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlseparatinglines_bullish():
     """Test Separating Lines bullish pattern detection"""

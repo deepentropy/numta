@@ -3,7 +3,7 @@ Test suite for CDLRISEFALL3METHODS
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlrisefall3methods_rising():
     """Test Rising Three Methods pattern detection"""

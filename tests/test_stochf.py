@@ -3,8 +3,9 @@ Test suite for STOCHF
 """
 
 import numpy as np
-import pytest
+
 from numta import STOCHF
+
 
 class TestSTOCHF:
     """Tests for STOCHF (Stochastic Fast)"""

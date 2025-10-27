@@ -3,8 +3,9 @@ Test suite for WCLPRICE
 """
 
 import numpy as np
-import pytest
+
 from numta import WCLPRICE
+
 
 class TestWCLPRICE:
     """Tests for WCLPRICE"""

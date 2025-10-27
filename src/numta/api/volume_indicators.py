@@ -61,7 +61,7 @@ def AD(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import AD
+    >>> from numta import AD
     >>> high = np.array([10, 11, 12, 11, 13])
     >>> low = np.array([9, 10, 10, 9, 11])
     >>> close = np.array([9.5, 10.5, 11, 10, 12])
@@ -152,7 +152,7 @@ def ADOSC(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ADOSC
+    >>> from numta import ADOSC
     >>> high = np.array([10, 11, 12, 11, 13, 14, 15])
     >>> low = np.array([9, 10, 10, 9, 11, 12, 13])
     >>> close = np.array([9.5, 10.5, 11, 10, 12, 13, 14])
@@ -297,7 +297,7 @@ def OBV(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import OBV
+    >>> from numta import OBV
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106])
     >>> volume = np.array([1000, 1500, 1200, 1800, 2000, 1100, 1900])
     >>> obv = OBV(close, volume)

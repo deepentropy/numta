@@ -7,10 +7,10 @@ Comprehensive benchmark comparing all SMA implementations:
 """
 
 import numpy as np
-import sys
+
 from numta.benchmark import PerformanceMeasurement
 from numta.optimized import (
-    SMA_cumsum, SMA_auto, get_available_backends,
+    SMA_cumsum, get_available_backends,
 )
 
 if HAS_NUMBA:

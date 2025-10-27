@@ -3,7 +3,7 @@ Test suite for MAMA
 """
 
 import numpy as np
-import pytest
+
 
 def test_mama_basic():
     """Test MAMA basic calculation"""

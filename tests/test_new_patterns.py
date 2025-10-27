@@ -172,28 +172,4 @@ def test_all_patterns_input_validation():
         CDLPIERCING(open_, high, low, close)
 
 
-def test_all_patterns_backend_consistency():
-    from numta import (CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING,
 
-
-    # Generate test data
-    n = 50
-    np.random.seed(789)
-    high = np.random.uniform(100, 200, n)
-    low = high - np.random.uniform(1, 10, n)
-    open_ = low + np.random.uniform(0, 1, n) * (high - low)
-    close = low + np.random.uniform(0, 1, n) * (high - low)
-
-    # Test each pattern
-    for pattern_func in [CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING]:
-        set_backend("cpu")
-        if pattern_func in [CDLMORNINGDOJISTAR, CDLMORNINGSTAR]:
-            cpu_result = pattern_func(open_, high, low, close, penetration=0.3)
-        else:
-            cpu_result = pattern_func(open_, high, low, close)
-
-        if pattern_func in [CDLMORNINGDOJISTAR, CDLMORNINGSTAR]:
-        else:
-
-
-    set_backend("cpu")

@@ -3,7 +3,7 @@ Test suite for CDLRICKSHAWMAN
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlrickshawman_pattern():
     """Test Rickshaw Man pattern detection"""

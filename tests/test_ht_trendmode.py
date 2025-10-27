@@ -3,7 +3,7 @@ Test suite for HT_TRENDMODE
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_trendmode_basic():
     """Test HT_TRENDMODE basic calculation"""

@@ -3,8 +3,9 @@ Test suite for TRIMA
 """
 
 import numpy as np
-import pytest
-from numta import TRIMA, SMA
+
+from numta import TRIMA
+
 
 class TestTRIMA:
     """Tests for TRIMA"""

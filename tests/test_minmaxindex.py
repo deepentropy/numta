@@ -3,8 +3,9 @@ Test suite for MINMAXINDEX
 """
 
 import numpy as np
-import pytest
+
 from numta import MINMAXINDEX
+
 
 class TestMINMAXINDEX:
     """Tests for MINMAXINDEX (Indexes of lowest and highest values)"""

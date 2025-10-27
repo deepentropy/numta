@@ -3,7 +3,7 @@ Test suite for CDLSHOOTINGSTAR
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlshootingstar_pattern():
     """Test Shooting Star pattern detection"""

@@ -41,7 +41,7 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import SMA
+    >>> from numta import SMA
     >>> close = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     >>> sma = SMA(close, timeperiod=3)
     >>> print(sma)
@@ -64,10 +64,10 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
             # Use CPU implementation (default)
     # The Numba function handles NaN values and insufficient data
-        output = np.empty(n, dtype=np.float64)
-        _sma_numba(close, timeperiod, output)
+    output = np.empty(n, dtype=np.float64)
+    _sma_numba(close, timeperiod, output)
 
-        return output
+    return output
 
 
 def EMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -107,7 +107,7 @@ def EMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import EMA
+    >>> from numta import EMA
     >>> close = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     >>> ema = EMA(close, timeperiod=3)
     >>> print(ema)
@@ -132,10 +132,10 @@ def EMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _ema_numba(close, timeperiod, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _ema_numba(close, timeperiod, output)
+    return output
 
 
 def BBANDS(close: Union[np.ndarray, list],
@@ -209,7 +209,7 @@ def BBANDS(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import BBANDS
+    >>> from numta import BBANDS
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109])
     >>> upper, middle, lower = BBANDS(close, timeperiod=5, nbdevup=2, nbdevdn=2)
     >>> print(upper)
@@ -316,7 +316,7 @@ def DEMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import DEMA
+    >>> from numta import DEMA
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109])
     >>> dema = DEMA(close, timeperiod=5)
     >>> print(dema)
@@ -435,7 +435,7 @@ def KAMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import KAMA
+    >>> from numta import KAMA
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109])
     >>> kama = KAMA(close, timeperiod=5)
     >>> print(kama)
@@ -469,10 +469,10 @@ def KAMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     
     backend = get_backend()
     
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _kama_numba(close, timeperiod, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _kama_numba(close, timeperiod, output)
+    return output
 
 
 def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) -> np.ndarray:
@@ -579,7 +579,7 @@ def MA(close: Union[np.ndarray, list], timeperiod: int = 30, matype: int = 0) ->
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MA
+    >>> from numta import MA
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109])
     >>>
     >>> # Simple Moving Average
@@ -697,7 +697,7 @@ def MAMA(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MAMA
+    >>> from numta import MAMA
     >>> close = np.linspace(100, 150, 50)
     >>> mama, fama = MAMA(close, fastlimit=0.5, slowlimit=0.05)
     >>> print(f"MAMA: {mama[-1]:.2f}, FAMA: {fama[-1]:.2f}")
@@ -725,11 +725,11 @@ def MAMA(close: Union[np.ndarray, list],
     backend = get_backend()
 
             # Use CPU implementation with Numba optimization
-        from ..cpu.overlap import _mama_numba
-        mama = np.empty(n, dtype=np.float64)
-        fama = np.empty(n, dtype=np.float64)
-        _mama_numba(close, fastlimit, slowlimit, mama, fama)
-        return mama, fama
+    from ..cpu.overlap import _mama_numba
+    mama = np.empty(n, dtype=np.float64)
+    fama = np.empty(n, dtype=np.float64)
+    _mama_numba(close, fastlimit, slowlimit, mama, fama)
+    return mama, fama
 
 
 def SAR(high: Union[np.ndarray, list],
@@ -840,7 +840,7 @@ def SAR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import SAR
+    >>> from numta import SAR
     >>> high = np.array([110, 112, 111, 113, 115, 114, 116, 118])
     >>> low = np.array([100, 102, 101, 103, 105, 104, 106, 108])
     >>> sar = SAR(high, low, acceleration=0.02, maximum=0.2)
@@ -874,10 +874,10 @@ def SAR(high: Union[np.ndarray, list],
     
     backend = get_backend()
     
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _sar_numba(high, low, acceleration, maximum, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _sar_numba(high, low, acceleration, maximum, output)
+    return output
 
 
 def SAREXT(high: Union[np.ndarray, list],
@@ -951,13 +951,13 @@ def SAREXT(high: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        output = np.empty(n, dtype=np.float64)
-        _sarext_numba(high, low, startvalue, offsetonreverse,
-                     accelerationinit_long, accelerationlong, accelerationmax_long,
-                     accelerationinit_short, accelerationshort, accelerationmax_short,
-                     output)
-        return output
+    # Use CPU implementation (default)
+    output = np.empty(n, dtype=np.float64)
+    _sarext_numba(high, low, startvalue, offsetonreverse,
+                 accelerationinit_long, accelerationlong, accelerationmax_long,
+                 accelerationinit_short, accelerationshort, accelerationmax_short,
+                 output)
+    return output
 
 
 def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -999,10 +999,10 @@ def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
 
     backend = get_backend()
 
-            # Use CPU implementation with Numba
-        output = np.empty(n, dtype=np.float64)
-        _tema_numba(data, timeperiod, output)
-        return output
+    # Use CPU implementation with Numba
+    output = np.empty(n, dtype=np.float64)
+    _tema_numba(data, timeperiod, output)
+    return output
 
 
 def T3(data: Union[np.ndarray, list],
@@ -1044,10 +1044,10 @@ def T3(data: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation with Numba
-        output = np.empty(n, dtype=np.float64)
-        _t3_numba(data, timeperiod, vfactor, output)
-        return output
+    # Use CPU implementation with Numba
+    output = np.empty(n, dtype=np.float64)
+    _t3_numba(data, timeperiod, vfactor, output)
+    return output
 
 
 def TRIMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -1097,7 +1097,7 @@ def TRIMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import TRIMA
+    >>> from numta import TRIMA
     >>> close = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     >>> trima = TRIMA(close, timeperiod=5)
 
@@ -1221,7 +1221,7 @@ def WMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import WMA
+    >>> from numta import WMA
     >>> close = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10])
     >>> wma = WMA(close, timeperiod=5)
 

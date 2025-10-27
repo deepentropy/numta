@@ -3,7 +3,7 @@ Test suite for HT_TRENDLINE
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_trendline_basic():
     """Test HT_TRENDLINE basic calculation"""

@@ -3,7 +3,7 @@ Test suite for CDLXSIDEGAP3METHODS
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlxsidegap3methods_upside():
     """Test Upside Gap Three Methods pattern"""

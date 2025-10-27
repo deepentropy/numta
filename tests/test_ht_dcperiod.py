@@ -3,7 +3,7 @@ Test suite for HT_DCPERIOD
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_dcperiod_basic():
     """Test HT_DCPERIOD basic calculation"""
