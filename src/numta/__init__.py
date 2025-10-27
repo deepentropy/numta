@@ -3,7 +3,6 @@ talib-pure: Pure Python TA-Lib library with focus on performance
 
 Optimized with Numba JIT compilation for fast CPU computation.
 """
-from talib import MOM
 # TODO MACDFIX, MFI, MINUS_DI, MINUS_DM, MOM, PLUS_DI, PLUS_DM, PPO
 # Import from API layer
 from .api.overlap import SMA, EMA, DEMA, BBANDS, KAMA, MA, MAMA, SAR, SAREXT, T3, TEMA, TRIMA, WMA
@@ -55,7 +54,7 @@ __all__ = [
     # Indicators
     "SMA", "EMA", "DEMA", "BBANDS", "KAMA", "MA", "MAMA", "SAR", "SAREXT", "T3", "TEMA", "TRIMA", "WMA",
     "AD", "OBV", "ADOSC",
-    "ADX", "ADXR", "APO", "AROON", "AROONOSC", "ATR", "BOP", "CCI", "CMO", "DX", "MACD", "MACDEXT", "MOM", "NATR", "ROC", "ROCP", "ROCR", "ROCR100", "RSI", "STDDEV", "STOCH", "STOCHF", "STOCHRSI", "TRANGE", "TRIX", "TSF", "ULTOSC", "VAR", "WILLR",
+    "ADX", "ADXR", "APO", "AROON", "AROONOSC", "ATR", "BOP", "CCI", "CMO", "DX", "MACD", "MACDEXT", "NATR", "ROC", "ROCP", "ROCR", "ROCR100", "RSI", "STDDEV", "STOCH", "STOCHF", "STOCHRSI", "TRANGE", "TRIX", "TSF", "ULTOSC", "VAR", "WILLR",
     "HT_DCPERIOD", "HT_DCPHASE", "HT_PHASOR", "HT_SINE", "HT_TRENDLINE", "HT_TRENDMODE",
     "BETA", "CORREL", "LINEARREG", "LINEARREG_ANGLE", "LINEARREG_INTERCEPT", "LINEARREG_SLOPE",
     "MAX", "MAXINDEX", "MIN", "MININDEX", "MINMAX", "MINMAXINDEX", "SUM",
