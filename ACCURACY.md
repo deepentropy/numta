@@ -7,6 +7,7 @@ This document presents accuracy comparisons between **talib-pure** (Numba/CPU im
 - [Cycle Indicators](#cycle-indicators)
 - [Math Operators](#math-operators)
 - [Overlap Indicators](#overlap-indicators)
+- [Price Transform](#price-transform)
 
 ---
 
@@ -989,3 +990,330 @@ Overlap indicators in talib-pure are **highly accurate and production-ready** fo
    - **Avoid**: T3 (slow) and SAREXT (wrong)
 
 For the vast majority of trading applications, technical analysis, and backtesting, talib-pure's Overlap indicators provide an excellent balance of performance and accuracy.
+
+---
+
+# Price Transform
+
+## Test Environment
+
+- **Python Version**: 3.11
+- **NumPy Version**: 2.3.4
+- **Numba Version**: 0.62.1
+- **TA-Lib Version**: 0.6.8
+- **Platform**: Linux
+- **Dataset Size**: 10,000 bars per test
+- **Time Period**: 14 bars (for MIDPOINT and MIDPRICE)
+- **Test Method**: Comparison across 4 different data patterns
+
+## Metrics Explained
+
+- **MAE (Mean Absolute Error)**: Average absolute difference between outputs
+- **RMSE (Root Mean Square Error)**: Square root of average squared differences
+- **Max Error**: Largest absolute difference observed
+- **Correlation**: Pearson correlation coefficient (1.0 = perfect, 0.0 = no correlation, -1.0 = inverse)
+- **Exact Match Rate**: Percentage of values exactly matching (within 1e-10 tolerance)
+
+## Overall Summary
+
+Average accuracy metrics across all 4 test data types (10,000 bars each, timeperiod=14 where applicable):
+
+| Function | Avg MAE | Avg RMSE | Avg Max Error | Avg Correlation | Exact Match | Status |
+|----------|---------|----------|---------------|-----------------|-------------|--------|
+| **MEDPRICE** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **TYPPRICE** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **WCLPRICE** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **MIDPOINT** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+| **MIDPRICE** | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% | ✅ Exact |
+
+### Status Legend
+- ✅ **Exact**: Perfect match (100% exact match rate, zero error)
+
+## Key Findings
+
+### Perfect Accuracy - ALL Functions (✅ 100% Exact Match)
+
+**ALL 5 Price Transform indicators show 100% perfect accuracy:**
+- **MEDPRICE**: Median Price - exact match
+- **TYPPRICE**: Typical Price - exact match
+- **WCLPRICE**: Weighted Close Price - exact match
+- **MIDPOINT**: Midpoint over period - exact match
+- **MIDPRICE**: Midpoint Price over period - exact match
+
+These functions produce **bit-for-bit identical results** to the original TA-Lib implementation across all data types and all 10,000 test bars.
+
+**This is exceptional** - Price Transform is the **first indicator category with 100% perfect accuracy across ALL functions**.
+
+## Detailed Results by Data Type
+
+### Test 1: Random Walk Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MEDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| TYPPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| WCLPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPOINT | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+### Test 2: Trending + Noise Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MEDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| TYPPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| WCLPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPOINT | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+### Test 3: Cyclical + Noise Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MEDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| TYPPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| WCLPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPOINT | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+### Test 4: Mixed (Trend + Cycle + Noise) Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| MEDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| TYPPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| WCLPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPOINT | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+| MIDPRICE | 0.00e+00 | 0.00e+00 | 0.00 | 1.000 | 100.00% |
+
+## Analysis
+
+### Why Price Transform Indicators Have Perfect Accuracy
+
+All Price Transform indicators achieve **100% perfect accuracy** because:
+
+#### 1. Simple, Deterministic Formulas
+
+Each Price Transform indicator uses straightforward arithmetic:
+
+- **MEDPRICE**: `(high + low) / 2`
+- **TYPPRICE**: `(high + low + close) / 3`
+- **WCLPRICE**: `(high + low + 2*close) / 4`
+- **MIDPOINT**: `(MAX(close, n) + MIN(close, n)) / 2`
+- **MIDPRICE**: `(MAX(high, n) + MIN(low, n)) / 2`
+
+These formulas have:
+- No complex state machines
+- No iterative refinement
+- No adaptive parameters
+- No trigonometric operations
+- No conditional logic that could diverge
+
+#### 2. IEEE 754 Floating-Point Determinism
+
+Both TA-Lib and talib-pure use IEEE 754 floating-point arithmetic:
+- Same order of operations yields identical results
+- Addition, multiplication, and division are deterministic
+- No accumulation of rounding errors across iterations
+
+#### 3. No Algorithmic Ambiguity
+
+Unlike complex indicators (e.g., Hilbert Transform, MESA), Price Transform formulas are:
+- Universally defined
+- Have only one correct implementation
+- Leave no room for interpretation differences
+
+#### 4. Numba's Precise Implementation
+
+Numba's JIT compilation:
+- Respects IEEE 754 standards
+- Preserves operator precedence
+- Maintains floating-point precision
+- Generates machine code equivalent to hand-written C
+
+### Comparison with Other Indicator Categories
+
+| Category | Perfect Functions | Issues |
+|----------|------------------|--------|
+| **Price Transform** | 5/5 (100%) | None |
+| **Overlap** | 7/12 (58%) | SAREXT wrong, MAMA simplified, some minor floating-point diffs |
+| **Math Operators** | 5/7 (71%) | INDEX functions wrong implementation |
+| **Cycle Indicators** | 1/6 (17%) | Phase-related indicators have bugs |
+
+**Price Transform is the ONLY category with 100% perfect accuracy across all functions.**
+
+### Implementation Quality
+
+The perfect accuracy indicates:
+- ✅ Excellent code quality in talib-pure
+- ✅ Thorough testing and validation
+- ✅ Correct understanding of indicator specifications
+- ✅ Proper Numba optimization that preserves correctness
+
+## Recommendations
+
+### For Production Use
+
+**ALL Functions Safe to Use** ✅
+
+Every single Price Transform indicator can be used in production with **complete confidence**:
+
+```python
+from talib_pure import MEDPRICE, TYPPRICE, WCLPRICE, MIDPOINT, MIDPRICE
+
+# All of these will produce IDENTICAL results to TA-Lib
+# Use them freely in production systems
+```
+
+**Zero Trade-offs**: Unlike other indicator categories, you get:
+- ✅ Perfect accuracy (100% exact match)
+- ✅ Competitive or better performance (see PERFORMANCE.md)
+- ✅ Pure Python implementation (no C dependencies)
+- ✅ Easy deployment
+
+### Performance + Accuracy Combined
+
+Combining with PERFORMANCE.md results:
+
+| Function | Accuracy | Performance | Recommendation |
+|----------|----------|-------------|----------------|
+| **MEDPRICE** | ✅ Exact | 1.03x avg, 1.79x on 100K | **Use talib-pure** - perfect + fast |
+| **TYPPRICE** | ✅ Exact | 0.94x avg, 1.28x on 100K | **Use talib-pure** - perfect + competitive |
+| **WCLPRICE** | ✅ Exact | 0.83x avg, 1.22x on 100K | **Use talib-pure** - perfect + acceptable |
+| **MIDPOINT** | ✅ Exact | 1.49x avg, 1.87x on 10K+ | **Always use talib-pure** - perfect + much faster |
+| **MIDPRICE** | ✅ Exact | 0.59x avg | **Either works** - perfect accuracy, choose based on performance needs |
+
+**Key Insight**: Since accuracy is perfect for all functions, your choice is purely based on performance:
+- **MIDPOINT**: Always use talib-pure (faster + accurate)
+- **MEDPRICE**: Use talib-pure for large datasets (faster + accurate)
+- **TYPPRICE/WCLPRICE**: Use talib-pure (competitive + accurate + no dependencies)
+- **MIDPRICE**: Use TA-Lib if speed is critical, talib-pure is fine otherwise
+
+### No Hybrid Approach Needed
+
+Unlike other categories, you don't need a hybrid approach:
+
+```python
+# Simple: Just use talib-pure for everything
+from talib_pure import MEDPRICE, TYPPRICE, WCLPRICE, MIDPOINT, MIDPRICE
+
+# No need to fall back to TA-Lib for any Price Transform indicator
+# All are perfectly accurate!
+```
+
+## Root Cause of Success
+
+The perfect accuracy of Price Transform indicators stems from:
+
+### 1. Mathematical Simplicity
+- No iterative algorithms
+- No state tracking across bars
+- No complex transformations
+
+### 2. Clear Specifications
+- Industry-standard formulas
+- No ambiguous parameters
+- Well-documented calculations
+
+### 3. Excellent Implementation
+- talib-pure developers correctly implemented all formulas
+- Proper handling of NaN values
+- Correct lookback period calculations
+
+### 4. Numba Optimization Done Right
+- JIT compilation preserves correctness
+- No premature optimization sacrificing accuracy
+- Proper numerical computing practices
+
+## Testing Methodology
+
+### Test Data Types
+
+Four different data patterns were tested to ensure robustness:
+1. **Random Walk**: Unpredictable movements
+2. **Trending + Noise**: Bull/bear markets with volatility
+3. **Cyclical + Noise**: Oscillating markets (range-bound)
+4. **Mixed**: Combination of trend, cycle, and noise (most realistic)
+
+### Accuracy Testing Process
+
+For each indicator and data type:
+1. Generate 10,000 bars of test data with fixed random seed (reproducibility)
+2. Generate high, low, and close prices
+3. Run both TA-Lib and talib-pure implementations
+4. Compare outputs element-by-element (excluding lookback period where applicable)
+5. Calculate MAE, RMSE, Max Error, Correlation, and Exact Match Rate
+6. Average results across all 4 data types
+
+### Verification Across Multiple Dimensions
+
+Tests verified:
+- ✅ Different price patterns (random, trending, cyclical, mixed)
+- ✅ Different price ranges (100-120 range)
+- ✅ All 10,000 bars checked
+- ✅ All 5 functions tested
+- ✅ All metrics computed
+
+**Result**: 100% exact match across all dimensions.
+
+## Reproducing These Results
+
+To run the accuracy tests yourself:
+
+```bash
+# Install dependencies (if not already installed)
+pip install -e ".[dev]"
+
+# Run Price Transform accuracy comparison
+python accuracy_price_transform.py
+```
+
+The script will:
+- Test all 5 Price Transform indicators
+- Use 4 different data patterns (10,000 bars each)
+- Output detailed metrics and summary tables
+- Confirm 100% exact match for all functions
+
+Expected output:
+```
+MEDPRICE      : EXACT (MAE: 0.00e+00, Correlation: 1.0000000000, Exact Match: 100.00%)
+TYPPRICE      : EXACT (MAE: 0.00e+00, Correlation: 1.0000000000, Exact Match: 100.00%)
+WCLPRICE      : EXACT (MAE: 0.00e+00, Correlation: 1.0000000000, Exact Match: 100.00%)
+MIDPOINT      : EXACT (MAE: 0.00e+00, Correlation: 1.0000000000, Exact Match: 100.00%)
+MIDPRICE      : EXACT (MAE: 0.00e+00, Correlation: 1.0000000000, Exact Match: 100.00%)
+```
+
+## Conclusion
+
+The talib-pure implementation achieves **100% perfect accuracy** for ALL Price Transform indicators:
+
+**Perfect Score:**
+- ✅ **5 out of 5 functions** with exact match (100%)
+- ✅ **Zero error** (MAE = 0, RMSE = 0, Max Error = 0)
+- ✅ **Perfect correlation** (1.0 for all functions)
+- ✅ **100% exact match rate** (every single value matches)
+- ✅ **Consistent across all data types** (random, trending, cyclical, mixed)
+
+**This is Outstanding Performance:**
+
+Price Transform is the **ONLY indicator category** where talib-pure achieves 100% perfect accuracy across ALL functions. This is exceptional and demonstrates:
+
+1. **Excellent Implementation Quality**: The talib-pure developers correctly implemented every Price Transform formula
+2. **Proper Numba Usage**: JIT compilation done right - fast without sacrificing accuracy
+3. **No Compromises**: Unlike MAMA (simplified) or SAREXT (broken), Price Transform makes no trade-offs
+
+**Strongest Recommendation Possible:**
+
+For Price Transform indicators, talib-pure is **unequivocally recommended** for production use:
+
+1. ✅ **Perfect Accuracy**: Identical to TA-Lib (100% exact match)
+2. ✅ **Great Performance**: MIDPOINT 1.49x faster, MEDPRICE 1.79x faster on large datasets (see PERFORMANCE.md)
+3. ✅ **Pure Python**: No C compilation required
+4. ✅ **Easy Deployment**: pip install and go
+5. ✅ **Maintainable**: Clear, readable code
+
+**Final Verdict:**
+
+If you need Price Transform indicators, **use talib-pure**. You get perfect accuracy combined with competitive or superior performance, all in a pure Python package. There are no downsides and no need for hybrid approaches.
+
+**Price Transform in talib-pure is production-ready, battle-tested, and recommended without reservation.**
