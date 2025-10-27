@@ -3314,7 +3314,68 @@ def CDLLONGLEGGEDDOJI(open_: Union[np.ndarray, list],
         return output
 
 
-def CDLLONGLINE(*args, **kwargs):
-    raise NotImplementedError("CDLLONGLINE not yet implemented")
+def CDLLONGLINE(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Long Line - Single candle with very long body showing strong conviction
+
+    The Long Line pattern identifies candles with very long bodies (>130% of average),
+    indicating strong directional movement and conviction by either buyers or sellers.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: White Long Line (strong buying pressure)
+        -100: Black Long Line (strong selling pressure)
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Body must be significantly longer than average (>130% of 10-bar average)
+
+    The pattern indicates:
+    - Strong directional movement
+    - High conviction from market participants
+    - Opposite of Short Line pattern
+    - White Long Line: Sustained buying pressure
+    - Black Long Line: Sustained selling pressure
+
+    A long body shows that one side (bulls or bears) was in complete control
+    during the session, creating strong momentum in one direction. This is often
+    a continuation signal in the direction of the long candle.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdllongline_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdllongline_numba(open_, high, low, close, output)
+        return output
 
 

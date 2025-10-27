@@ -9,12 +9,68 @@ from numba import jit
 
 
 __all__ = [
+    "_beta_numba",
     "_correl_numba",
     "_linearreg_angle_numba",
     "_linearreg_intercept_numba",
     "_linearreg_numba",
     "_linearreg_slope_numba",
 ]
+
+
+@jit(nopython=True, cache=True)
+def _beta_numba(high: np.ndarray, low: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled BETA calculation (in-place)
+
+    Beta measures the volatility of a security relative to a benchmark.
+    Beta = Covariance(high, low) / Variance(low)
+
+    Beta > 1: More volatile than benchmark
+    Beta = 1: Same volatility as benchmark
+    Beta < 1: Less volatile than benchmark
+    Beta < 0: Inverse relationship to benchmark
+
+    Formula:
+    Beta = Σ((x - x_mean) * (y - y_mean)) / Σ((y - y_mean)²)
+    where x = high (asset) and y = low (benchmark)
+    """
+    n = len(high)
+
+    # Fill lookback period with NaN
+    for i in range(timeperiod - 1):
+        output[i] = np.nan
+
+    # Calculate beta for each window
+    for i in range(timeperiod - 1, n):
+        # Get window
+        window_start = i - timeperiod + 1
+        window_end = i + 1
+
+        # Calculate means
+        mean_high = 0.0
+        mean_low = 0.0
+        for j in range(window_start, window_end):
+            mean_high += high[j]
+            mean_low += low[j]
+        mean_high /= timeperiod
+        mean_low /= timeperiod
+
+        # Calculate covariance and variance
+        covariance = 0.0
+        variance = 0.0
+        for j in range(window_start, window_end):
+            high_diff = high[j] - mean_high
+            low_diff = low[j] - mean_low
+            covariance += high_diff * low_diff
+            variance += low_diff * low_diff
+
+        # Calculate beta
+        if variance > 1e-10:
+            output[i] = covariance / variance
+        else:
+            # No variance in benchmark - cannot calculate beta
+            output[i] = 0.0
 
 
 @jit(nopython=True, cache=True)

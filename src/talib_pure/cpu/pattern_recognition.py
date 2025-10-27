@@ -52,6 +52,7 @@ __all__ = [
     "_cdlkickingbylength_numba",
     "_cdlladderbottom_numba",
     "_cdllongleggeddoji_numba",
+    "_cdllongline_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -3079,6 +3080,48 @@ def _cdllongleggeddoji_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarra
 
         if both_very_long:
             output[i] = 100  # Signal of extreme indecision
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdllongline_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                       close: np.ndarray, output: np.ndarray) -> None:
+    """Long Line: Single candle with very long body showing strong conviction
+
+    A candle with a very long body (>130% of average body size)
+    Shows strong buying pressure (white) or selling pressure (black)
+
+    White Long Line: Returns 100 (strong buying)
+    Black Long Line: Returns -100 (strong selling)
+
+    The long body indicates conviction and strong directional movement.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = close[i] - open_[i]
+        abs_body = abs(body)
+
+        # Long line: body is significantly longer than average (>130%)
+        is_long = abs_body > avg_body * 1.3
+
+        if is_long:
+            if body > 0:
+                output[i] = 100  # White (bullish) long line
+            else:
+                output[i] = -100  # Black (bearish) long line
         else:
             output[i] = 0
 
