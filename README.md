@@ -6,6 +6,8 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
 
 `talib-pure` aims to provide the same functionality as the popular TA-Lib library but implemented entirely in pure Python using NumPy for performance. This eliminates the need for complex C library dependencies while maintaining high performance through optimized NumPy operations.
 
+**Disclaimer**: This is an independent implementation inspired by TA-Lib. It is not affiliated with, endorsed by, or connected to the original TA-Lib project. The technical analysis algorithms implemented here are based on publicly available mathematical formulas and are compatible with TA-Lib's function signatures for ease of migration.
+
 ## Features
 
 - **Pure Python implementation** (no C dependencies)
@@ -39,8 +41,8 @@ pip install -e .
 # Install with Numba for 5-10x speedup
 pip install "talib-pure[numba]"
 
-# Install everything (for development)
-pip install "talib-pure[all]"
+# Install development dependencies
+pip install "talib-pure[dev]"
 ```
 
 ## Quick Start
@@ -91,15 +93,40 @@ sma_faster = SMA_numba(close_prices, timeperiod=30)   # 5-10x faster
 - Cumsum: 0.049ms (3.14x faster)
 - **Numba: 0.028ms (5.52x faster)** ⭐
 
-**See [OPTIMIZATION.md](OPTIMIZATION.md) for detailed performance guide.**
+**See [PERFORMANCE.md](PERFORMANCE.md) for detailed performance analysis.**
 
 ## Implemented Indicators
 
+This library implements a comprehensive set of technical analysis indicators across multiple categories:
+
 ### Overlap Studies
+SMA, EMA, DEMA, TEMA, TRIMA, WMA, KAMA, MAMA, T3, BBANDS, MA, SAR, SAREXT
 
-- **SMA** - Simple Moving Average
+### Momentum Indicators
+RSI, MACD, MACDEXT, MACDFIX, STOCH, STOCHF, STOCHRSI, ADX, ADXR, APO, AROON, AROONOSC, ATR, BOP, CCI, CMO, DX, MFI, MINUS_DI, MINUS_DM, MOM, PLUS_DI, PLUS_DM, PPO, ROC, ROCP, ROCR, ROCR100, TRIX, ULTOSC, WILLR
 
-More indicators coming soon!
+### Volume Indicators
+AD, ADOSC, OBV
+
+### Volatility Indicators
+NATR, TRANGE
+
+### Cycle Indicators
+HT_DCPERIOD, HT_DCPHASE, HT_PHASOR, HT_SINE, HT_TRENDLINE, HT_TRENDMODE
+
+### Statistical Functions
+BETA, CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE, STDDEV, TSF, VAR
+
+### Math Operators
+MAX, MAXINDEX, MIN, MININDEX, MINMAX, MINMAXINDEX, SUM
+
+### Price Transform
+MEDPRICE, MIDPOINT, MIDPRICE, TYPPRICE, WCLPRICE
+
+### Pattern Recognition
+60+ candlestick patterns including: Doji, Hammer, Engulfing, Morning Star, Evening Star, Three White Soldiers, and many more.
+
+**See [FUNCTION_IMPLEMENTATIONS.md](FUNCTION_IMPLEMENTATIONS.md) for detailed implementation status.**
 
 ## Usage Examples
 
@@ -189,8 +216,11 @@ pip install -e ".[dev]"
 # Run all tests
 pytest
 
+# Optional: Install TA-Lib for comparison tests (requires TA-Lib C library)
+pip install -e ".[comparison]"
+
 # Run specific test file
-pytest tests/test_sma_comparison.py
+pytest tests/test_sma.py
 
 # Run with verbose output
 pytest -v
@@ -227,14 +257,32 @@ pytest tests/test_benchmark.py
 talib-pure/
 ├── src/
 │   └── talib_pure/
-│       ├── __init__.py
-│       ├── overlap.py      # Overlap studies (SMA, EMA, etc.)
-│       └── benchmark.py    # Performance measurement tools
-├── tests/
-│   ├── test_sma_comparison.py
+│       ├── __init__.py           # Main package exports
+│       ├── backend.py            # Backend selection logic
+│       ├── benchmark.py          # Performance measurement tools
+│       ├── optimized.py          # Optimized implementations
+│       ├── api/                  # Public API layer
+│       │   ├── overlap.py        # Overlap studies (SMA, EMA, etc.)
+│       │   ├── momentum_indicators.py
+│       │   ├── volume_indicators.py
+│       │   └── ...
+│       └── cpu/                  # CPU/Numba implementations
+│           ├── overlap.py        # Numba-optimized overlap studies
+│           ├── math_operators.py
+│           └── ...
+├── tests/                        # Comprehensive test suite
+│   ├── test_sma.py
+│   ├── test_ema.py
 │   └── test_benchmark.py
-├── examples/
-│   └── benchmark_sma.py
+├── examples/                     # Usage examples
+│   ├── benchmark_sma.py
+│   └── benchmark_optimized.py
+├── development/                  # Development tools
+│   ├── accuracy_*.py             # Accuracy comparison scripts
+│   ├── benchmark_*.py            # Benchmark scripts
+│   └── ACCURACY.md               # Accuracy test results
+├── PERFORMANCE.md                # Performance analysis
+├── FUNCTION_IMPLEMENTATIONS.md   # Implementation details
 ├── pyproject.toml
 ├── LICENSE
 └── README.md
@@ -244,11 +292,12 @@ talib-pure/
 
 To add a new indicator:
 
-1. Implement the function in the appropriate module (e.g., `overlap.py` for overlap studies)
-2. Ensure the signature matches TA-Lib exactly
-3. Add comparison tests in `tests/`
-4. Update `__init__.py` to export the function
-5. Add documentation and examples
+1. Implement the function in the appropriate API module (e.g., `api/overlap.py` for overlap studies)
+2. Optionally add optimized Numba implementation in the corresponding `cpu/` module
+3. Ensure the signature matches TA-Lib exactly
+4. Add comparison tests in `tests/`
+5. Export the function in `__init__.py`
+6. Add documentation and examples
 
 Example:
 
@@ -300,9 +349,9 @@ Run `python examples/benchmark_sma.py` to see detailed benchmarks on your system
 
 ### Optional Dependencies
 
-- TA-Lib >= 0.4.0 (for comparison tests only)
-- pytest >= 7.0.0 (for running tests)
-- pytest-benchmark >= 4.0.0 (for benchmark tests)
+- **Testing**: pytest >= 7.0.0, pytest-benchmark >= 4.0.0
+- **Performance**: numba >= 0.56.0 (for JIT compilation, 5-10x speedup)
+- **Comparison**: TA-Lib >= 0.4.0 (only for development/comparison scripts, requires C library)
 
 ## License
 
@@ -310,30 +359,41 @@ MIT License - see LICENSE file for details
 
 ## Acknowledgments
 
-- Original TA-Lib library: https://ta-lib.org/
-- TA-Lib Python wrapper: https://github.com/TA-Lib/ta-lib-python
+This project implements technical analysis algorithms that are publicly available mathematical formulas. We acknowledge and credit:
+
+- **TA-Lib** - The original Technical Analysis Library (Copyright (c) 1999-2024, Mario Fortier)
+  - Website: https://ta-lib.org/
+  - Python wrapper: https://github.com/TA-Lib/ta-lib-python
+  - License: BSD 3-Clause
+
+`talib-pure` is an independent clean-room implementation and is not derived from TA-Lib's source code. All code in this repository is original work licensed under the MIT License (see LICENSE file).
 
 ## Roadmap
 
-### Phase 1 (Current)
-- [x] SMA (Simple Moving Average)
-- [x] Test framework
+### Completed ✅
+- [x] Core overlap studies (SMA, EMA, DEMA, TEMA, WMA, KAMA, etc.)
+- [x] Momentum indicators (RSI, MACD, STOCH, ADX, etc.)
+- [x] Volume indicators (OBV, AD, ADOSC)
+- [x] Volatility indicators (NATR, TRANGE)
+- [x] Pattern recognition (60+ candlestick patterns)
+- [x] Cycle indicators (Hilbert Transform functions)
+- [x] Statistical functions
+- [x] Math operators
+- [x] Price transforms
+- [x] Comprehensive test framework
 - [x] Performance benchmarking tools
+- [x] Multiple backend support (NumPy, Numba)
 
-### Phase 2 (Planned)
-- [ ] EMA (Exponential Moving Average)
-- [ ] WMA (Weighted Moving Average)
-- [ ] DEMA (Double Exponential Moving Average)
-- [ ] TEMA (Triple Exponential Moving Average)
-- [ ] RSI (Relative Strength Index)
-- [ ] MACD (Moving Average Convergence Divergence)
+### In Progress 🚧
+- [ ] Additional performance optimizations
+- [ ] Extended documentation and examples
+- [ ] More comprehensive benchmarks
 
-### Phase 3 (Future)
-- [ ] Complete overlap studies
-- [ ] Momentum indicators
-- [ ] Volume indicators
-- [ ] Volatility indicators
-- [ ] Pattern recognition
+### Future Plans 📋
+- [ ] Real-time streaming data support
+- [ ] Integration with popular data providers
+- [ ] Interactive visualization tools
+- [ ] Additional optimization backends
 
 ## Support
 

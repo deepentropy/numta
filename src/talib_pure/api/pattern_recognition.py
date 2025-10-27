@@ -62,9 +62,10 @@ def CDL2CROWS(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdl2crows_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdl2crows_numba(open_, high, low, close, output)
+    return output
 
 
 def CDL3BLACKCROWS(open_: Union[np.ndarray, list],
@@ -112,9 +113,10 @@ def CDL3BLACKCROWS(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdl3blackcrows_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdl3blackcrows_numba(open_, high, low, close, output)
+    return output
 
 
 def CDL3INSIDE(open_: Union[np.ndarray, list],
@@ -167,9 +169,10 @@ def CDL3INSIDE(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdl3inside_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdl3inside_numba(open_, high, low, close, output)
+    return output
 
 
 def CDL3OUTSIDE(open_: Union[np.ndarray, list],
@@ -222,9 +225,10 @@ def CDL3OUTSIDE(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdl3outside_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdl3outside_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLMARUBOZU(open_: Union[np.ndarray, list],
@@ -355,10 +359,10 @@ def CDLMARUBOZU(open_: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        output = np.zeros(n, dtype=np.int32)
-        _cdlmarubozu_numba(open_, high, low, close, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlmarubozu_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLMATCHINGLOW(open_: Union[np.ndarray, list],
@@ -462,10 +466,10 @@ def CDLMATCHINGLOW(open_: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        output = np.zeros(n, dtype=np.int32)
-        _cdlmatchinglow_numba(open_, high, low, close, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlmatchinglow_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLMATHOLD(open_: Union[np.ndarray, list],
@@ -586,10 +590,10 @@ def CDLMATHOLD(open_: Union[np.ndarray, list],
 
     backend = get_backend()
 
-            # Use CPU implementation (default)
-        output = np.zeros(n, dtype=np.int32)
-        _cdlmathold_numba(open_, high, low, close, penetration, output)
-        return output
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlmathold_numba(open_, high, low, close, penetration, output)
+    return output
 
 
 def CDLMORNINGDOJISTAR(open_: Union[np.ndarray, list],
@@ -641,9 +645,12 @@ def CDLMORNINGDOJISTAR(open_: Union[np.ndarray, list],
     if n < 3:
         return np.zeros(n, dtype=np.int32)
 
-    backend = get_backend()        output = np.zeros(n, dtype=np.int32)
-        _cdlmorningdojistar_numba(open_, high, low, close, penetration, output)
-        return output
+    backend = get_backend()
+
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlmorningdojistar_numba(open_, high, low, close, penetration, output)
+    return output
 
 
 def CDLMORNINGSTAR(open_: Union[np.ndarray, list],
@@ -695,9 +702,12 @@ def CDLMORNINGSTAR(open_: Union[np.ndarray, list],
     if n < 3:
         return np.zeros(n, dtype=np.int32)
 
-    backend = get_backend()        output = np.zeros(n, dtype=np.int32)
-        _cdlmorningstar_numba(open_, high, low, close, penetration, output)
-        return output
+    backend = get_backend()
+
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlmorningstar_numba(open_, high, low, close, penetration, output)
+    return output
 
 
 def CDLONNECK(open_: Union[np.ndarray, list],
@@ -745,9 +755,12 @@ def CDLONNECK(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    backend = get_backend()        output = np.zeros(n, dtype=np.int32)
-        _cdlonneck_numba(open_, high, low, close, output)
-        return output
+    backend = get_backend()
+
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlonneck_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLPIERCING(open_: Union[np.ndarray, list],
@@ -796,9 +809,12 @@ def CDLPIERCING(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    backend = get_backend()        output = np.zeros(n, dtype=np.int32)
-        _cdlpiercing_numba(open_, high, low, close, output)
-        return output
+    backend = get_backend()
+
+    # Use CPU implementation (default)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlpiercing_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLRICKSHAWMAN(open_: Union[np.ndarray, list], high: Union[np.ndarray, list],
@@ -813,9 +829,10 @@ def CDLRICKSHAWMAN(open_: Union[np.ndarray, list], high: Union[np.ndarray, list]
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlrickshawman_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlrickshawman_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLRISEFALL3METHODS(open_: Union[np.ndarray, list], high: Union[np.ndarray, list],
@@ -830,9 +847,10 @@ def CDLRISEFALL3METHODS(open_: Union[np.ndarray, list], high: Union[np.ndarray, 
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 5:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlrisefall3methods_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlrisefall3methods_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLSEPARATINGLINES(open_: Union[np.ndarray, list], high: Union[np.ndarray, list],
@@ -847,9 +865,10 @@ def CDLSEPARATINGLINES(open_: Union[np.ndarray, list], high: Union[np.ndarray, l
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 2:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlseparatinglines_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlseparatinglines_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLSHOOTINGSTAR(open_: Union[np.ndarray, list], high: Union[np.ndarray, list],
@@ -864,9 +883,10 @@ def CDLSHOOTINGSTAR(open_: Union[np.ndarray, list], high: Union[np.ndarray, list
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 2:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlshootingstar_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlshootingstar_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLSHORTLINE(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -881,9 +901,10 @@ def CDLSHORTLINE(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlshortline_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlshortline_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLSPINNINGTOP(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -898,9 +919,10 @@ def CDLSPINNINGTOP(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlspinningtop_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlspinningtop_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLSTALLEDPATTERN(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -915,9 +937,10 @@ def CDLSTALLEDPATTERN(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlstalledpattern_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlstalledpattern_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLSTICKSANDWICH(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -932,9 +955,10 @@ def CDLSTICKSANDWICH(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlsticksandwich_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlsticksandwich_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLTAKURI(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -949,9 +973,10 @@ def CDLTAKURI(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdltakuri_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdltakuri_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLTASUKIGAP(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -966,9 +991,10 @@ def CDLTASUKIGAP(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdltasukigap_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdltasukigap_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLTHRUSTING(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -979,9 +1005,10 @@ def CDLTHRUSTING(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlthrusting_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlthrusting_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLTRISTAR(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -992,9 +1019,10 @@ def CDLTRISTAR(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdltristar_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdltristar_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLUNIQUE3RIVER(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -1005,9 +1033,10 @@ def CDLUNIQUE3RIVER(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlunique3river_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlunique3river_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLUPSIDEGAP2CROWS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -1018,9 +1047,10 @@ def CDLUPSIDEGAP2CROWS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlupsidegap2crows_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlupsidegap2crows_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLXSIDEGAP3METHODS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
@@ -1031,9 +1061,10 @@ def CDLXSIDEGAP3METHODS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
     if not (len(high) == len(low) == len(close) == n):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.array([], dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlxsidegap3methods_numba(open_, high, low, close, output)
-        return output
+        return np.array([], dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlxsidegap3methods_numba(open_, high, low, close, output)
+    return output
 
 
 def CDL3STARSINSOUTH(open_: Union[np.ndarray, list],
@@ -1080,9 +1111,10 @@ def CDL3STARSINSOUTH(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdl3starsinsouth_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdl3starsinsouth_numba(open_, high, low, close, output)
+    return output
 
 
 def CDL3WHITESOLDIERS(open_: Union[np.ndarray, list],
@@ -1130,9 +1162,10 @@ def CDL3WHITESOLDIERS(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdl3whitesoldiers_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdl3whitesoldiers_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLABANDONEDBABY(open_: Union[np.ndarray, list],
@@ -1185,9 +1218,10 @@ def CDLABANDONEDBABY(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlabandonedbaby_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlabandonedbaby_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLADVANCEBLOCK(open_: Union[np.ndarray, list],
@@ -1235,9 +1269,10 @@ def CDLADVANCEBLOCK(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 3:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdladvanceblock_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdladvanceblock_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLBELTHOLD(open_: Union[np.ndarray, list],
@@ -1288,9 +1323,10 @@ def CDLBELTHOLD(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n == 0:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlbelthold_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlbelthold_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLBREAKAWAY(open_: Union[np.ndarray, list],
@@ -1345,9 +1381,10 @@ def CDLBREAKAWAY(open_: Union[np.ndarray, list],
     if not all(len(x) == n for x in [high, low, close]):
         raise ValueError("All input arrays must have the same length")
     if n < 5:
-        return np.zeros(n, dtype=np.int32)        output = np.zeros(n, dtype=np.int32)
-        _cdlbreakaway_numba(open_, high, low, close, output)
-        return output
+        return np.zeros(n, dtype=np.int32)
+    output = np.zeros(n, dtype=np.int32)
+    _cdlbreakaway_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLCLOSINGMARUBOZU(open_: Union[np.ndarray, list],
@@ -1402,9 +1439,10 @@ def CDLCLOSINGMARUBOZU(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlclosingmarubozu_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlclosingmarubozu_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLCONCEALBABYSWALL(open_: Union[np.ndarray, list],
@@ -1462,9 +1500,10 @@ def CDLCONCEALBABYSWALL(open_: Union[np.ndarray, list],
     if n < 4:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlconcealbabyswall_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlconcealbabyswall_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLCOUNTERATTACK(open_: Union[np.ndarray, list],
@@ -1520,9 +1559,10 @@ def CDLCOUNTERATTACK(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlcounterattack_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlcounterattack_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLDARKCLOUDCOVER(open_: Union[np.ndarray, list],
@@ -1579,9 +1619,10 @@ def CDLDARKCLOUDCOVER(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdldarkcloudcover_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdldarkcloudcover_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLDOJI(open_: Union[np.ndarray, list],
@@ -1637,9 +1678,10 @@ def CDLDOJI(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdldoji_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdldoji_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLDOJISTAR(open_: Union[np.ndarray, list],
@@ -1698,9 +1740,10 @@ def CDLDOJISTAR(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdldojistar_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdldojistar_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLDRAGONFLYDOJI(open_: Union[np.ndarray, list],
@@ -1759,9 +1802,10 @@ def CDLDRAGONFLYDOJI(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdldragonflydoji_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdldragonflydoji_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLENGULFING(open_: Union[np.ndarray, list],
@@ -1821,9 +1865,10 @@ def CDLENGULFING(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlengulfing_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlengulfing_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLEVENINGDOJISTAR(open_: Union[np.ndarray, list],
@@ -1882,9 +1927,10 @@ def CDLEVENINGDOJISTAR(open_: Union[np.ndarray, list],
     if n < 3:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdleveningdojistar_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdleveningdojistar_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLEVENINGSTAR(open_: Union[np.ndarray, list],
@@ -1944,9 +1990,10 @@ def CDLEVENINGSTAR(open_: Union[np.ndarray, list],
     if n < 3:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdleveningstar_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdleveningstar_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLGAPSIDESIDEWHITE(open_: Union[np.ndarray, list],
@@ -2012,9 +2059,10 @@ def CDLGAPSIDESIDEWHITE(open_: Union[np.ndarray, list],
     if n < 3:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlgapsidesidewhite_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlgapsidesidewhite_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLGRAVESTONEDOJI(open_: Union[np.ndarray, list],
@@ -2076,9 +2124,10 @@ def CDLGRAVESTONEDOJI(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlgravestonedoji_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlgravestonedoji_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHAMMER(open_: Union[np.ndarray, list],
@@ -2142,9 +2191,10 @@ def CDLHAMMER(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlhammer_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlhammer_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHANGINGMAN(open_: Union[np.ndarray, list],
@@ -2208,9 +2258,10 @@ def CDLHANGINGMAN(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlhangingman_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlhangingman_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHARAMI(open_: Union[np.ndarray, list],
@@ -2274,9 +2325,10 @@ def CDLHARAMI(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlharami_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlharami_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHARAMICROSS(open_: Union[np.ndarray, list],
@@ -2340,9 +2392,10 @@ def CDLHARAMICROSS(open_: Union[np.ndarray, list],
     if n < 2:
         return np.zeros(n, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlharamicross_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlharamicross_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHIGHWAVE(open_: Union[np.ndarray, list],
@@ -2407,9 +2460,10 @@ def CDLHIGHWAVE(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlhighwave_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlhighwave_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHIKKAKE(open_: Union[np.ndarray, list],
@@ -2469,9 +2523,10 @@ def CDLHIKKAKE(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlhikkake_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlhikkake_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHIKKAKEMOD(open_: Union[np.ndarray, list],
@@ -2531,9 +2586,10 @@ def CDLHIKKAKEMOD(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlhikkakemod_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlhikkakemod_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLHOMINGPIGEON(open_: Union[np.ndarray, list],
@@ -2595,9 +2651,10 @@ def CDLHOMINGPIGEON(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlhomingpigeon_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlhomingpigeon_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLIDENTICAL3CROWS(open_: Union[np.ndarray, list],
@@ -2661,9 +2718,10 @@ def CDLIDENTICAL3CROWS(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlidentical3crows_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlidentical3crows_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLINNECK(open_: Union[np.ndarray, list],
@@ -2728,9 +2786,10 @@ def CDLINNECK(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlinneck_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlinneck_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLINVERTEDHAMMER(open_: Union[np.ndarray, list],
@@ -2791,9 +2850,10 @@ def CDLINVERTEDHAMMER(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlinvertedhammer_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlinvertedhammer_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLKICKING(open_: Union[np.ndarray, list],
@@ -2854,9 +2914,10 @@ def CDLKICKING(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlkicking_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlkicking_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLKICKINGBYLENGTH(open_: Union[np.ndarray, list],
@@ -2918,9 +2979,10 @@ def CDLKICKINGBYLENGTH(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlkickingbylength_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlkickingbylength_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLLADDERBOTTOM(open_: Union[np.ndarray, list],
@@ -2980,9 +3042,10 @@ def CDLLADDERBOTTOM(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdlladderbottom_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdlladderbottom_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLLONGLEGGEDDOJI(open_: Union[np.ndarray, list],
@@ -3043,9 +3106,10 @@ def CDLLONGLEGGEDDOJI(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdllongleggeddoji_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdllongleggeddoji_numba(open_, high, low, close, output)
+    return output
 
 
 def CDLLONGLINE(open_: Union[np.ndarray, list],
@@ -3104,8 +3168,9 @@ def CDLLONGLINE(open_: Union[np.ndarray, list],
     if n == 0:
         return np.zeros(0, dtype=np.int32)
 
-    # Use CPU backend        output = np.zeros(n, dtype=np.int32)
-        _cdllongline_numba(open_, high, low, close, output)
-        return output
+    # Use CPU backend
+    output = np.zeros(n, dtype=np.int32)
+    _cdllongline_numba(open_, high, low, close, output)
+    return output
 
 
