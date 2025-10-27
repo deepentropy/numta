@@ -19,80 +19,80 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Math Operators | SUM | ✓ | ✗ | - |
 | Momentum Indicators | ADX | ✓ | ✗ | - |
 | Momentum Indicators | ADXR | ✓ | ✗ | - |
-| Momentum Indicators | APO | ✗ | ✗ | - |
+| Momentum Indicators | APO | ✓ | ✗ | - |
 | Momentum Indicators | AROON | ✓ | ✗ | - |
-| Momentum Indicators | AROONOSC | ✗ | ✗ | - |
+| Momentum Indicators | AROONOSC | ✓ | ✗ | - |
 | Momentum Indicators | ATR | ✓ | ✗ | - |
-| Momentum Indicators | BOP | ✗ | ✗ | - |
+| Momentum Indicators | BOP | ✓ | ✗ | - |
 | Momentum Indicators | CCI | ✓ | ✗ | - |
 | Momentum Indicators | CMO | ✓ | ✓ | - |
 | Momentum Indicators | DX | ✓ | ✓ | - |
 | Momentum Indicators | MACD | ✓ | ✓ | - |
-| Momentum Indicators | MACDEXT | ✗ | ✗ | - |
-| Momentum Indicators | MACDFIX | ✗ | ✗ | - |
+| Momentum Indicators | MACDEXT | ✓ | ✗ | - |
+| Momentum Indicators | MACDFIX | ✓ | ✗ | - |
 | Momentum Indicators | MFI | ✓ | ✗ | - |
 | Momentum Indicators | MINUS_DI | ✓ | ✗ | - |
 | Momentum Indicators | MINUS_DM | ✓ | ✗ | - |
 | Momentum Indicators | MOM | ✓ | ✗ | - |
 | Momentum Indicators | PLUS_DI | ✓ | ✗ | - |
 | Momentum Indicators | PLUS_DM | ✓ | ✗ | - |
-| Momentum Indicators | PPO | ✗ | ✗ | - |
+| Momentum Indicators | PPO | ✓ | ✗ | - |
 | Momentum Indicators | ROC | ✓ | ✗ | - |
 | Momentum Indicators | ROCP | ✓ | ✗ | - |
 | Momentum Indicators | ROCR | ✓ | ✗ | - |
 | Momentum Indicators | ROCR100 | ✓ | ✗ | - |
 | Momentum Indicators | RSI | ✓ | ✓ | - |
-| Momentum Indicators | STOCH | ✗ | ✗ | - |
-| Momentum Indicators | STOCHF | ✗ | ✗ | - |
-| Momentum Indicators | STOCHRSI | ✗ | ✗ | - |
-| Momentum Indicators | TRIX | ✗ | ✗ | - |
-| Momentum Indicators | ULTOSC | ✗ | ✗ | - |
+| Momentum Indicators | STOCH | ✓ | ✗ | - |
+| Momentum Indicators | STOCHF | ✓ | ✗ | - |
+| Momentum Indicators | STOCHRSI | ✓ | ✗ | - |
+| Momentum Indicators | TRIX | ✓ | ✗ | - |
+| Momentum Indicators | ULTOSC | ✓ | ✗ | - |
 | Momentum Indicators | WILLR | ✓ | ✗ | - |
 | Overlap | BBANDS | ✓ | ✗ | - |
 | Overlap | DEMA | ✓ | ✓ | - |
 | Overlap | EMA | ✓ | ✓ | - |
 | Overlap | KAMA | ✓ | ✓ | - |
-| Overlap | MA | ✗ | ✓ | Not yet implemented; Routes to SMA/EMA/DEMA/KAMA based on matype |
-| Overlap | MAMA | ✗ | ✓ | Simplified implementation |
+| Overlap | MA | ✓ | ✓ | Routes to all MA types (SMA/EMA/WMA/DEMA/TEMA/TRIMA/KAMA/MAMA/T3) |
+| Overlap | MAMA | ✓ | ✓ | Simplified adaptive implementation |
 | Overlap | SAR | ✓ | ✓ | - |
 | Overlap | SAREXT | ✓ | ✓ | - |
 | Overlap | SMA | ✓ | ✓ | - |
-| Overlap | T3 | ✗ | ✓ | Uses 6 EMAs with coefficients |
-| Overlap | TEMA | ✗ | ✓ | Uses EMA internally |
-| Overlap | TRIMA | ✗ | ✓ | Uses SMA internally (double smoothed) |
+| Overlap | T3 | ✓ | ✓ | Uses 6 EMAs with coefficients |
+| Overlap | TEMA | ✓ | ✓ | Uses EMA internally |
+| Overlap | TRIMA | ✓ | ✓ | Uses SMA internally (double smoothed) |
 | Overlap | WMA | ✓ | ✓ | - |
-| Pattern Recognition | CDL2CROWS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3BLACKCROWS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3INSIDE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3OUTSIDE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3STARSINSOUTH | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDL3WHITESOLDIERS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLABANDONEDBABY | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLADVANCEBLOCK | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLBELTHOLD | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLBREAKAWAY | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLCLOSINGMARUBOZU | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLCONCEALBABYSWALL | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLCOUNTERATTACK | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLDARKCLOUDCOVER | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLDOJI | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLDOJISTAR | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLDRAGONFLYDOJI | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLENGULFING | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLEVENINGDOJISTAR | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLEVENINGSTAR | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLGAPSIDESIDEWHITE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLGRAVESTONEDOJI | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHAMMER | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHANGINGMAN | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHARAMI | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHARAMICROSS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHIGHWAVE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHIKKAKE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHIKKAKEMOD | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHOMINGPIGEON | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLIDENTICAL3CROWS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLINNECK | ✗ | ✗ | Not yet implemented |
+| Pattern Recognition | CDL2CROWS | ✓ | ✗ | Bearish reversal pattern |
+| Pattern Recognition | CDL3BLACKCROWS | ✓ | ✗ | Bearish reversal pattern |
+| Pattern Recognition | CDL3INSIDE | ✓ | ✗ | Bullish/Bearish reversal pattern |
+| Pattern Recognition | CDL3OUTSIDE | ✓ | ✗ | Bullish/Bearish reversal pattern |
+| Pattern Recognition | CDL3STARSINSOUTH | ✓ | ✗ | Bullish reversal - 3 black candles with progressively smaller bodies |
+| Pattern Recognition | CDL3WHITESOLDIERS | ✓ | ✗ | Bullish reversal - 3 consecutive white candles advancing progressively |
+| Pattern Recognition | CDLABANDONEDBABY | ✓ | ✗ | Reversal pattern with isolated doji (gap before and after) |
+| Pattern Recognition | CDLADVANCEBLOCK | ✓ | ✗ | Bearish warning - 3 white candles with decreasing bodies |
+| Pattern Recognition | CDLBELTHOLD | ✓ | ✗ | Reversal - marubozu opening on extreme (white on low/black on high) |
+| Pattern Recognition | CDLBREAKAWAY | ✓ | ✗ | 5-candle continuation pattern with gap closure |
+| Pattern Recognition | CDLCLOSINGMARUBOZU | ✓ | ✗ | Single candle with no shadow at close (marubozu variant) |
+| Pattern Recognition | CDLCONCEALBABYSWALL | ✓ | ✗ | Rare 4-candle bullish reversal with black marubozu pattern |
+| Pattern Recognition | CDLCOUNTERATTACK | ✓ | ✗ | 2-candle reversal with matching closes |
+| Pattern Recognition | CDLDARKCLOUDCOVER | ✓ | ✗ | Bearish reversal - black candle penetrating into white candle body |
+| Pattern Recognition | CDLDOJI | ✓ | ✗ | Single candle with very small body (indecision) |
+| Pattern Recognition | CDLDOJISTAR | ✓ | ✗ | 2-candle reversal with doji gapping away from trend |
+| Pattern Recognition | CDLDRAGONFLYDOJI | ✓ | ✗ | Bullish doji with long lower shadow (T-shape) |
+| Pattern Recognition | CDLENGULFING | ✓ | ✗ | 2-candle reversal where second body engulfs first completely |
+| Pattern Recognition | CDLEVENINGDOJISTAR | ✓ | ✗ | Bearish 3-candle reversal with doji at top |
+| Pattern Recognition | CDLEVENINGSTAR | ✓ | ✗ | Bearish 3-candle reversal with small star at top |
+| Pattern Recognition | CDLGAPSIDESIDEWHITE | ✓ | ✗ | 3-candle continuation - two white candles side-by-side after gap |
+| Pattern Recognition | CDLGRAVESTONEDOJI | ✓ | ✗ | Bearish doji with long upper shadow (inverted T-shape) |
+| Pattern Recognition | CDLHAMMER | ✓ | ✗ | Bullish reversal - small body with long lower shadow |
+| Pattern Recognition | CDLHANGINGMAN | ✓ | ✗ | Bearish reversal - visually identical to hammer but context differs |
+| Pattern Recognition | CDLHARAMI | ✓ | ✗ | 2-candle reversal where second body contained within first |
+| Pattern Recognition | CDLHARAMICROSS | ✓ | ✗ | Harami pattern with doji as second candle |
+| Pattern Recognition | CDLHIGHWAVE | ✓ | ✗ | Doji with very long upper and lower shadows |
+| Pattern Recognition | CDLHIKKAKE | ✓ | ✗ | 3-bar pattern with false inside day followed by breakout |
+| Pattern Recognition | CDLHIKKAKEMOD | ✓ | ✗ | Modified Hikkake with delayed confirmation window |
+| Pattern Recognition | CDLHOMINGPIGEON | ✓ | ✗ | Bullish reversal - 2 black candles, second contained in first body |
+| Pattern Recognition | CDLIDENTICAL3CROWS | ✓ | ✗ | Bearish reversal - 3 black candles with similar closes |
+| Pattern Recognition | CDLINNECK | ✓ | ✗ | Bearish continuation - white candle closes at prior low |
 | Pattern Recognition | CDLINVERTEDHAMMER | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLKICKING | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLKICKINGBYLENGTH | ✗ | ✗ | Not yet implemented |
@@ -124,8 +124,8 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Price Transform | MEDPRICE | ✓ | ✗ | - |
 | Price Transform | MIDPOINT | ✓ | ✗ | - |
 | Price Transform | MIDPRICE | ✓ | ✗ | - |
-| Price Transform | TYPPRICE | ✗ | ✗ | - |
-| Price Transform | WCLPRICE | ✗ | ✗ | - |
+| Price Transform | TYPPRICE | ✓ | ✗ | - |
+| Price Transform | WCLPRICE | ✓ | ✗ | - |
 | Statistic Functions | BETA | ✗ | ✗ | Not yet implemented |
 | Statistic Functions | CORREL | ✓ | ✗ | - |
 | Statistic Functions | LINEARREG | ✓ | ✗ | - |
@@ -149,10 +149,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 |----------|----------------|-----------------|-----------------|
 | Cycle Indicators | 6 | 6 (100%) | 0 (0%) |
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
-| Momentum Indicators | 31 | 20 (64%) | 4 (12%) |
-| Overlap | 13 | 8 (61%) | 12 (92%) |
-| Pattern Recognition | 60 | 22 (36%) | 22 (36%) |
-| Price Transform | 5 | 3 (60%) | 0 (0%) |
+| Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
+| Overlap | 13 | 13 (100%) | 12 (92%) |
+| Pattern Recognition | 60 | 54 (90%) | 22 (36%) |
+| Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
 | Volatility Indicators | 2 | 1 (50%) | 0 (0%) |
@@ -161,10 +161,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 78 (57%)
+- **CPU (Numba) Implementations**: 128 (94%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 40
-- **Fully Implemented**: 96
+- **Not Yet Implemented**: 8
+- **Fully Implemented**: 128
 
 ## Notes
 

@@ -14,18 +14,23 @@ __all__ = [
     "_apo_numba_ema",
     "_apo_numba_sma",
     "_aroon_numba",
+    "_aroonosc_numba",
     "_atr_numba",
+    "_bop_numba",
     "_cci_numba",
     "_cmo_numba",
     "_dx_numba",
     "_ema_for_apo",
     "_macd_numba",
+    "_macdext_numba",
+    "_macdfix_numba",
     "_mfi_numba",
     "_minus_di_numba",
     "_minus_dm_numba",
     "_mom_numba",
     "_plus_di_numba",
     "_plus_dm_numba",
+    "_ppo_numba",
     "_roc_numba",
     "_rocp_numba",
     "_rocr100_numba",
@@ -33,6 +38,9 @@ __all__ = [
     "_rsi_numba",
     "_sma_for_apo",
     "_stoch_fastk_numba",
+    "_stochrsi_numba",
+    "_trix_numba",
+    "_ultosc_numba",
     "_willr_numba",
 ]
 
@@ -1274,3 +1282,319 @@ def _willr_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray,
             output[i] = ((highest - close[i]) / (highest - lowest)) * -100.0
 
 
+
+
+@jit(nopython=True, cache=True)
+def _aroonosc_numba(high: np.ndarray, low: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled AROONOSC calculation (in-place)
+    
+    AROONOSC = Aroon Up - Aroon Down
+    
+    This optimized version calculates both Aroon Up and Aroon Down in a single pass
+    and computes the oscillator directly.
+    """
+    n = len(high)
+    
+    # Fill lookback period with NaN
+    for i in range(timeperiod):
+        output[i] = np.nan
+    
+    # Calculate Aroon Oscillator for each bar
+    for i in range(timeperiod, n):
+        # Find periods since highest high and lowest low in the lookback window
+        periods_since_high = 0
+        periods_since_low = 0
+        highest = high[i]
+        lowest = low[i]
+        
+        for j in range(i - timeperiod + 1, i + 1):
+            if high[j] >= highest:
+                highest = high[j]
+                periods_since_high = i - j
+            if low[j] <= lowest:
+                lowest = low[j]
+                periods_since_low = i - j
+        
+        # Calculate Aroon Up and Aroon Down
+        aroon_up = ((timeperiod - periods_since_high) / timeperiod) * 100.0
+        aroon_down = ((timeperiod - periods_since_low) / timeperiod) * 100.0
+        
+        # AROONOSC = Aroon Up - Aroon Down
+        output[i] = aroon_up - aroon_down
+
+
+@jit(nopython=True, cache=True)
+def _bop_numba(open_price: np.ndarray, high: np.ndarray, low: np.ndarray, 
+               close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled BOP (Balance of Power) calculation (in-place)
+    
+    Formula: BOP = (Close - Open) / (High - Low)
+    
+    When High equals Low (no price range), BOP is set to 0.
+    """
+    n = len(open_price)
+    
+    for i in range(n):
+        numerator = close[i] - open_price[i]
+        denominator = high[i] - low[i]
+        
+        # Handle division by zero when High == Low
+        if denominator == 0.0:
+            output[i] = 0.0
+        else:
+            output[i] = numerator / denominator
+
+
+@jit(nopython=True, cache=True)
+def _ppo_numba(fast_ema: np.ndarray, slow_ema: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled PPO calculation (in-place)
+    
+    Formula: PPO = ((Fast EMA - Slow EMA) / Slow EMA) * 100
+    
+    This function calculates the percentage price oscillator from pre-computed EMAs.
+    """
+    n = len(fast_ema)
+    
+    for i in range(n):
+        if np.isnan(fast_ema[i]) or np.isnan(slow_ema[i]):
+            output[i] = np.nan
+        elif slow_ema[i] == 0.0:
+            output[i] = 0.0
+        else:
+            output[i] = ((fast_ema[i] - slow_ema[i]) / slow_ema[i]) * 100.0
+
+
+@jit(nopython=True, cache=True)
+def _macdext_numba(fast_ma: np.ndarray, slow_ma: np.ndarray, signal_ma: np.ndarray,
+                   macd_out: np.ndarray, signal_out: np.ndarray, hist_out: np.ndarray) -> None:
+    """
+    Numba-compiled MACDEXT calculation (in-place)
+    
+    Calculates MACD line, signal line, and histogram from pre-computed MAs.
+    
+    Formula:
+    - MACD Line = Fast MA - Slow MA
+    - Signal Line = MA(MACD Line)
+    - Histogram = MACD Line - Signal Line
+    """
+    n = len(fast_ma)
+    
+    # Calculate MACD line
+    for i in range(n):
+        macd_out[i] = fast_ma[i] - slow_ma[i]
+        signal_out[i] = signal_ma[i]
+        hist_out[i] = macd_out[i] - signal_ma[i]
+
+
+@jit(nopython=True, cache=True)
+def _macdfix_numba(close: np.ndarray, signalperiod: int,
+                   macd_out: np.ndarray, signal_out: np.ndarray, hist_out: np.ndarray) -> None:
+    """
+    Numba-compiled MACDFIX calculation (in-place)
+    
+    Optimized version with hardcoded 12/26 periods for maximum performance.
+    
+    Formula:
+    1. Fast EMA = EMA(close, 12)
+    2. Slow EMA = EMA(close, 26)
+    3. MACD Line = Fast EMA - Slow EMA
+    4. Signal Line = EMA(MACD Line, signalperiod)
+    5. Histogram = MACD Line - Signal Line
+    """
+    n = len(close)
+    
+    # Fixed periods for MACDFIX
+    fastperiod = 12
+    slowperiod = 26
+    
+    # Calculate multipliers
+    fast_multiplier = 2.0 / (fastperiod + 1)
+    slow_multiplier = 2.0 / (slowperiod + 1)
+    signal_multiplier = 2.0 / (signalperiod + 1)
+    
+    # Temporary arrays for EMAs
+    fast_ema = np.empty(n, dtype=np.float64)
+    slow_ema = np.empty(n, dtype=np.float64)
+    
+    # Initialize fast EMA with NaN
+    for i in range(fastperiod - 1):
+        fast_ema[i] = np.nan
+    
+    # Calculate first fast EMA value as SMA
+    fast_sum = 0.0
+    for i in range(fastperiod):
+        fast_sum += close[i]
+    fast_val = fast_sum / fastperiod
+    fast_ema[fastperiod - 1] = fast_val
+    
+    # Calculate remaining fast EMA values
+    for i in range(fastperiod, n):
+        fast_val = (close[i] - fast_val) * fast_multiplier + fast_val
+        fast_ema[i] = fast_val
+    
+    # Initialize slow EMA with NaN
+    for i in range(slowperiod - 1):
+        slow_ema[i] = np.nan
+    
+    # Calculate first slow EMA value as SMA
+    slow_sum = 0.0
+    for i in range(slowperiod):
+        slow_sum += close[i]
+    slow_val = slow_sum / slowperiod
+    slow_ema[slowperiod - 1] = slow_val
+    
+    # Calculate remaining slow EMA values
+    for i in range(slowperiod, n):
+        slow_val = (close[i] - slow_val) * slow_multiplier + slow_val
+        slow_ema[i] = slow_val
+    
+    # Calculate MACD line
+    for i in range(n):
+        macd_out[i] = fast_ema[i] - slow_ema[i]
+    
+    # Calculate signal line (EMA of MACD)
+    # Initialize with NaN
+    for i in range(slowperiod + signalperiod - 2):
+        signal_out[i] = np.nan
+    
+    # Calculate first signal value as SMA of first signalperiod MACD values
+    signal_sum = 0.0
+    start_idx = slowperiod - 1
+    for i in range(start_idx, start_idx + signalperiod):
+        signal_sum += macd_out[i]
+    signal_val = signal_sum / signalperiod
+    signal_out[start_idx + signalperiod - 1] = signal_val
+    
+    # Calculate remaining signal values as EMA
+    for i in range(start_idx + signalperiod, n):
+        signal_val = (macd_out[i] - signal_val) * signal_multiplier + signal_val
+        signal_out[i] = signal_val
+    
+    # Calculate histogram
+    for i in range(n):
+        hist_out[i] = macd_out[i] - signal_out[i]
+
+
+@jit(nopython=True, cache=True)
+def _stochrsi_numba(rsi: np.ndarray, fastk_period: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled StochRSI %K calculation (in-place)
+
+    Applies Stochastic formula to RSI values.
+
+    Formula: StochRSI %K = ((RSI - Lowest RSI) / (Highest RSI - Lowest RSI)) * 100
+    """
+    n = len(rsi)
+    lookback = fastk_period - 1
+
+    # Initialize with NaN
+    for i in range(lookback):
+        output[i] = np.nan
+
+    # Calculate StochRSI for each bar
+    for i in range(lookback, n):
+        # Find highest and lowest RSI over fastk_period
+        highest_rsi = -np.inf
+        lowest_rsi = np.inf
+        valid_count = 0
+
+        for j in range(i - fastk_period + 1, i + 1):
+            if not np.isnan(rsi[j]):
+                if rsi[j] > highest_rsi:
+                    highest_rsi = rsi[j]
+                if rsi[j] < lowest_rsi:
+                    lowest_rsi = rsi[j]
+                valid_count += 1
+
+        if valid_count == 0 or highest_rsi == lowest_rsi:
+            output[i] = 50.0
+        else:
+            output[i] = ((rsi[i] - lowest_rsi) / (highest_rsi - lowest_rsi)) * 100.0
+
+
+@jit(nopython=True, cache=True)
+def _trix_numba(ema3: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled TRIX calculation (in-place)
+
+    Calculates 1-period ROC of triple EMA.
+
+    Formula: TRIX = ((EMA3[i] - EMA3[i-1]) / EMA3[i-1]) * 100
+    """
+    n = len(ema3)
+
+    # First value is NaN (no previous value)
+    output[0] = np.nan
+
+    # Calculate 1-period ROC
+    for i in range(1, n):
+        if np.isnan(ema3[i]) or np.isnan(ema3[i - 1]) or ema3[i - 1] == 0.0:
+            output[i] = np.nan
+        else:
+            output[i] = ((ema3[i] - ema3[i - 1]) / ema3[i - 1]) * 100.0
+
+
+@jit(nopython=True, cache=True)
+def _ultosc_numba(bp: np.ndarray, tr: np.ndarray,
+                  timeperiod1: int, timeperiod2: int, timeperiod3: int,
+                  output: np.ndarray) -> None:
+    """
+    Numba-compiled Ultimate Oscillator calculation (in-place)
+
+    Calculates UO from pre-computed Buying Pressure and True Range arrays.
+
+    Formula: UO = 100 * [(4*Avg1 + 2*Avg2 + Avg3) / 7]
+    where Avg = Sum(BP over period) / Sum(TR over period)
+    """
+    n = len(bp)
+
+    # Determine lookback period
+    lookback = max(timeperiod1, timeperiod2, timeperiod3) - 1
+
+    # Initialize with NaN
+    for i in range(lookback):
+        output[i] = np.nan
+
+    # Calculate Ultimate Oscillator for each bar
+    for i in range(lookback, n):
+        # Period 1 (shortest)
+        if i >= timeperiod1 - 1:
+            sum_bp1 = 0.0
+            sum_tr1 = 0.0
+            for j in range(i - timeperiod1 + 1, i + 1):
+                sum_bp1 += bp[j]
+                sum_tr1 += tr[j]
+            avg1 = sum_bp1 / sum_tr1 if sum_tr1 != 0.0 else 0.0
+        else:
+            output[i] = np.nan
+            continue
+
+        # Period 2 (medium)
+        if i >= timeperiod2 - 1:
+            sum_bp2 = 0.0
+            sum_tr2 = 0.0
+            for j in range(i - timeperiod2 + 1, i + 1):
+                sum_bp2 += bp[j]
+                sum_tr2 += tr[j]
+            avg2 = sum_bp2 / sum_tr2 if sum_tr2 != 0.0 else 0.0
+        else:
+            output[i] = np.nan
+            continue
+
+        # Period 3 (longest)
+        if i >= timeperiod3 - 1:
+            sum_bp3 = 0.0
+            sum_tr3 = 0.0
+            for j in range(i - timeperiod3 + 1, i + 1):
+                sum_bp3 += bp[j]
+                sum_tr3 += tr[j]
+            avg3 = sum_bp3 / sum_tr3 if sum_tr3 != 0.0 else 0.0
+        else:
+            output[i] = np.nan
+            continue
+
+        # Ultimate Oscillator = 100 * [(4*Avg1 + 2*Avg2 + Avg3) / 7]
+        output[i] = 100.0 * ((4.0 * avg1 + 2.0 * avg2 + avg3) / 7.0)

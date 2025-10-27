@@ -13,9 +13,13 @@ __all__ = [
     "_bbands_numba",
     "_dema_numba",
     "_kama_numba",
+    "_mama_numba",
     "_sar_numba",
     "_sarext_numba",
     "_wma_numba",
+    "_tema_numba",
+    "_t3_numba",
+    "_trima_numba",
 ]
 
 
@@ -488,3 +492,164 @@ def _wma_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
         output[i] = weighted_sum / weight_sum
 
 
+@jit(nopython=True, cache=True)
+def _tema_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled TEMA calculation (in-place)
+    
+    Formula: TEMA = 3*EMA - 3*EMA(EMA) + EMA(EMA(EMA))
+    
+    This optimized version computes all three EMAs in a single pass
+    to avoid multiple function call overhead and intermediate array allocations.
+    """
+    n = len(data)
+    
+    # Allocate temporary arrays for the three EMAs
+    ema1 = np.empty(n, dtype=np.float64)
+    ema2 = np.empty(n, dtype=np.float64)
+    ema3 = np.empty(n, dtype=np.float64)
+    
+    # Calculate EMA1
+    _ema_numba(data, timeperiod, ema1)
+    
+    # Calculate EMA2 (EMA of EMA1)
+    _ema_numba(ema1, timeperiod, ema2)
+    
+    # Calculate EMA3 (EMA of EMA2)
+    _ema_numba(ema2, timeperiod, ema3)
+    
+    # TEMA = 3*EMA1 - 3*EMA2 + EMA3
+    for i in range(n):
+        output[i] = 3.0 * ema1[i] - 3.0 * ema2[i] + ema3[i]
+
+
+@jit(nopython=True, cache=True)
+def _t3_numba(data: np.ndarray, timeperiod: int, vfactor: float, output: np.ndarray) -> None:
+    """
+    Numba-compiled T3 calculation (in-place)
+    
+    T3 (Tillson T3) uses 6 EMAs with special coefficients based on volume factor.
+    
+    Formula: T3 = c1*EMA6 + c2*EMA5 + c3*EMA4 + c4*EMA3
+    where coefficients are calculated from vfactor
+    """
+    n = len(data)
+    
+    # Calculate coefficients from volume factor
+    c1 = -vfactor * vfactor * vfactor
+    c2 = 3.0 * vfactor * vfactor + 3.0 * vfactor * vfactor * vfactor
+    c3 = -6.0 * vfactor * vfactor - 3.0 * vfactor - 3.0 * vfactor * vfactor * vfactor
+    c4 = 1.0 + 3.0 * vfactor + vfactor * vfactor * vfactor + 3.0 * vfactor * vfactor
+    
+    # Allocate temporary arrays for all 6 EMAs
+    ema1 = np.empty(n, dtype=np.float64)
+    ema2 = np.empty(n, dtype=np.float64)
+    ema3 = np.empty(n, dtype=np.float64)
+    ema4 = np.empty(n, dtype=np.float64)
+    ema5 = np.empty(n, dtype=np.float64)
+    ema6 = np.empty(n, dtype=np.float64)
+    
+    # Calculate all 6 EMAs in sequence
+    _ema_numba(data, timeperiod, ema1)
+    _ema_numba(ema1, timeperiod, ema2)
+    _ema_numba(ema2, timeperiod, ema3)
+    _ema_numba(ema3, timeperiod, ema4)
+    _ema_numba(ema4, timeperiod, ema5)
+    _ema_numba(ema5, timeperiod, ema6)
+    
+    # T3 = c1*EMA6 + c2*EMA5 + c3*EMA4 + c4*EMA3
+    for i in range(n):
+        output[i] = c1 * ema6[i] + c2 * ema5[i] + c3 * ema4[i] + c4 * ema3[i]
+
+
+@jit(nopython=True, cache=True)
+def _trima_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
+    """
+    Numba-compiled TRIMA calculation (in-place)
+    
+    TRIMA (Triangular Moving Average) is a double-smoothed SMA.
+    
+    Formula:
+    - If timeperiod is odd: n = (timeperiod + 1) / 2, TRIMA = SMA(SMA(data, n), n)
+    - If timeperiod is even: n1 = timeperiod / 2, n2 = n1 + 1, TRIMA = SMA(SMA(data, n1), n2)
+    """
+    n = len(data)
+    
+    # Calculate periods for double SMA
+    if timeperiod % 2 == 1:  # Odd period
+        n1 = (timeperiod + 1) // 2
+        n2 = n1
+    else:  # Even period
+        n1 = timeperiod // 2
+        n2 = n1 + 1
+    
+    # Allocate temporary array for first SMA
+    sma1 = np.empty(n, dtype=np.float64)
+    
+    # Calculate first SMA
+    _sma_numba(data, n1, sma1)
+
+    # Calculate second SMA (SMA of SMA) to get TRIMA
+    _sma_numba(sma1, n2, output)
+
+
+@jit(nopython=True, cache=True)
+def _mama_numba(close: np.ndarray, fastlimit: float, slowlimit: float,
+                mama: np.ndarray, fama: np.ndarray) -> None:
+    """
+    Numba-compiled MAMA calculation (in-place)
+
+    MESA Adaptive Moving Average - simplified implementation.
+
+    Parameters:
+    - close: Input price data
+    - fastlimit: Upper limit for adaptive alpha (default 0.5)
+    - slowlimit: Lower limit for adaptive alpha (default 0.05)
+    - mama: Output array for MAMA values (modified in-place)
+    - fama: Output array for FAMA values (modified in-place)
+
+    Returns both MAMA (fast) and FAMA (following) lines.
+    """
+    n = len(close)
+
+    # Lookback period (simplified - using ~32 like other HT indicators)
+    lookback = 32
+
+    # Initialize with NaN
+    for i in range(lookback):
+        mama[i] = np.nan
+        fama[i] = np.nan
+
+    # Initialize with first valid value
+    mama[lookback] = close[lookback]
+    fama[lookback] = close[lookback]
+
+    # Simplified adaptive calculation
+    for i in range(lookback + 1, n):
+        # Calculate price change rate (simplified adaptation)
+        price_change = abs(close[i] - close[i - 1])
+
+        # Calculate average change over last 10 bars
+        avg_change = 0.0
+        lookback_window = min(10, i)
+        for j in range(i - lookback_window, i):
+            avg_change += abs(close[j] - close[j - 1])
+        avg_change = avg_change / lookback_window if lookback_window > 0 else 1.0
+
+        # Adaptive alpha based on price volatility
+        if avg_change > 0.0:
+            alpha = price_change / avg_change * slowlimit
+            # Clamp alpha between slowlimit and fastlimit
+            if alpha < slowlimit:
+                alpha = slowlimit
+            elif alpha > fastlimit:
+                alpha = fastlimit
+        else:
+            alpha = slowlimit
+
+        # MAMA calculation (adaptive EMA)
+        mama[i] = alpha * close[i] + (1.0 - alpha) * mama[i - 1]
+
+        # FAMA follows MAMA with half the alpha
+        fama_alpha = alpha * 0.5
+        fama[i] = fama_alpha * mama[i] + (1.0 - fama_alpha) * fama[i - 1]

@@ -12,6 +12,8 @@ __all__ = [
     "_medprice_numba",
     "_midpoint_numba",
     "_midprice_numba",
+    "_typprice_numba",
+    "_wclprice_numba",
 ]
 
 
@@ -75,3 +77,27 @@ def _midprice_numba(high: np.ndarray, low: np.ndarray, timeperiod: int, output: 
             if low[j] < min_low:
                 min_low = low[j]
         output[i] = (max_high + min_low) / 2.0
+
+
+@jit(nopython=True, cache=True)
+def _typprice_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled TYPPRICE calculation (in-place)
+
+    Formula: TYPPRICE = (High + Low + Close) / 3
+    """
+    n = len(high)
+    for i in range(n):
+        output[i] = (high[i] + low[i] + close[i]) / 3.0
+
+
+@jit(nopython=True, cache=True)
+def _wclprice_numba(high: np.ndarray, low: np.ndarray, close: np.ndarray, output: np.ndarray) -> None:
+    """
+    Numba-compiled WCLPRICE calculation (in-place)
+
+    Formula: WCLPRICE = (High + Low + Close * 2) / 4
+    """
+    n = len(high)
+    for i in range(n):
+        output[i] = (high[i] + low[i] + close[i] * 2.0) / 4.0

@@ -19,6 +19,235 @@ from ..gpu.pattern_recognition import *
 from ..backend import get_backend
 
 
+def CDL2CROWS(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Two Crows - 3-candle bearish reversal pattern
+
+    The Two Crows pattern is a bearish reversal that appears after an uptrend.
+    It consists of a long white candle followed by two black candles that gap up
+    but close progressively lower, warning of a potential reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Two Crows pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Long white candle (uptrend continuation)
+    2. Black candle that gaps up but closes within first candle body
+    3. Black candle that opens within second body, closes lower
+
+    The pattern suggests that bulls are losing control after the initial gap up,
+    warning of a potential bearish reversal.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl2crows_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl2crows_numba(open_, high, low, close, output)
+        return output
+
+
+def CDL3BLACKCROWS(open_: Union[np.ndarray, list],
+                   high: Union[np.ndarray, list],
+                   low: Union[np.ndarray, list],
+                   close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Black Crows - 3-candle bearish reversal pattern
+
+    The Three Black Crows is a powerful bearish reversal pattern consisting of
+    three consecutive long black candles. Each candle opens within the previous
+    candle's body and closes progressively lower, signaling strong selling pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Three Black Crows pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Three consecutive long black (bearish) candles
+    2. Each candle opens within the previous candle's body
+    3. Each candle closes progressively lower
+    4. Small or no upper shadows (showing no bullish pressure)
+
+    This pattern is one of the most reliable bearish reversal indicators and
+    suggests a strong shift from bullish to bearish sentiment.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3blackcrows_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3blackcrows_numba(open_, high, low, close, output)
+        return output
+
+
+def CDL3INSIDE(open_: Union[np.ndarray, list],
+               high: Union[np.ndarray, list],
+               low: Union[np.ndarray, list],
+               close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Inside Up/Down - 3-candle reversal pattern
+
+    The Three Inside pattern is a reversal pattern that combines a harami pattern
+    with a confirmation candle. It comes in bullish (Three Inside Up) and bearish
+    (Three Inside Down) versions.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three Inside Up pattern detected
+        -100: Bearish Three Inside Down pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Three Inside Up (Bullish):
+    1. Long black candle (downtrend)
+    2. White candle inside first candle (bullish harami)
+    3. White candle closing above first candle's high (confirmation)
+
+    Three Inside Down (Bearish):
+    1. Long white candle (uptrend)
+    2. Black candle inside first candle (bearish harami)
+    3. Black candle closing below first candle's low (confirmation)
+
+    The pattern provides stronger reversal signal than harami alone due to
+    the confirmation candle.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3inside_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3inside_numba(open_, high, low, close, output)
+        return output
+
+
+def CDL3OUTSIDE(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Outside Up/Down - 3-candle reversal pattern
+
+    The Three Outside pattern is a reversal pattern that combines an engulfing pattern
+    with a confirmation candle. It comes in bullish (Three Outside Up) and bearish
+    (Three Outside Down) versions.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three Outside Up pattern detected
+        -100: Bearish Three Outside Down pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Three Outside Up (Bullish):
+    1. Black candle (downtrend)
+    2. White candle that engulfs first candle (bullish engulfing)
+    3. White candle closing higher than second (confirmation)
+
+    Three Outside Down (Bearish):
+    1. White candle (uptrend)
+    2. Black candle that engulfs first candle (bearish engulfing)
+    3. Black candle closing lower than second (confirmation)
+
+    The pattern provides stronger reversal signal than engulfing alone due to
+    the confirmation candle.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3outside_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3outside_numba(open_, high, low, close, output)
+        return output
+
+
 def CDLMARUBOZU(open_: Union[np.ndarray, list],
                 high: Union[np.ndarray, list],
                 low: Union[np.ndarray, list],
@@ -935,132 +1164,1819 @@ def CDLXSIDEGAP3METHODS(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
         return output
 
 
-def CDL2CROWS(*args, **kwargs):
-    raise NotImplementedError("CDL2CROWS not yet implemented")
+def CDL3STARSINSOUTH(open_: Union[np.ndarray, list],
+                     high: Union[np.ndarray, list],
+                     low: Union[np.ndarray, list],
+                     close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three Stars in the South - 3-candle bullish reversal pattern
+
+    A rare bullish reversal pattern consisting of three black candles with
+    progressively smaller bodies and decreasing lower shadows, signaling
+    weakening bearish pressure and potential reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three Stars in the South pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Long black candle with long lower shadow
+    2. Smaller black candle within first candle's range
+    3. Short black marubozu within second candle's range
+
+    This pattern indicates that sellers are losing momentum despite continued
+    bearish candles, suggesting a potential bullish reversal.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3starsinsouth_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3starsinsouth_numba(open_, high, low, close, output)
+        return output
 
 
-def CDL3BLACKCROWS(*args, **kwargs):
-    raise NotImplementedError("CDL3BLACKCROWS not yet implemented")
+def CDL3WHITESOLDIERS(open_: Union[np.ndarray, list],
+                      high: Union[np.ndarray, list],
+                      low: Union[np.ndarray, list],
+                      close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Three White Soldiers - 3-candle bullish reversal pattern
+
+    A powerful bullish reversal pattern consisting of three consecutive long
+    white candles. Each candle opens within the previous candle's body and
+    closes progressively higher, signaling strong buying pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Three White Soldiers pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Three consecutive long white (bullish) candles
+    2. Each candle opens within the previous candle's body
+    3. Each candle closes progressively higher
+    4. Small or no lower shadows (showing no bearish pressure)
+
+    This pattern is the bullish counterpart to Three Black Crows and is
+    one of the most reliable bullish reversal indicators.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdl3whitesoldiers_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdl3whitesoldiers_numba(open_, high, low, close, output)
+        return output
 
 
-def CDL3INSIDE(*args, **kwargs):
-    raise NotImplementedError("CDL3INSIDE not yet implemented")
+def CDLABANDONEDBABY(open_: Union[np.ndarray, list],
+                     high: Union[np.ndarray, list],
+                     low: Union[np.ndarray, list],
+                     close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Abandoned Baby - 3-candle reversal pattern with isolated doji
+
+    A rare and powerful reversal pattern featuring a doji that is isolated
+    from the surrounding candles by gaps on both sides, resembling an
+    "abandoned" baby.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Abandoned Baby pattern detected
+        -100: Bearish Abandoned Baby pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Bullish Abandoned Baby:
+    1. Black candle in downtrend
+    2. Gap down to a doji (isolated)
+    3. Gap up to a white candle
+
+    Bearish Abandoned Baby:
+    1. White candle in uptrend
+    2. Gap up to a doji (isolated)
+    3. Gap down to a black candle
+
+    The doji represents indecision and the gaps show a dramatic shift in
+    sentiment, making this a strong reversal signal.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdlabandonedbaby_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlabandonedbaby_numba(open_, high, low, close, output)
+        return output
 
 
-def CDL3OUTSIDE(*args, **kwargs):
-    raise NotImplementedError("CDL3OUTSIDE not yet implemented")
+def CDLADVANCEBLOCK(open_: Union[np.ndarray, list],
+                    high: Union[np.ndarray, list],
+                    low: Union[np.ndarray, list],
+                    close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Advance Block - 3-candle bearish reversal warning pattern
+
+    A warning pattern that appears during an uptrend, consisting of three
+    white candles with progressively smaller bodies and increasing upper
+    shadows, signaling weakening bullish momentum.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Advance Block warning detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern Requirements:
+    1. Three white candles in uptrend
+    2. Each candle has progressively smaller body
+    3. Increasing upper shadows
+    4. Each opens within previous candle's body
+
+    This pattern warns that despite continued upward movement, buyers are
+    losing strength, suggesting a potential reversal or consolidation.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdladvanceblock_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdladvanceblock_numba(open_, high, low, close, output)
+        return output
 
 
-def CDL3STARSINSOUTH(*args, **kwargs):
-    raise NotImplementedError("CDL3STARSINSOUTH not yet implemented")
+def CDLBELTHOLD(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Belt Hold - Single candle reversal pattern
+
+    A strong single-candle reversal pattern characterized by a marubozu
+    candle opening at the extreme of the range.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Belt Hold pattern detected
+        -100: Bearish Belt Hold pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Bullish Belt Hold (Yorikiri):
+    - White marubozu opening on or near the low
+    - No or minimal lower shadow
+    - Strong buying from the open
+
+    Bearish Belt Hold (Yorikiri):
+    - Black marubozu opening on or near the high
+    - No or minimal upper shadow
+    - Strong selling from the open
+
+    This pattern shows strong directional conviction from the opening price.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n == 0:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdlbelthold_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlbelthold_numba(open_, high, low, close, output)
+        return output
 
 
-def CDL3WHITESOLDIERS(*args, **kwargs):
-    raise NotImplementedError("CDL3WHITESOLDIERS not yet implemented")
+def CDLBREAKAWAY(open_: Union[np.ndarray, list],
+                 high: Union[np.ndarray, list],
+                 low: Union[np.ndarray, list],
+                 close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Breakaway - 5-candle continuation pattern
+
+    A continuation pattern that appears after a trend, featuring a gap
+    followed by continuation candles, then a strong candle closing back
+    into the initial gap.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        +100: Bullish Breakaway pattern detected
+        -100: Bearish Breakaway pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Bullish Breakaway:
+    1. Long black candle
+    2. Gap down
+    3. 2-3 candles continuing downward
+    4. Long white candle closing within the original gap
+
+    Bearish Breakaway:
+    1. Long white candle
+    2. Gap up
+    3. 2-3 candles continuing upward
+    4. Long black candle closing within the original gap
+
+    Despite the reversal-looking final candle, this is actually a
+    continuation pattern, suggesting the trend will resume.
+    """
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+    if n < 5:
+        return np.zeros(n, dtype=np.int32)
+
+    if get_backend() == "gpu":
+        return _cdlbreakaway_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlbreakaway_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLABANDONEDBABY(*args, **kwargs):
-    raise NotImplementedError("CDLABANDONEDBABY not yet implemented")
+def CDLCLOSINGMARUBOZU(open_: Union[np.ndarray, list],
+                       high: Union[np.ndarray, list],
+                       low: Union[np.ndarray, list],
+                       close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Closing Marubozu - Single candle pattern with no shadow at close
+
+    A marubozu candle with a shadow on the opening side but none on the closing side.
+    Shows strong momentum in the closing direction.
+
+    Bullish version: White candle that opens below the low and closes at the high,
+    indicating strong buying pressure throughout the period.
+
+    Bearish version: Black candle that opens above the high and closes at the low,
+    indicating strong selling pressure throughout the period.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Closing Marubozu (white candle closing at high)
+        -100: Bearish Closing Marubozu (black candle closing at low)
+           0: No pattern
+
+    Notes
+    -----
+    The pattern requires a significant body (>60% of range) and a shadow
+    only on the opening side (>10% of range), with virtually no shadow
+    on the closing side (<5% of range).
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlclosingmarubozu_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlclosingmarubozu_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLADVANCEBLOCK(*args, **kwargs):
-    raise NotImplementedError("CDLADVANCEBLOCK not yet implemented")
+def CDLCONCEALBABYSWALL(open_: Union[np.ndarray, list],
+                        high: Union[np.ndarray, list],
+                        low: Union[np.ndarray, list],
+                        close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Concealing Baby Swallow - 4-candle bullish reversal pattern
+
+    A rare bullish reversal pattern that appears in a downtrend, signaling
+    potential trend exhaustion and reversal.
+
+    The pattern consists of:
+    1. First candle: Black Marubozu
+    2. Second candle: Black Marubozu
+    3. Third candle: Black candle that gaps down
+    4. Fourth candle: Large black candle that engulfs the third candle
+
+    Despite all candles being black, the engulfing of the gap-down candle
+    suggests that selling pressure is being absorbed, indicating a potential
+    bullish reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Concealing Baby Swallow pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    This is a rare pattern that requires strict criteria including two
+    consecutive Black Marubozu candles followed by a gap-down that is
+    then engulfed by a larger black candle.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 4:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlconcealbabyswall_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlconcealbabyswall_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLBELTHOLD(*args, **kwargs):
-    raise NotImplementedError("CDLBELTHOLD not yet implemented")
+def CDLCOUNTERATTACK(open_: Union[np.ndarray, list],
+                     high: Union[np.ndarray, list],
+                     low: Union[np.ndarray, list],
+                     close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Counterattack - 2-candle reversal pattern with matching closes
+
+    A reversal pattern where the second candle opens in the direction of
+    the trend but closes at the same level as the previous candle, suggesting
+    a potential trend reversal.
+
+    Bullish version: Long black candle followed by a white candle that opens
+    significantly lower but rallies to close at the same level as the black candle.
+
+    Bearish version: Long white candle followed by a black candle that opens
+    significantly higher but sells off to close at the same level as the white candle.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Counterattack pattern detected
+        -100: Bearish Counterattack pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    The pattern requires both candles to have significant bodies (>80% of average)
+    and the second candle must open beyond the first candle's range. The closes
+    must match within 10% of average body size.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlcounterattack_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlcounterattack_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLBREAKAWAY(*args, **kwargs):
-    raise NotImplementedError("CDLBREAKAWAY not yet implemented")
+def CDLDARKCLOUDCOVER(open_: Union[np.ndarray, list],
+                      high: Union[np.ndarray, list],
+                      low: Union[np.ndarray, list],
+                      close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Dark Cloud Cover - 2-candle bearish reversal pattern
+
+    A bearish reversal pattern that appears at the top of an uptrend.
+    The pattern consists of a long white candle followed by a black candle
+    that opens above the previous high but closes well into the white candle's body.
+
+    The pattern suggests that bulls pushed prices higher on the open, but bears
+    took control and pushed prices down, closing below the midpoint of the
+    previous white candle. This shift in momentum warns of a potential reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Dark Cloud Cover pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    The second candle must:
+    - Open above the previous candle's high
+    - Close below the midpoint of the previous candle's body
+    - Close above the previous candle's open (not fully engulfing)
+
+    The deeper the penetration into the first candle's body, the more
+    significant the bearish signal.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdldarkcloudcover_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdldarkcloudcover_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLCLOSINGMARUBOZU(*args, **kwargs):
-    raise NotImplementedError("CDLCLOSINGMARUBOZU not yet implemented")
+def CDLDOJI(open_: Union[np.ndarray, list],
+            high: Union[np.ndarray, list],
+            low: Union[np.ndarray, list],
+            close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Doji - Single candle pattern with very small body
+
+    A candle where the open and close prices are virtually equal, creating
+    a very small or non-existent body. The doji represents indecision and
+    equilibrium between buyers and sellers.
+
+    Dojis are considered neutral patterns that can signal potential reversals
+    when they appear after a strong trend. The significance of a doji depends
+    on the preceding trend and subsequent price action.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Doji pattern detected (indicates indecision/potential reversal)
+           0: No pattern
+
+    Notes
+    -----
+    A doji is identified when:
+    - The body is less than 10% of the total range
+    - The body is less than 10% of the average body size
+
+    Different types of dojis (Dragonfly, Gravestone, Long-legged) have
+    separate pattern functions with more specific criteria.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdldoji_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdldoji_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLCONCEALBABYSWALL(*args, **kwargs):
-    raise NotImplementedError("CDLCONCEALBABYSWALL not yet implemented")
+def CDLDOJISTAR(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Doji Star - 2-candle reversal pattern with doji gapping away
+
+    A reversal pattern consisting of a long candle followed by a doji
+    that gaps away from the first candle's body. The gap and the doji
+    together signal potential trend exhaustion and reversal.
+
+    Bullish version: Long black candle followed by a doji that gaps down,
+    suggesting selling pressure may be exhausted.
+
+    Bearish version: Long white candle followed by a doji that gaps up,
+    suggesting buying pressure may be exhausted.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Doji Star pattern detected
+        -100: Bearish Doji Star pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    The pattern requires:
+    - First candle: Significant body (>70% of average)
+    - Second candle: Doji (body <10% of range and <10% of average)
+    - Gap between the two candles (doji does not overlap first candle)
+
+    The pattern is often followed by a third candle that confirms the reversal.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdldojistar_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdldojistar_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLCOUNTERATTACK(*args, **kwargs):
-    raise NotImplementedError("CDLCOUNTERATTACK not yet implemented")
+def CDLDRAGONFLYDOJI(open_: Union[np.ndarray, list],
+                     high: Union[np.ndarray, list],
+                     low: Union[np.ndarray, list],
+                     close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Dragonfly Doji - Single candle doji with long lower shadow
+
+    A doji pattern where the open and close are at or very near the high
+    of the candle, creating a long lower shadow. The shape resembles a
+    dragonfly with wings extending downward.
+
+    This pattern indicates that sellers pushed prices significantly lower
+    during the period, but buyers regained control and pushed prices back
+    to the opening level. When appearing after a downtrend, it suggests
+    potential bullish reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Dragonfly Doji pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Body must be very small (<10% of range and average body)
+    - Lower shadow must be significant (>60% of range)
+    - Upper shadow must be minimal (<10% of range)
+
+    The significance is greater when:
+    - Appearing after a downtrend
+    - The lower shadow is very long relative to recent candles
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdldragonflydoji_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdldragonflydoji_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLDARKCLOUDCOVER(*args, **kwargs):
-    raise NotImplementedError("CDLDARKCLOUDCOVER not yet implemented")
+def CDLENGULFING(open_: Union[np.ndarray, list],
+                 high: Union[np.ndarray, list],
+                 low: Union[np.ndarray, list],
+                 close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Engulfing Pattern - 2-candle reversal where second candle engulfs first
+
+    A powerful reversal pattern where the second candle's body completely
+    engulfs the first candle's body.
+
+    Bullish Engulfing: Occurs after a downtrend. A small black candle is
+    followed by a larger white candle that opens at or below the first candle's
+    close and closes at or above the first candle's open.
+
+    Bearish Engulfing: Occurs after an uptrend. A small white candle is
+    followed by a larger black candle that opens at or above the first candle's
+    close and closes at or below the first candle's open.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Engulfing pattern detected
+        -100: Bearish Engulfing pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    The pattern is more significant when:
+    - The first candle is small and the second is large
+    - Appearing at the end of a clear trend
+    - Accompanied by high volume on the engulfing candle
+
+    The second candle must have a body >50% of average body size.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlengulfing_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlengulfing_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLDOJI(*args, **kwargs):
-    raise NotImplementedError("CDLDOJI not yet implemented")
+def CDLEVENINGDOJISTAR(open_: Union[np.ndarray, list],
+                       high: Union[np.ndarray, list],
+                       low: Union[np.ndarray, list],
+                       close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Evening Doji Star - 3-candle bearish reversal pattern with doji
+
+    A bearish reversal pattern that appears at the top of an uptrend.
+    The pattern consists of three candles:
+
+    1. First candle: Long white candle continuing the uptrend
+    2. Second candle: Doji that gaps up from the first candle
+    3. Third candle: Black candle that closes well into the first candle's body
+
+    The doji in the middle represents indecision at the top, and the third
+    candle confirms the reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Evening Doji Star pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: White body >70% of average
+    - Second candle: Doji that gaps up (doesn't overlap first candle)
+    - Third candle: Black body >50% of average, closes below midpoint of first
+
+    This pattern is more reliable than the regular Evening Star due to
+    the strong indecision signal from the doji.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdleveningdojistar_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdleveningdojistar_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLDOJISTAR(*args, **kwargs):
-    raise NotImplementedError("CDLDOJISTAR not yet implemented")
+def CDLEVENINGSTAR(open_: Union[np.ndarray, list],
+                   high: Union[np.ndarray, list],
+                   low: Union[np.ndarray, list],
+                   close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Evening Star - 3-candle bearish reversal pattern
+
+    A bearish reversal pattern that appears at the top of an uptrend,
+    signaling potential trend change. The pattern consists of three candles:
+
+    1. First candle: Long white candle continuing the uptrend
+    2. Second candle: Small-bodied candle (star) that gaps up
+    3. Third candle: Black candle that closes well into the first candle's body
+
+    The small star candle represents indecision at the top, and the third
+    candle confirms bearish reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Evening Star pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: White body >70% of average
+    - Second candle: Small body (<30% of average) that gaps up
+    - Third candle: Black body >50% of average, closes below midpoint of first
+
+    The pattern is the bearish counterpart to the Morning Star pattern.
+    The smaller the second candle and the larger the third candle,
+    the more significant the reversal signal.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdleveningstar_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdleveningstar_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLDRAGONFLYDOJI(*args, **kwargs):
-    raise NotImplementedError("CDLDRAGONFLYDOJI not yet implemented")
+def CDLGAPSIDESIDEWHITE(open_: Union[np.ndarray, list],
+                        high: Union[np.ndarray, list],
+                        low: Union[np.ndarray, list],
+                        close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Gap Side-by-Side White Lines - 3-candle continuation pattern
+
+    A continuation pattern consisting of two white candles appearing
+    side-by-side after a gap in the direction of the trend.
+
+    Bullish version (in uptrend):
+    - First candle: White candle
+    - Second candle: White candle that gaps up
+    - Third candle: White candle similar in size to second, opening near
+      second's open (side-by-side)
+
+    Bearish version (in downtrend):
+    - First candle: Black candle
+    - Second candle: White candle that gaps down
+    - Third candle: White candle similar in size to second, opening near
+      second's open
+
+    Despite the white candles in the bearish version, the pattern confirms
+    downtrend continuation when the gap holds.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        Low prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Gap Side-by-Side White Lines
+        -100: Bearish Gap Side-by-Side White Lines
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Second and third candles must be white with bodies >30% of average
+    - Second and third candles must be similar in size (<30% difference)
+    - Second and third candles must open at similar levels (<20% difference)
+    - Gap must be maintained
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 3:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlgapsidesidewhite_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlgapsidesidewhite_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLENGULFING(*args, **kwargs):
-    raise NotImplementedError("CDLENGULFING not yet implemented")
+def CDLGRAVESTONEDOJI(open_: Union[np.ndarray, list],
+                      high: Union[np.ndarray, list],
+                      low: Union[np.ndarray, list],
+                      close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Gravestone Doji - Single candle doji with long upper shadow
+
+    A doji pattern where the open and close are at or very near the low
+    of the candle, creating a long upper shadow. The shape resembles an
+    inverted T or a gravestone.
+
+    This pattern indicates that buyers pushed prices significantly higher
+    during the period, but sellers regained control and pushed prices back
+    down to the opening level. When appearing after an uptrend, it suggests
+    potential bearish reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Gravestone Doji pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Body must be very small (<10% of range and average body)
+    - Upper shadow must be significant (>60% of range)
+    - Lower shadow must be minimal (<10% of range)
+
+    The significance is greater when:
+    - Appearing after an uptrend
+    - The upper shadow is very long relative to recent candles
+    - Followed by a gap down on the next candle
+
+    This pattern is the bearish counterpart to the Dragonfly Doji.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlgravestonedoji_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlgravestonedoji_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLEVENINGDOJISTAR(*args, **kwargs):
-    raise NotImplementedError("CDLEVENINGDOJISTAR not yet implemented")
+def CDLHAMMER(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Hammer - Single candle bullish reversal with small body and long lower shadow
+
+    A single candlestick pattern with a small body at the upper end of the
+    trading range and a long lower shadow (at least twice the body length).
+    The shape resembles a hammer.
+
+    This pattern indicates that although sellers pushed prices significantly lower
+    during the session, buyers regained control and pushed prices back up near
+    the open. When appearing after a downtrend, it signals potential bullish
+    reversal.
+
+    The color of the body is less important (can be white or black), though
+    white hammers are considered slightly more bullish.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Hammer pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Small body (<30% of range)
+    - Long lower shadow (>2x body size and >50% of range)
+    - Small upper shadow (<20% of range)
+    - Body in upper portion of range
+
+    The pattern is most significant when:
+    - Appearing after a sustained downtrend
+    - Followed by a gap up or strong white candle
+    - The lower shadow is very long relative to recent candles
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhammer_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhammer_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLEVENINGSTAR(*args, **kwargs):
-    raise NotImplementedError("CDLEVENINGSTAR not yet implemented")
+def CDLHANGINGMAN(open_: Union[np.ndarray, list],
+                  high: Union[np.ndarray, list],
+                  low: Union[np.ndarray, list],
+                  close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Hanging Man - Single candle bearish reversal with small body and long lower shadow
+
+    A single candlestick pattern that is visually identical to the Hammer pattern
+    (small body at upper end, long lower shadow), but appears at the top of an
+    uptrend rather than after a downtrend, signaling potential bearish reversal.
+
+    The long lower shadow indicates that sellers pushed prices significantly lower
+    during the session, but buyers managed to push prices back up. When this occurs
+    after an uptrend, it suggests that buying pressure may be weakening and that
+    sellers are beginning to gain strength.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Hanging Man pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Small body (<30% of range)
+    - Long lower shadow (>2x body size and >50% of range)
+    - Small upper shadow (<20% of range)
+    - Body in upper portion of range
+
+    The pattern is most significant when:
+    - Appearing after a sustained uptrend
+    - Followed by a gap down or strong black candle
+    - Accompanied by high volume
+
+    Despite appearing at opposite trend positions, Hammer and Hanging Man
+    have identical visual characteristics. Context determines the interpretation.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhangingman_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhangingman_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLGAPSIDESIDEWHITE(*args, **kwargs):
-    raise NotImplementedError("CDLGAPSIDESIDEWHITE not yet implemented")
+def CDLHARAMI(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Harami - 2-candle reversal where second candle is contained within first
+
+    A two-candle reversal pattern where the second candle's body is completely
+    contained within the first candle's body. The name "harami" is Japanese for
+    "pregnant," referring to the visual appearance of the pattern.
+
+    Bullish Harami: Occurs after a downtrend. A large black candle is followed
+    by a smaller white candle whose body is completely within the black candle's
+    body, suggesting potential upward reversal.
+
+    Bearish Harami: Occurs after an uptrend. A large white candle is followed
+    by a smaller black candle whose body is completely within the white candle's
+    body, suggesting potential downward reversal.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Harami pattern detected
+        -100: Bearish Harami pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: Large body (>70% of average)
+    - Second candle: Body completely contained within first body
+    - Bullish: Black first, white second
+    - Bearish: White first, black second
+
+    The pattern signals indecision and potential reversal. The smaller the
+    second candle, the more significant the pattern. The Harami Cross
+    (where second candle is a doji) is an even stronger signal.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlharami_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlharami_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLGRAVESTONEDOJI(*args, **kwargs):
-    raise NotImplementedError("CDLGRAVESTONEDOJI not yet implemented")
+def CDLHARAMICROSS(open_: Union[np.ndarray, list],
+                   high: Union[np.ndarray, list],
+                   low: Union[np.ndarray, list],
+                   close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Harami Cross - 2-candle reversal where second candle is a doji within first
+
+    A variation of the Harami pattern where the second candle is a doji (cross)
+    completely contained within the first candle's body. This pattern is more
+    significant than a regular Harami because the doji represents stronger
+    indecision and equilibrium between buyers and sellers.
+
+    Bullish Harami Cross: Large black candle followed by a doji completely
+    within its body, signaling potential bullish reversal after downtrend.
+
+    Bearish Harami Cross: Large white candle followed by a doji completely
+    within its body, signaling potential bearish reversal after uptrend.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Harami Cross pattern detected
+        -100: Bearish Harami Cross pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: Large body (>70% of average)
+    - Second candle: Doji (body <10% of range and average)
+    - Second candle (open and close) completely within first body
+    - Bullish: Black first, doji second
+    - Bearish: White first, doji second
+
+    This pattern is considered more reliable than a regular Harami due to
+    the strong indecision signal from the doji. It often precedes significant
+    reversals when appearing at the end of established trends.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n < 2:
+        return np.zeros(n, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlharamicross_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlharamicross_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHAMMER(*args, **kwargs):
-    raise NotImplementedError("CDLHAMMER not yet implemented")
+def CDLHIGHWAVE(open_: Union[np.ndarray, list],
+                high: Union[np.ndarray, list],
+                low: Union[np.ndarray, list],
+                close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    High Wave - Doji with very long upper and lower shadows
+
+    A doji candlestick pattern with exceptionally long shadows in both
+    directions, resembling a wave. This pattern indicates extreme volatility
+    and strong indecision in the market.
+
+    The long shadows show that both buyers and sellers made significant moves
+    during the session, but neither group maintained control, resulting in a
+    close near the open. This extreme indecision can signal potential reversal
+    or continuation depending on the preceding trend and subsequent confirmation.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: High Wave pattern detected (indicates high volatility/indecision)
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Body must be very small (doji: <10% of range and average)
+    - Both upper and lower shadows must be significant (>30% of range each)
+    - Total shadows must dominate (>80% of range)
+
+    The pattern indicates:
+    - Extreme market indecision
+    - High volatility
+    - Battle between buyers and sellers
+    - Potential for significant move in either direction
+
+    This pattern is most significant when appearing at major support/resistance
+    levels or at the end of extended trends. Subsequent price action provides
+    the directional clue.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhighwave_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhighwave_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHANGINGMAN(*args, **kwargs):
-    raise NotImplementedError("CDLHANGINGMAN not yet implemented")
+def CDLHIKKAKE(open_: Union[np.ndarray, list],
+               high: Union[np.ndarray, list],
+               low: Union[np.ndarray, list],
+               close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Hikkake - 3-bar pattern with false inside day followed by breakout
+
+    The Hikkake pattern is a clever reversal pattern that exploits failed inside bars.
+    An inside bar (day 2) is followed by a breakout in the opposite direction on day 3,
+    trapping traders who anticipated a continuation of the inside bar pattern.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Hikkake (break below inside bar low)
+        -100: Bearish Hikkake (break above inside bar high)
+           0: No pattern
+
+    Notes
+    -----
+    Pattern structure:
+    - Day 1: Normal candle (reference bar)
+    - Day 2: Inside day (high < day1 high AND low > day1 low)
+    - Day 3: Breakout (bullish breaks below day 2 low, bearish breaks above day 2 high)
+
+    The pattern is counterintuitive - a downward break is bullish because it's a
+    "false breakdown" that reverses. This catches short-sellers off guard.
+
+    The pattern works because:
+    - Inside bars suggest consolidation
+    - Initial breakout direction attracts momentum traders
+    - Reversal traps those traders, forcing them to cover
+    - This creates momentum in the opposite direction
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhikkake_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhikkake_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHARAMI(*args, **kwargs):
-    raise NotImplementedError("CDLHARAMI not yet implemented")
+def CDLHIKKAKEMOD(open_: Union[np.ndarray, list],
+                  high: Union[np.ndarray, list],
+                  low: Union[np.ndarray, list],
+                  close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Modified Hikkake - Hikkake pattern with delayed confirmation window
+
+    The Modified Hikkake is a more reliable variation of the standard Hikkake pattern.
+    Instead of requiring immediate day 3 confirmation, it allows a confirmation window
+    of several days (typically 3-8 days) after the inside bar appears.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Modified Hikkake
+        -100: Bearish Modified Hikkake
+           0: No pattern
+
+    Notes
+    -----
+    Pattern structure:
+    - Day 1: Normal candle (reference bar)
+    - Day 2: Inside day (high < day1 high AND low > day1 low)
+    - Day 3-8: Confirmation within this window
+
+    Advantages over standard Hikkake:
+    - More reliable due to delayed confirmation
+    - Filters out false signals
+    - Allows for market context to develop
+    - Higher success rate but slower signal
+
+    This pattern is particularly useful in choppy markets where immediate
+    breakouts often fail. The delay requirement ensures the move has conviction.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhikkakemod_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhikkakemod_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHARAMICROSS(*args, **kwargs):
-    raise NotImplementedError("CDLHARAMICROSS not yet implemented")
+def CDLHOMINGPIGEON(open_: Union[np.ndarray, list],
+                    high: Union[np.ndarray, list],
+                    low: Union[np.ndarray, list],
+                    close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Homing Pigeon - Bullish reversal with two black candles, second contained in first
+
+    The Homing Pigeon is a bullish reversal pattern that appears in downtrends.
+    It consists of two consecutive black candles where the second candle's body
+    is completely contained within the first candle's body, signaling weakening
+    selling pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Homing Pigeon pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Both candles must be black (bearish)
+    - First candle has significant body (>70% of average)
+    - Second candle's body completely contained within first body
+    - Second candle is smaller than first
+
+    The pattern indicates:
+    - Selling momentum is decreasing
+    - Bears are losing control
+    - Potential bullish reversal ahead
+    - Similar to Harami but both candles are black
+
+    The name comes from the image of a pigeon returning home (to higher prices).
+    The smaller second candle suggests sellers are exhausted after the strong
+    down move, creating an opportunity for bulls to take control.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhomingpigeon_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhomingpigeon_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHIGHWAVE(*args, **kwargs):
-    raise NotImplementedError("CDLHIGHWAVE not yet implemented")
+def CDLIDENTICAL3CROWS(open_: Union[np.ndarray, list],
+                       high: Union[np.ndarray, list],
+                       low: Union[np.ndarray, list],
+                       close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Identical Three Crows - Bearish reversal with three black candles and similar closes
+
+    The Identical Three Crows pattern is a strong bearish reversal signal that appears
+    at market tops. It consists of three consecutive black candles with very similar
+    closing prices, indicating persistent and consistent selling pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Identical Three Crows pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Three consecutive black candles with significant bodies
+    - Each candle opens within the prior candle's body
+    - Closes are progressively lower
+    - Closing prices are very similar (identical within 0.5% tolerance)
+
+    The pattern indicates:
+    - Strong, persistent selling pressure
+    - Sellers are in complete control
+    - High probability of continued downtrend
+    - More bearish than regular Three Black Crows
+
+    The "identical" closes suggest methodical, persistent selling rather than
+    panic. This organized selling is often more bearish because it indicates
+    large institutional distribution rather than emotional retail selling.
+
+    This pattern is most reliable when it appears after an extended uptrend or
+    at a major resistance level.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlidentical3crows_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlidentical3crows_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHIKKAKE(*args, **kwargs):
-    raise NotImplementedError("CDLHIKKAKE not yet implemented")
+def CDLINNECK(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    In-Neck - Bearish continuation with white candle closing at prior low
 
+    The In-Neck pattern is a bearish continuation pattern that appears in downtrends.
+    After a black candle, a white candle opens below the prior low but closes right
+    at the prior candle's low (the "neck" level), showing that buying pressure was
+    unable to push prices higher and selling is likely to resume.
 
-def CDLHIKKAKEMOD(*args, **kwargs):
-    raise NotImplementedError("CDLHIKKAKEMOD not yet implemented")
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
 
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish In-Neck pattern
+           0: No pattern
 
-def CDLHOMINGPIGEON(*args, **kwargs):
-    raise NotImplementedError("CDLHOMINGPIGEON not yet implemented")
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: Black with significant body
+    - Second candle: White, opens below first candle's low (gap down)
+    - Second candle closes at/near first candle's low (within 1% tolerance)
 
+    The pattern indicates:
+    - Failed rally attempt
+    - Selling pressure resumes quickly
+    - Bearish continuation likely
+    - Similar to On-Neck but closes exactly at low
 
-def CDLIDENTICAL3CROWS(*args, **kwargs):
-    raise NotImplementedError("CDLIDENTICAL3CROWS not yet implemented")
+    The pattern is bearish because:
+    - Despite gap down, bulls couldn't push prices up
+    - Close at prior low shows strong resistance
+    - Trapped longs will likely exit, adding to selling pressure
 
+    This pattern is most reliable in established downtrends and should be
+    confirmed with subsequent price action.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
 
-def CDLINNECK(*args, **kwargs):
-    raise NotImplementedError("CDLINNECK not yet implemented")
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlinneck_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlinneck_numba(open_, high, low, close, output)
+        return output
 
 
 def CDLINVERTEDHAMMER(*args, **kwargs):

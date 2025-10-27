@@ -8,7 +8,13 @@ import numpy as np
 from typing import Union
 
 # Import CPU implementations
-from ..cpu.price_transform import _medprice_numba, _midpoint_numba, _midprice_numba
+from ..cpu.price_transform import (
+    _medprice_numba,
+    _midpoint_numba,
+    _midprice_numba,
+    _typprice_numba,
+    _wclprice_numba,
+)
 
 
 def MEDPRICE(high: Union[np.ndarray, list], low: Union[np.ndarray, list]) -> np.ndarray:
@@ -436,8 +442,9 @@ def TYPPRICE(high: Union[np.ndarray, list],
     if n == 0:
         return np.array([], dtype=np.float64)
 
-    # Calculate typical price: (H + L + C) / 3
-    output = (high + low + close) / 3.0
+    # Calculate typical price using Numba
+    output = np.empty(n, dtype=np.float64)
+    _typprice_numba(high, low, close, output)
 
     return output
 
@@ -539,7 +546,8 @@ def WCLPRICE(high: Union[np.ndarray, list],
     if n == 0:
         return np.array([], dtype=np.float64)
 
-    # Calculate weighted close price: (H + L + 2*C) / 4
-    output = (high + low + 2.0 * close) / 4.0
+    # Calculate weighted close price using Numba
+    output = np.empty(n, dtype=np.float64)
+    _wclprice_numba(high, low, close, output)
 
     return output
