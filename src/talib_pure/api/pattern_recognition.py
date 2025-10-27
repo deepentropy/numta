@@ -2638,24 +2638,345 @@ def CDLHIGHWAVE(open_: Union[np.ndarray, list],
         return output
 
 
-def CDLHIKKAKE(*args, **kwargs):
-    raise NotImplementedError("CDLHIKKAKE not yet implemented")
+def CDLHIKKAKE(open_: Union[np.ndarray, list],
+               high: Union[np.ndarray, list],
+               low: Union[np.ndarray, list],
+               close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Hikkake - 3-bar pattern with false inside day followed by breakout
+
+    The Hikkake pattern is a clever reversal pattern that exploits failed inside bars.
+    An inside bar (day 2) is followed by a breakout in the opposite direction on day 3,
+    trapping traders who anticipated a continuation of the inside bar pattern.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Hikkake (break below inside bar low)
+        -100: Bearish Hikkake (break above inside bar high)
+           0: No pattern
+
+    Notes
+    -----
+    Pattern structure:
+    - Day 1: Normal candle (reference bar)
+    - Day 2: Inside day (high < day1 high AND low > day1 low)
+    - Day 3: Breakout (bullish breaks below day 2 low, bearish breaks above day 2 high)
+
+    The pattern is counterintuitive - a downward break is bullish because it's a
+    "false breakdown" that reverses. This catches short-sellers off guard.
+
+    The pattern works because:
+    - Inside bars suggest consolidation
+    - Initial breakout direction attracts momentum traders
+    - Reversal traps those traders, forcing them to cover
+    - This creates momentum in the opposite direction
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhikkake_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhikkake_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHIKKAKEMOD(*args, **kwargs):
-    raise NotImplementedError("CDLHIKKAKEMOD not yet implemented")
+def CDLHIKKAKEMOD(open_: Union[np.ndarray, list],
+                  high: Union[np.ndarray, list],
+                  low: Union[np.ndarray, list],
+                  close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Modified Hikkake - Hikkake pattern with delayed confirmation window
+
+    The Modified Hikkake is a more reliable variation of the standard Hikkake pattern.
+    Instead of requiring immediate day 3 confirmation, it allows a confirmation window
+    of several days (typically 3-8 days) after the inside bar appears.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Modified Hikkake
+        -100: Bearish Modified Hikkake
+           0: No pattern
+
+    Notes
+    -----
+    Pattern structure:
+    - Day 1: Normal candle (reference bar)
+    - Day 2: Inside day (high < day1 high AND low > day1 low)
+    - Day 3-8: Confirmation within this window
+
+    Advantages over standard Hikkake:
+    - More reliable due to delayed confirmation
+    - Filters out false signals
+    - Allows for market context to develop
+    - Higher success rate but slower signal
+
+    This pattern is particularly useful in choppy markets where immediate
+    breakouts often fail. The delay requirement ensures the move has conviction.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhikkakemod_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhikkakemod_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLHOMINGPIGEON(*args, **kwargs):
-    raise NotImplementedError("CDLHOMINGPIGEON not yet implemented")
+def CDLHOMINGPIGEON(open_: Union[np.ndarray, list],
+                    high: Union[np.ndarray, list],
+                    low: Union[np.ndarray, list],
+                    close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Homing Pigeon - Bullish reversal with two black candles, second contained in first
+
+    The Homing Pigeon is a bullish reversal pattern that appears in downtrends.
+    It consists of two consecutive black candles where the second candle's body
+    is completely contained within the first candle's body, signaling weakening
+    selling pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Homing Pigeon pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Both candles must be black (bearish)
+    - First candle has significant body (>70% of average)
+    - Second candle's body completely contained within first body
+    - Second candle is smaller than first
+
+    The pattern indicates:
+    - Selling momentum is decreasing
+    - Bears are losing control
+    - Potential bullish reversal ahead
+    - Similar to Harami but both candles are black
+
+    The name comes from the image of a pigeon returning home (to higher prices).
+    The smaller second candle suggests sellers are exhausted after the strong
+    down move, creating an opportunity for bulls to take control.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlhomingpigeon_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlhomingpigeon_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLIDENTICAL3CROWS(*args, **kwargs):
-    raise NotImplementedError("CDLIDENTICAL3CROWS not yet implemented")
+def CDLIDENTICAL3CROWS(open_: Union[np.ndarray, list],
+                       high: Union[np.ndarray, list],
+                       low: Union[np.ndarray, list],
+                       close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Identical Three Crows - Bearish reversal with three black candles and similar closes
+
+    The Identical Three Crows pattern is a strong bearish reversal signal that appears
+    at market tops. It consists of three consecutive black candles with very similar
+    closing prices, indicating persistent and consistent selling pressure.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish Identical Three Crows pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Three consecutive black candles with significant bodies
+    - Each candle opens within the prior candle's body
+    - Closes are progressively lower
+    - Closing prices are very similar (identical within 0.5% tolerance)
+
+    The pattern indicates:
+    - Strong, persistent selling pressure
+    - Sellers are in complete control
+    - High probability of continued downtrend
+    - More bearish than regular Three Black Crows
+
+    The "identical" closes suggest methodical, persistent selling rather than
+    panic. This organized selling is often more bearish because it indicates
+    large institutional distribution rather than emotional retail selling.
+
+    This pattern is most reliable when it appears after an extended uptrend or
+    at a major resistance level.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlidentical3crows_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlidentical3crows_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLINNECK(*args, **kwargs):
-    raise NotImplementedError("CDLINNECK not yet implemented")
+def CDLINNECK(open_: Union[np.ndarray, list],
+              high: Union[np.ndarray, list],
+              low: Union[np.ndarray, list],
+              close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    In-Neck - Bearish continuation with white candle closing at prior low
+
+    The In-Neck pattern is a bearish continuation pattern that appears in downtrends.
+    After a black candle, a white candle opens below the prior low but closes right
+    at the prior candle's low (the "neck" level), showing that buying pressure was
+    unable to push prices higher and selling is likely to resume.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+        -100: Bearish In-Neck pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First candle: Black with significant body
+    - Second candle: White, opens below first candle's low (gap down)
+    - Second candle closes at/near first candle's low (within 1% tolerance)
+
+    The pattern indicates:
+    - Failed rally attempt
+    - Selling pressure resumes quickly
+    - Bearish continuation likely
+    - Similar to On-Neck but closes exactly at low
+
+    The pattern is bearish because:
+    - Despite gap down, bulls couldn't push prices up
+    - Close at prior low shows strong resistance
+    - Trapped longs will likely exit, adding to selling pressure
+
+    This pattern is most reliable in established downtrends and should be
+    confirmed with subsequent price action.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlinneck_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlinneck_numba(open_, high, low, close, output)
+        return output
 
 
 def CDLINVERTEDHAMMER(*args, **kwargs):

@@ -88,11 +88,11 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Pattern Recognition | CDLHARAMI | ✓ | ✗ | 2-candle reversal where second body contained within first |
 | Pattern Recognition | CDLHARAMICROSS | ✓ | ✗ | Harami pattern with doji as second candle |
 | Pattern Recognition | CDLHIGHWAVE | ✓ | ✗ | Doji with very long upper and lower shadows |
-| Pattern Recognition | CDLHIKKAKE | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHIKKAKEMOD | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLHOMINGPIGEON | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLIDENTICAL3CROWS | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLINNECK | ✗ | ✗ | Not yet implemented |
+| Pattern Recognition | CDLHIKKAKE | ✓ | ✗ | 3-bar pattern with false inside day followed by breakout |
+| Pattern Recognition | CDLHIKKAKEMOD | ✓ | ✗ | Modified Hikkake with delayed confirmation window |
+| Pattern Recognition | CDLHOMINGPIGEON | ✓ | ✗ | Bullish reversal - 2 black candles, second contained in first body |
+| Pattern Recognition | CDLIDENTICAL3CROWS | ✓ | ✗ | Bearish reversal - 3 black candles with similar closes |
+| Pattern Recognition | CDLINNECK | ✓ | ✗ | Bearish continuation - white candle closes at prior low |
 | Pattern Recognition | CDLINVERTEDHAMMER | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLKICKING | ✗ | ✗ | Not yet implemented |
 | Pattern Recognition | CDLKICKINGBYLENGTH | ✗ | ✗ | Not yet implemented |
@@ -151,7 +151,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
 | Overlap | 13 | 13 (100%) | 12 (92%) |
-| Pattern Recognition | 60 | 49 (82%) | 22 (36%) |
+| Pattern Recognition | 60 | 54 (90%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
 | Statistic Functions | 6 | 5 (83%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
@@ -161,10 +161,10 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 123 (90%)
+- **CPU (Numba) Implementations**: 128 (94%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 13
-- **Fully Implemented**: 123
+- **Not Yet Implemented**: 8
+- **Fully Implemented**: 128
 
 ## Notes
 

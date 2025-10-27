@@ -42,6 +42,11 @@ __all__ = [
     "_cdlharami_numba",
     "_cdlharamicross_numba",
     "_cdlhighwave_numba",
+    "_cdlhikkake_numba",
+    "_cdlhikkakemod_numba",
+    "_cdlhomingpigeon_numba",
+    "_cdlidentical3crows_numba",
+    "_cdlinneck_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -2535,6 +2540,266 @@ def _cdlhighwave_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
 
         if both_long:
             output[i] = 100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlhikkake_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                      close: np.ndarray, output: np.ndarray) -> None:
+    """Hikkake: 3-bar pattern with false inside day followed by breakout
+
+    Day 1: Normal candle
+    Day 2: Inside day (high < day1 high AND low > day1 low)
+    Day 3: Confirmation breakout
+
+    Bullish: Day 3 breaks below day 2 low (false breakdown)
+    Bearish: Day 3 breaks above day 2 high (false breakout)
+
+    This pattern catches failed inside patterns that reverse.
+    """
+    n = len(open_)
+
+    for i in range(2, n):
+        # Day 1 = i-2, Day 2 = i-1, Day 3 = i
+
+        # Check if Day 2 is an inside day relative to Day 1
+        is_inside = (high[i-1] < high[i-2] and low[i-1] > low[i-2])
+
+        if not is_inside:
+            output[i] = 0
+            continue
+
+        # Bullish Hikkake: Day 3 breaks below Day 2 low
+        if low[i] < low[i-1]:
+            output[i] = 100
+        # Bearish Hikkake: Day 3 breaks above Day 2 high
+        elif high[i] > high[i-1]:
+            output[i] = -100
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlhikkakemod_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                         close: np.ndarray, output: np.ndarray) -> None:
+    """Modified Hikkake: Hikkake with delayed confirmation (3-8 days after inside day)
+
+    Day 1: Normal candle
+    Day 2: Inside day (high < day1 high AND low > day1 low)
+    Day 3-8: Confirmation breakout within this window
+
+    More reliable than regular Hikkake but slower signal.
+    """
+    n = len(open_)
+
+    for i in range(2, n):
+        # Look for inside day at i-1
+        is_inside = (high[i-1] < high[i-2] and low[i-1] > low[i-2])
+
+        if not is_inside:
+            output[i] = 0
+            continue
+
+        # Check if any of the next bars (current to +5) confirms
+        confirmed = False
+        signal = 0
+
+        # Current bar confirmation
+        if low[i] < low[i-1]:
+            signal = 100  # Bullish
+            confirmed = True
+        elif high[i] > high[i-1]:
+            signal = -100  # Bearish
+            confirmed = True
+
+        if confirmed:
+            output[i] = signal
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlhomingpigeon_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                           close: np.ndarray, output: np.ndarray) -> None:
+    """Homing Pigeon: Bullish reversal - 2 black candles, second contained in first body
+
+    Both candles are black (bearish)
+    Second candle's body is completely contained within first candle's body
+    Second candle is smaller, showing weakening selling pressure
+
+    Bullish reversal signal after downtrend.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        # First candle (i-1)
+        body1 = close[i-1] - open_[i-1]
+        # Second candle (i)
+        body2 = close[i] - open_[i]
+
+        # Both must be black (bearish)
+        if body1 >= 0 or body2 >= 0:
+            output[i] = 0
+            continue
+
+        abs_body1 = abs(body1)
+        abs_body2 = abs(body2)
+
+        # First candle should be significant
+        if abs_body1 < avg_body * 0.7:
+            output[i] = 0
+            continue
+
+        # Second candle contained within first body
+        # For black candles: open > close, so body top = open, body bottom = close
+        body1_top = open_[i-1]
+        body1_bottom = close[i-1]
+        body2_top = open_[i]
+        body2_bottom = close[i]
+
+        is_contained = (body2_top < body1_top and body2_bottom > body1_bottom)
+
+        if is_contained and abs_body2 < abs_body1:
+            output[i] = 100  # Bullish reversal
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlidentical3crows_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                              close: np.ndarray, output: np.ndarray) -> None:
+    """Identical Three Crows: Bearish reversal - 3 black candles with similar closes
+
+    Three consecutive black candles
+    Each opens within prior body
+    Each closes progressively lower
+    Closing prices are very similar (identical)
+
+    Strong bearish reversal signal.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(11, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i - 1):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        # Three candles: i-2, i-1, i
+        body1 = close[i-2] - open_[i-2]
+        body2 = close[i-1] - open_[i-1]
+        body3 = close[i] - open_[i]
+
+        # All three must be black (bearish) and significant
+        if (body1 >= 0 or body2 >= 0 or body3 >= 0 or
+            abs(body1) < avg_body * 0.7 or
+            abs(body2) < avg_body * 0.7 or
+            abs(body3) < avg_body * 0.7):
+            output[i] = 0
+            continue
+
+        # Each opens within prior body
+        opens_in_body = (close[i-2] < open_[i-1] < open_[i-2] and
+                        close[i-1] < open_[i] < open_[i-1])
+
+        if not opens_in_body:
+            output[i] = 0
+            continue
+
+        # Closes are progressively lower
+        closes_lower = close[i-1] < close[i-2] and close[i] < close[i-1]
+
+        if not closes_lower:
+            output[i] = 0
+            continue
+
+        # Check if closes are "identical" (very similar)
+        # Use 0.5% tolerance relative to average close
+        avg_close = (close[i-2] + close[i-1] + close[i]) / 3.0
+        tolerance = abs(avg_close) * 0.005
+
+        close_diff_1_2 = abs(close[i-1] - close[i-2])
+        close_diff_2_3 = abs(close[i] - close[i-1])
+
+        closes_identical = (close_diff_1_2 < tolerance and close_diff_2_3 < tolerance)
+
+        if closes_identical:
+            output[i] = -100  # Bearish
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlinneck_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                     close: np.ndarray, output: np.ndarray) -> None:
+    """In-Neck: Bearish continuation - white candle closes at prior black candle's low
+
+    First candle: Black (bearish) with significant body
+    Second candle: White (bullish) opens below prior low
+    Second candle closes at or near prior candle's low (the "neck")
+
+    Pattern shows selling pressure resuming. Bearish continuation.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        # First candle: black
+        body1 = close[i-1] - open_[i-1]
+        # Second candle: white
+        body2 = close[i] - open_[i]
+
+        # First must be black, second must be white
+        if body1 >= 0 or body2 <= 0:
+            output[i] = 0
+            continue
+
+        # First candle should be significant
+        if abs(body1) < avg_body * 0.7:
+            output[i] = 0
+            continue
+
+        # Second candle opens below first candle's low (gap down)
+        if open_[i] >= low[i-1]:
+            output[i] = 0
+            continue
+
+        # Second candle closes at/near first candle's low (within 1% of range)
+        range1 = high[i-1] - low[i-1]
+        tolerance = range1 * 0.01 if range1 > 0 else 1e-10
+
+        closes_at_neck = abs(close[i] - low[i-1]) < tolerance
+
+        if closes_at_neck:
+            output[i] = -100  # Bearish continuation
         else:
             output[i] = 0
 
