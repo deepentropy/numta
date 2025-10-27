@@ -2979,24 +2979,339 @@ def CDLINNECK(open_: Union[np.ndarray, list],
         return output
 
 
-def CDLINVERTEDHAMMER(*args, **kwargs):
-    raise NotImplementedError("CDLINVERTEDHAMMER not yet implemented")
+def CDLINVERTEDHAMMER(open_: Union[np.ndarray, list],
+                      high: Union[np.ndarray, list],
+                      low: Union[np.ndarray, list],
+                      close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Inverted Hammer - Single candle bullish reversal with small body and long upper shadow
+
+    The Inverted Hammer is a bullish reversal pattern that appears at market bottoms.
+    Despite its bearish appearance (long upper shadow), it suggests buyers pushed prices
+    higher during the session, indicating potential reversal from downtrend.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Inverted Hammer pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Small body (<30% of range) at lower end of candle
+    - Long upper shadow (>2x body, >50% of range)
+    - Small lower shadow (<20% of range)
+    - Body at bottom (lower shadow + body < 50% of range)
+
+    The pattern indicates:
+    - Buyers testing higher prices (upper shadow)
+    - Potential bullish reversal from downtrend
+    - Opposite of Shooting Star pattern
+    - Requires confirmation from next candle
+
+    The upper shadow shows that buyers pushed prices significantly higher during
+    the session, even though sellers pushed them back down by the close. This
+    buyer activity after a downtrend suggests potential reversal.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlinvertedhammer_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlinvertedhammer_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLKICKING(*args, **kwargs):
-    raise NotImplementedError("CDLKICKING not yet implemented")
+def CDLKICKING(open_: Union[np.ndarray, list],
+               high: Union[np.ndarray, list],
+               low: Union[np.ndarray, list],
+               close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Kicking - Strong reversal with two opposite marubozu candles that gap
+
+    The Kicking pattern is one of the strongest reversal signals in candlestick
+    analysis. It consists of two consecutive marubozu candles of opposite colors
+    that gap away from each other, showing a sudden and dramatic shift in sentiment.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Kicking (black marubozu followed by gapping white marubozu)
+        -100: Bearish Kicking (white marubozu followed by gapping black marubozu)
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Both candles are marubozu (body >95% of range)
+    - Opposite colors (first black, second white OR first white, second black)
+    - Gap between candles (second opens beyond first's close)
+
+    The pattern indicates:
+    - Sudden shift in market sentiment
+    - Very strong reversal signal
+    - Gap shows conviction in new direction
+    - Both sides (bulls and bears) showing extreme strength
+
+    The name "kicking" refers to how the market kicks away from its previous
+    direction with violent momentum. This is one of the most reliable reversal
+    patterns when it appears.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlkicking_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlkicking_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLKICKINGBYLENGTH(*args, **kwargs):
-    raise NotImplementedError("CDLKICKINGBYLENGTH not yet implemented")
+def CDLKICKINGBYLENGTH(open_: Union[np.ndarray, list],
+                       high: Union[np.ndarray, list],
+                       low: Union[np.ndarray, list],
+                       close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Kicking By Length - Kicking pattern where second marubozu is longer than first
+
+    This is an enhanced version of the Kicking pattern with an additional requirement:
+    the second candle's body must be longer than the first. This shows not just a
+    reversal, but accelerating momentum in the new direction.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Kicking By Length
+        -100: Bearish Kicking By Length
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Both candles are marubozu (body >95% of range)
+    - Opposite colors
+    - Gap between candles
+    - Second candle body longer than first (additional requirement)
+
+    The pattern indicates:
+    - Even stronger reversal than regular Kicking
+    - Accelerating momentum in new direction
+    - High confidence reversal signal
+    - Second wave stronger than first
+
+    The length requirement filters for the most powerful reversals where
+    the new directional move has more force than the previous one. This
+    makes it an even more reliable signal than standard Kicking.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlkickingbylength_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlkickingbylength_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLLADDERBOTTOM(*args, **kwargs):
-    raise NotImplementedError("CDLLADDERBOTTOM not yet implemented")
+def CDLLADDERBOTTOM(open_: Union[np.ndarray, list],
+                    high: Union[np.ndarray, list],
+                    low: Union[np.ndarray, list],
+                    close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Ladder Bottom - Rare 5-candle bullish reversal pattern
+
+    The Ladder Bottom is a rare but powerful bullish reversal pattern that appears
+    after extended downtrends. It shows seller exhaustion through a sequence of
+    black candles that progressively weaken, followed by a strong white candle.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Bullish Ladder Bottom pattern
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - First three candles: Black with significant bodies, declining closes
+    - Fourth candle: Black, opens lower than third (exhaustion gap)
+    - Fifth candle: White, closes above fourth's open
+
+    The pattern indicates:
+    - Seller exhaustion after extended decline
+    - Strong bullish reversal signal
+    - The "ladder" of declining closes shows organized selling
+    - The gap down then reversal shows capitulation
+
+    The name comes from the visual appearance of three descending black candles
+    forming a ladder down, with the fourth candle's gap showing exhaustion,
+    and the fifth white candle reversing the trend. Rare but highly reliable.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdlladderbottom_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdlladderbottom_numba(open_, high, low, close, output)
+        return output
 
 
-def CDLLONGLEGGEDDOJI(*args, **kwargs):
-    raise NotImplementedError("CDLLONGLEGGEDDOJI not yet implemented")
+def CDLLONGLEGGEDDOJI(open_: Union[np.ndarray, list],
+                      high: Union[np.ndarray, list],
+                      low: Union[np.ndarray, list],
+                      close: Union[np.ndarray, list]) -> np.ndarray:
+    """
+    Long-Legged Doji - Doji with very long upper and lower shadows
+
+    The Long-Legged Doji is a powerful indecision pattern that shows extreme
+    volatility and battle between buyers and sellers. Both sides made strong
+    moves but neither could maintain control, resulting in a close near the open.
+
+    Parameters
+    ----------
+    open_ : array-like
+        Open prices
+    high : array-like
+        High prices
+    low : array-like
+        Low prices
+    close : array-like
+        Close prices
+
+    Returns
+    -------
+    np.ndarray
+        Array of pattern signals:
+         100: Long-Legged Doji pattern detected
+           0: No pattern
+
+    Notes
+    -----
+    Pattern requirements:
+    - Very small body (doji: <10% of range and average)
+    - Both shadows very long (>40% of range each)
+    - Total shadows dominate (>85% of range)
+
+    The pattern indicates:
+    - Extreme market indecision
+    - High volatility during session
+    - Major battle between bulls and bears
+    - Potential reversal or continuation
+    - Requires next-candle confirmation
+
+    Similar to High Wave Candle but with stricter requirements for shadow length.
+    The "long legs" refer to the extended upper and lower shadows. Most significant
+    at major support/resistance levels or after extended trends.
+    """
+    # Convert inputs to numpy arrays
+    open_, high, low, close = [np.asarray(x, dtype=np.float64) for x in [open_, high, low, close]]
+
+    # Validate input
+    n = len(open_)
+    if not all(len(x) == n for x in [high, low, close]):
+        raise ValueError("All input arrays must have the same length")
+
+    if n == 0:
+        return np.zeros(0, dtype=np.int32)
+
+    # Use GPU or CPU backend
+    if get_backend() == "gpu":
+        return _cdllongleggeddoji_cupy(open_, high, low, close)
+    else:
+        output = np.zeros(n, dtype=np.int32)
+        _cdllongleggeddoji_numba(open_, high, low, close, output)
+        return output
 
 
 def CDLLONGLINE(*args, **kwargs):

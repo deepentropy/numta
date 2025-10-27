@@ -47,6 +47,11 @@ __all__ = [
     "_cdlhomingpigeon_numba",
     "_cdlidentical3crows_numba",
     "_cdlinneck_numba",
+    "_cdlinvertedhammer_numba",
+    "_cdlkicking_numba",
+    "_cdlkickingbylength_numba",
+    "_cdlladderbottom_numba",
+    "_cdllongleggeddoji_numba",
     "_cdlmarubozu_numba",
     "_cdlmatchinglow_numba",
     "_cdlmathold_numba",
@@ -2802,5 +2807,280 @@ def _cdlinneck_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
             output[i] = -100  # Bearish continuation
         else:
             output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlinvertedhammer_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                             close: np.ndarray, output: np.ndarray) -> None:
+    """Inverted Hammer: Single candle bullish reversal with small body and long upper shadow
+
+    Small body (<30% of range) at the lower end of the candle
+    Long upper shadow (>2x body, >50% of range)
+    Small lower shadow (<20% of range)
+
+    Bullish reversal signal after downtrend. Despite bearish appearance,
+    it shows buyers pushing prices up during session (hence upper shadow),
+    suggesting potential reversal.
+    """
+    n = len(open_)
+
+    for i in range(10, n):
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Calculate shadows
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Small body (<30% of range)
+        small_body = body < range_ * 0.3
+
+        # Long upper shadow (>2x body and >50% of range)
+        long_upper = upper_shadow > body * 2.0 and upper_shadow > range_ * 0.5
+
+        # Small lower shadow (<20% of range)
+        small_lower = lower_shadow < range_ * 0.2
+
+        # Body should be at lower end (lower shadow + body < 50% of range)
+        body_at_bottom = (lower_shadow + body) < range_ * 0.5
+
+        if small_body and long_upper and small_lower and body_at_bottom:
+            output[i] = 100  # Bullish reversal
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlkicking_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                      close: np.ndarray, output: np.ndarray) -> None:
+    """Kicking: Strong reversal with two opposite marubozu candles that gap
+
+    Two consecutive marubozu candles of opposite colors
+    Second candle gaps away from first (no overlap)
+    Both candles have very small wicks (<5% of body)
+
+    Very strong reversal signal - shows sudden shift in sentiment.
+    Bullish: Black marubozu followed by gapping white marubozu
+    Bearish: White marubozu followed by gapping black marubozu
+    """
+    n = len(open_)
+
+    for i in range(10, n):
+        # Check both candles are marubozu (wicks <5% of body)
+        body1 = abs(close[i-1] - open_[i-1])
+        body2 = abs(close[i] - open_[i])
+        range1 = high[i-1] - low[i-1]
+        range2 = high[i] - low[i]
+
+        if body1 < 1e-10 or body2 < 1e-10:
+            output[i] = 0
+            continue
+
+        # Both should be marubozu (body >95% of range)
+        is_marubozu1 = body1 / range1 > 0.95 if range1 > 0 else False
+        is_marubozu2 = body2 / range2 > 0.95 if range2 > 0 else False
+
+        if not (is_marubozu1 and is_marubozu2):
+            output[i] = 0
+            continue
+
+        # First candle black, second white (bullish)
+        if close[i-1] < open_[i-1] and close[i] > open_[i]:
+            # Gap up (second opens above first close)
+            if open_[i] > close[i-1]:
+                output[i] = 100  # Bullish
+            else:
+                output[i] = 0
+        # First candle white, second black (bearish)
+        elif close[i-1] > open_[i-1] and close[i] < open_[i]:
+            # Gap down (second opens below first close)
+            if open_[i] < close[i-1]:
+                output[i] = -100  # Bearish
+            else:
+                output[i] = 0
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlkickingbylength_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                              close: np.ndarray, output: np.ndarray) -> None:
+    """Kicking By Length: Kicking pattern where second marubozu is longer than first
+
+    Same as Kicking pattern but with additional requirement:
+    Second candle body must be longer than first candle body
+
+    Even stronger signal than regular Kicking, showing accelerating momentum.
+    """
+    n = len(open_)
+
+    for i in range(10, n):
+        # Check both candles are marubozu (wicks <5% of body)
+        body1 = abs(close[i-1] - open_[i-1])
+        body2 = abs(close[i] - open_[i])
+        range1 = high[i-1] - low[i-1]
+        range2 = high[i] - low[i]
+
+        if body1 < 1e-10 or body2 < 1e-10:
+            output[i] = 0
+            continue
+
+        # Both should be marubozu (body >95% of range)
+        is_marubozu1 = body1 / range1 > 0.95 if range1 > 0 else False
+        is_marubozu2 = body2 / range2 > 0.95 if range2 > 0 else False
+
+        if not (is_marubozu1 and is_marubozu2):
+            output[i] = 0
+            continue
+
+        # Second body must be longer than first (by length)
+        if body2 <= body1:
+            output[i] = 0
+            continue
+
+        # First candle black, second white (bullish)
+        if close[i-1] < open_[i-1] and close[i] > open_[i]:
+            # Gap up (second opens above first close)
+            if open_[i] > close[i-1]:
+                output[i] = 100  # Bullish
+            else:
+                output[i] = 0
+        # First candle white, second black (bearish)
+        elif close[i-1] > open_[i-1] and close[i] < open_[i]:
+            # Gap down (second opens below first close)
+            if open_[i] < close[i-1]:
+                output[i] = -100  # Bearish
+            else:
+                output[i] = 0
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdlladderbottom_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                           close: np.ndarray, output: np.ndarray) -> None:
+    """Ladder Bottom: Rare 5-candle bullish reversal pattern
+
+    Three consecutive black candles declining (like a ladder)
+    Fourth black candle opens lower (showing exhaustion)
+    Fifth white candle closes above the fourth's open
+
+    Rare but strong bullish reversal signal showing seller exhaustion.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(11, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i - 1):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        # Five candles: i-4, i-3, i-2, i-1, i
+        # First three must be black
+        body1 = close[i-4] - open_[i-4]
+        body2 = close[i-3] - open_[i-3]
+        body3 = close[i-2] - open_[i-2]
+        body4 = close[i-1] - open_[i-1]
+        body5 = close[i] - open_[i]
+
+        # First four candles must be black (bearish)
+        if (body1 >= 0 or body2 >= 0 or body3 >= 0 or body4 >= 0):
+            output[i] = 0
+            continue
+
+        # Fifth candle must be white (bullish)
+        if body5 <= 0:
+            output[i] = 0
+            continue
+
+        # First three should be significant and declining
+        if (abs(body1) < avg_body * 0.5 or
+            abs(body2) < avg_body * 0.5 or
+            abs(body3) < avg_body * 0.5):
+            output[i] = 0
+            continue
+
+        # Closes should be progressively lower for first three
+        if not (close[i-3] < close[i-4] and close[i-2] < close[i-3]):
+            output[i] = 0
+            continue
+
+        # Fourth candle opens lower (gap down or just lower)
+        if open_[i-1] >= open_[i-2]:
+            output[i] = 0
+            continue
+
+        # Fifth candle (white) closes above fourth's open
+        if close[i] > open_[i-1]:
+            output[i] = 100  # Bullish reversal
+        else:
+            output[i] = 0
+
+
+@jit(nopython=True, cache=True)
+def _cdllongleggeddoji_numba(open_: np.ndarray, high: np.ndarray, low: np.ndarray,
+                             close: np.ndarray, output: np.ndarray) -> None:
+    """Long-Legged Doji: Doji with very long upper and lower shadows
+
+    Very small body (doji)
+    Both upper and lower shadows are very long (>40% of range each)
+    Total shadows >85% of range
+    Similar to High Wave but more strict criteria
+
+    Indicates extreme indecision and volatility.
+    """
+    n = len(open_)
+
+    # Calculate average body over lookback
+    for i in range(10, n):
+        # Calculate average body size for the last 10 bars
+        total_body = 0.0
+        for j in range(i - 10, i):
+            total_body += abs(close[j] - open_[j])
+        avg_body = total_body / 10.0
+
+        if avg_body < 1e-10:
+            output[i] = 0
+            continue
+
+        body = abs(close[i] - open_[i])
+        range_ = high[i] - low[i]
+
+        if range_ < 1e-10:
+            output[i] = 0
+            continue
+
+        # Doji: body is very small
+        is_doji = body < range_ * 0.1 and body < avg_body * 0.1
+
+        if not is_doji:
+            output[i] = 0
+            continue
+
+        # Long-Legged: both shadows are very long
+        lower_shadow = min(open_[i], close[i]) - low[i]
+        upper_shadow = high[i] - max(open_[i], close[i])
+
+        # Both shadows should be very long (>40% of range each)
+        # Total shadows should dominate (>85% of range)
+        both_very_long = (lower_shadow > range_ * 0.4 and
+                         upper_shadow > range_ * 0.4 and
+                         (lower_shadow + upper_shadow) > range_ * 0.85)
+
+        if both_very_long:
+            output[i] = 100  # Signal of extreme indecision
+        else:
+            output[i] = 0
+
 
 
