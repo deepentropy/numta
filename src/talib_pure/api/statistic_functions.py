@@ -9,6 +9,7 @@ from typing import Union
 
 # Import CPU implementations
 from ..cpu.statistic_functions import (
+    _beta_numba,
     _correl_numba,
     _linearreg_numba,
     _linearreg_angle_numba,
@@ -17,13 +18,68 @@ from ..cpu.statistic_functions import (
 )
 
 
-def BETA(*args, **kwargs):
+def BETA(high: Union[np.ndarray, list],
+         low: Union[np.ndarray, list],
+         timeperiod: int = 5) -> np.ndarray:
     """
-    Beta (volatility measure)
+    Beta - Volatility measure relative to a benchmark
 
-    Not yet implemented.
+    Beta measures how volatile a security is relative to a benchmark.
+    It's calculated as the covariance between the security and benchmark
+    divided by the variance of the benchmark.
+
+    Parameters
+    ----------
+    high : array-like
+        High prices (treated as the asset/security)
+    low : array-like
+        Low prices (treated as the benchmark)
+    timeperiod : int, default 5
+        Number of periods to use for calculation
+
+    Returns
+    -------
+    np.ndarray
+        Array of beta values:
+        - Beta > 1: Asset is more volatile than benchmark
+        - Beta = 1: Asset has same volatility as benchmark
+        - Beta < 1: Asset is less volatile than benchmark
+        - Beta < 0: Asset moves inversely to benchmark
+
+    Notes
+    -----
+    Beta Formula:
+        Beta = Covariance(asset, benchmark) / Variance(benchmark)
+        Beta = Σ((asset - asset_mean) * (benchmark - benchmark_mean)) / Σ((benchmark - benchmark_mean)²)
+
+    Common uses:
+    - Portfolio risk assessment
+    - Capital Asset Pricing Model (CAPM)
+    - Hedge ratio calculation
+    - Understanding systematic risk
+
+    A higher beta indicates the asset amplifies market movements, while
+    a lower beta suggests the asset is more stable relative to the market.
     """
-    raise NotImplementedError("BETA not yet implemented")
+    # Convert to numpy arrays
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+
+    # Validate inputs
+    if len(high) != len(low):
+        raise ValueError("high and low must have the same length")
+
+    if len(high) == 0:
+        return np.zeros(0, dtype=np.float64)
+
+    if timeperiod < 1:
+        raise ValueError("timeperiod must be at least 1")
+
+    # Calculate using Numba implementation
+    output = np.empty(len(high), dtype=np.float64)
+    _beta_numba(high, low, timeperiod, output)
+
+    return output
 
 
 def CORREL(high: Union[np.ndarray, list],

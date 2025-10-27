@@ -8,7 +8,7 @@ import numpy as np
 from typing import Union
 
 # Import CPU implementations
-from ..cpu.volatility_indicators import _trange_numba
+from ..cpu.volatility_indicators import _natr_numba, _trange_numba
 
 
 def NATR(high: Union[np.ndarray, list],
@@ -131,19 +131,9 @@ def NATR(high: Union[np.ndarray, list],
     if n == 0:
         return np.array([], dtype=np.float64)
 
-    # Import ATR from momentum_indicators API
-    from .momentum_indicators import ATR
-
-    # Calculate ATR
-    atr = ATR(high, low, close, timeperiod=timeperiod)
-
-    # Calculate NATR
+    # Calculate using Numba implementation
     output = np.empty(n, dtype=np.float64)
-    for i in range(n):
-        if np.isnan(atr[i]) or close[i] == 0.0:
-            output[i] = np.nan
-        else:
-            output[i] = (atr[i] / close[i]) * 100.0
+    _natr_numba(high, low, close, timeperiod, output)
 
     return output
 

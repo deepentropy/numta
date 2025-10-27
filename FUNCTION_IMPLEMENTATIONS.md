@@ -93,12 +93,12 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Pattern Recognition | CDLHOMINGPIGEON | ✓ | ✗ | Bullish reversal - 2 black candles, second contained in first body |
 | Pattern Recognition | CDLIDENTICAL3CROWS | ✓ | ✗ | Bearish reversal - 3 black candles with similar closes |
 | Pattern Recognition | CDLINNECK | ✓ | ✗ | Bearish continuation - white candle closes at prior low |
-| Pattern Recognition | CDLINVERTEDHAMMER | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLKICKING | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLKICKINGBYLENGTH | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLLADDERBOTTOM | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLLONGLEGGEDDOJI | ✗ | ✗ | Not yet implemented |
-| Pattern Recognition | CDLLONGLINE | ✗ | ✗ | Not yet implemented |
+| Pattern Recognition | CDLINVERTEDHAMMER | ✓ | ✗ | Bullish reversal - small body with long upper shadow |
+| Pattern Recognition | CDLKICKING | ✓ | ✗ | Strong reversal with two opposite marubozu candles that gap |
+| Pattern Recognition | CDLKICKINGBYLENGTH | ✓ | ✗ | Kicking pattern where second marubozu is longer than first |
+| Pattern Recognition | CDLLADDERBOTTOM | ✓ | ✗ | Rare 5-candle bullish reversal pattern |
+| Pattern Recognition | CDLLONGLEGGEDDOJI | ✓ | ✗ | Doji with very long upper and lower shadows |
+| Pattern Recognition | CDLLONGLINE | ✓ | ✗ | Single candle with very long body showing strong conviction |
 | Pattern Recognition | CDLMARUBOZU | ✓ | ✓ | - |
 | Pattern Recognition | CDLMATCHINGLOW | ✓ | ✓ | - |
 | Pattern Recognition | CDLMATHOLD | ✓ | ✓ | - |
@@ -126,7 +126,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Price Transform | MIDPRICE | ✓ | ✗ | - |
 | Price Transform | TYPPRICE | ✓ | ✗ | - |
 | Price Transform | WCLPRICE | ✓ | ✗ | - |
-| Statistic Functions | BETA | ✗ | ✗ | Not yet implemented |
+| Statistic Functions | BETA | ✓ | ✗ | Volatility measure relative to a benchmark |
 | Statistic Functions | CORREL | ✓ | ✗ | - |
 | Statistic Functions | LINEARREG | ✓ | ✗ | - |
 | Statistic Functions | LINEARREG_ANGLE | ✓ | ✗ | - |
@@ -135,7 +135,7 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Statistics | STDDEV | ✓ | ✗ | - |
 | Statistics | TSF | ✓ | ✗ | - |
 | Statistics | VAR | ✓ | ✗ | - |
-| Volatility Indicators | NATR | ✗ | ✗ | Uses ATR internally |
+| Volatility Indicators | NATR | ✓ | ✗ | Normalized ATR expressed as percentage |
 | Volatility Indicators | TRANGE | ✓ | ✗ | - |
 | Volume Indicators | AD | ✓ | ✗ | - |
 | Volume Indicators | ADOSC | ✓ | ✗ | - |
@@ -151,20 +151,20 @@ This table shows which talib-pure functions have Numba (CPU) and GPU (CuPy) impl
 | Math Operators | 7 | 7 (100%) | 0 (0%) |
 | Momentum Indicators | 31 | 31 (100%) | 4 (12%) |
 | Overlap | 13 | 13 (100%) | 12 (92%) |
-| Pattern Recognition | 60 | 54 (90%) | 22 (36%) |
+| Pattern Recognition | 60 | 60 (100%) | 22 (36%) |
 | Price Transform | 5 | 5 (100%) | 0 (0%) |
-| Statistic Functions | 6 | 5 (83%) | 0 (0%) |
+| Statistic Functions | 6 | 6 (100%) | 0 (0%) |
 | Statistics | 3 | 3 (100%) | 0 (0%) |
-| Volatility Indicators | 2 | 1 (50%) | 0 (0%) |
+| Volatility Indicators | 2 | 2 (100%) | 0 (0%) |
 | Volume Indicators | 3 | 3 (100%) | 0 (0%) |
 
 ### Overall
 
 - **Total Functions**: 136
-- **CPU (Numba) Implementations**: 128 (94%)
+- **CPU (Numba) Implementations**: 136 (100%)
 - **GPU (CuPy) Implementations**: 38 (27%)
-- **Not Yet Implemented**: 8
-- **Fully Implemented**: 128
+- **Not Yet Implemented**: 0
+- **Fully Implemented**: 136
 
 ## Notes
 
