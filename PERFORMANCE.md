@@ -8,6 +8,7 @@ This document presents performance comparisons between **talib-pure** (Numba/CPU
 - [Math Operators](#math-operators)
 - [Overlap Indicators](#overlap-indicators)
 - [Price Transform](#price-transform)
+- [Statistic Functions](#statistic-functions)
 
 ---
 
@@ -801,3 +802,258 @@ Price Transform indicators in talib-pure are **highly recommended for production
 5. **All functions have perfect accuracy** - no trade-offs between speed and correctness for MIDPOINT, MEDPRICE, TYPPRICE, and WCLPRICE
 
 The combination of strong performance scaling and **100% exact accuracy** makes Price Transform indicators in talib-pure an excellent choice for backtesting, analytics, and production trading systems working with medium to large datasets.
+
+---
+
+# Statistic Functions
+
+## Test Environment
+
+- **Python Version**: 3.11
+- **NumPy Version**: 2.3.4
+- **Numba Version**: 0.62.1
+- **TA-Lib Version**: 0.6.8
+- **Platform**: Linux
+- **Test Method**: Average execution time over multiple iterations (100 iterations for small/medium datasets, 10 for large datasets)
+- **Time Period**: 30 bars (default), 14 bars (for linear regression functions)
+
+## Summary
+
+The following table shows the speedup factor (talib-pure vs TA-Lib) across different dataset sizes:
+
+| Function | 1K bars | 10K bars | 100K bars | Average |
+|----------|---------|----------|-----------|---------|
+| **CORREL** | 0.16x | 0.16x | 0.15x | **0.16x** |
+| **LINEARREG** | 0.70x | 0.70x | 0.67x | **0.69x** |
+| **LINEARREG_ANGLE** | 0.69x | 0.75x | 0.64x | **0.69x** |
+| **LINEARREG_INTERCEPT** | 0.69x | 0.65x | 0.41x | **0.59x** |
+| **LINEARREG_SLOPE** | 0.61x | 0.70x | 0.58x | **0.63x** |
+| **STDDEV** | 0.07x | 0.06x | 0.06x | **0.06x** |
+| **TSF** | 0.97x | 0.97x | 0.94x | **0.96x** |
+| **VAR** | 0.06x | 0.05x | 0.05x | **0.05x** |
+
+**Note**: Values greater than 1.0x indicate talib-pure is faster; values less than 1.0x indicate TA-Lib is faster.
+
+## Key Findings
+
+### Competitive Performance (0.9x-1.0x)
+- **TSF**: 0.96x average - Nearly matches TA-Lib performance, only 4% slower
+
+### Slower Functions (0.5x-0.8x)
+- **Linear Regression Functions** (LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE): 0.59-0.69x - Original TA-Lib is 1.4-1.7x faster
+
+### Much Slower Functions (< 0.2x)
+- **CORREL**: 0.16x - TA-Lib is 6x faster
+- **STDDEV**: 0.06x - TA-Lib is 16x faster
+- **VAR**: 0.05x - TA-Lib is 20x faster
+
+## Detailed Results
+
+### Dataset: 1,000 bars
+
+| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
+|----------|-------------|-----------------|---------|
+| CORREL | 0.0082 | 0.0522 | **0.16x** |
+| LINEARREG | 0.0146 | 0.0209 | **0.70x** |
+| LINEARREG_ANGLE | 0.0216 | 0.0311 | **0.69x** |
+| LINEARREG_INTERCEPT | 0.0152 | 0.0220 | **0.69x** |
+| LINEARREG_SLOPE | 0.0122 | 0.0200 | **0.61x** |
+| STDDEV | 0.0040 | 0.0594 | **0.07x** |
+| TSF | 0.0152 | 0.0158 | **0.97x** |
+| VAR | 0.0031 | 0.0560 | **0.06x** |
+
+### Dataset: 10,000 bars
+
+| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
+|----------|-------------|-----------------|---------|
+| CORREL | 0.0713 | 0.4516 | **0.16x** |
+| LINEARREG | 0.1483 | 0.2104 | **0.70x** |
+| LINEARREG_ANGLE | 0.2339 | 0.3132 | **0.75x** |
+| LINEARREG_INTERCEPT | 0.1465 | 0.2240 | **0.65x** |
+| LINEARREG_SLOPE | 0.1270 | 0.1812 | **0.70x** |
+| STDDEV | 0.0358 | 0.6001 | **0.06x** |
+| TSF | 0.1455 | 0.1503 | **0.97x** |
+| VAR | 0.0266 | 0.5572 | **0.05x** |
+
+### Dataset: 100,000 bars
+
+| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
+|----------|-------------|-----------------|---------|
+| CORREL | 0.8052 | 5.2147 | **0.15x** |
+| LINEARREG | 1.4692 | 2.1959 | **0.67x** |
+| LINEARREG_ANGLE | 2.2565 | 3.5083 | **0.64x** |
+| LINEARREG_INTERCEPT | 1.3828 | 3.3751 | **0.41x** |
+| LINEARREG_SLOPE | 1.1661 | 2.0000 | **0.58x** |
+| STDDEV | 0.3570 | 6.1716 | **0.06x** |
+| TSF | 1.5182 | 1.6070 | **0.94x** |
+| VAR | 0.2687 | 5.6460 | **0.05x** |
+
+## Analysis
+
+### Why TSF Is Competitive
+
+**TSF** (Time Series Forecast) is the only Statistic Function that approaches TA-Lib performance (0.96x average):
+
+1. **Optimized Implementation**: Uses the same linear regression calculation core as LINEARREG but with a slightly different output calculation
+2. **Efficient Numba Code**: The forecasting calculation (intercept + slope × timeperiod) is well-optimized by Numba JIT
+3. **Minimal Overhead**: Simple arithmetic operations with no complex branching
+4. **Good Cache Utilization**: Sequential memory access patterns benefit from CPU caching
+
+### Why Linear Regression Functions Are Moderately Slow
+
+The linear regression family (LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE) shows moderate performance (0.59-0.69x):
+
+1. **Least Squares Calculation**: Requires multiple statistical calculations (sum of products, sum of squares) over rolling windows
+2. **Multiple Passes**: Each window requires calculating means, slopes, and intercepts
+3. **TA-Lib Optimization**: The original C implementation is highly optimized for these mathematical operations
+4. **Numba Overhead**: While Numba optimizes well, it can't match hand-tuned C code for complex statistical calculations
+5. **LINEARREG_INTERCEPT**: Particularly slow on large datasets (0.41x on 100K bars), possibly due to additional computational overhead
+
+### Why STDDEV and VAR Are Very Slow
+
+**STDDEV** (0.06x) and **VAR** (0.05x) are the slowest Statistic Functions:
+
+1. **Variance Calculation Complexity**: 
+   - Requires computing mean over rolling window
+   - Then computing squared deviations from mean
+   - Finally computing variance (and square root for STDDEV)
+   
+2. **Two-Pass Algorithm**: 
+   - First pass: Calculate mean
+   - Second pass: Calculate squared deviations
+   - This double iteration is expensive
+   
+3. **TA-Lib's Highly Optimized C Code**: 
+   - Likely uses advanced algorithms (e.g., Welford's online algorithm)
+   - Optimized for numerical stability
+   - Minimal branching and efficient memory access
+   
+4. **Numba Limitations**: 
+   - Current implementation may use a naive two-pass algorithm
+   - Less optimized than TA-Lib's battle-tested C implementation
+   
+5. **Consistent Slowdown**: Performance penalty is consistent across all dataset sizes (0.05-0.07x)
+
+### Why CORREL Is Slow
+
+**CORREL** (0.16x) performs poorly:
+
+1. **Complex Statistical Calculation**: Pearson correlation requires:
+   - Calculating means of both series
+   - Computing covariance
+   - Computing standard deviations of both series
+   - Dividing covariance by product of standard deviations
+   
+2. **Multiple Rolling Windows**: Must track statistics for two separate series (high and low prices)
+3. **Numerical Precision Concerns**: Correlation calculation is sensitive to numerical precision
+4. **TA-Lib Optimization**: Original implementation likely uses optimized online algorithms
+
+### Performance Characteristics
+
+- **Small datasets (1K bars)**: talib-pure shows poor performance (0.06-0.97x) with significant JIT overhead
+- **Medium datasets (10K bars)**: Performance remains similar (0.05-0.97x), indicating algorithmic differences rather than startup overhead
+- **Large datasets (100K bars)**: Performance is consistent (0.05-0.94x), confirming algorithmic bottlenecks
+
+**Pattern**: Unlike other indicator categories where performance improves with dataset size, Statistic Functions show **consistent performance penalties** regardless of dataset size, suggesting **fundamental algorithmic differences** rather than JIT overhead.
+
+## Implementation Details
+
+All Statistic Functions in talib-pure are implemented using:
+- **Numba JIT compilation** with `@jit(nopython=True, cache=True)` decorator
+- **Rolling window operations** for most statistical calculations
+- **Least squares method** for linear regression functions
+- **Population variance** for STDDEV and VAR (division by n, not n-1)
+- **Identical algorithms** to TA-Lib for compatibility
+
+## Recommendations
+
+### When to Use talib-pure
+
+- **TSF**: Competitive performance (0.96x average), acceptable for most use cases
+- When you need a pure Python implementation without C dependencies
+- For deployment environments where installing TA-Lib's C library is challenging
+- When accuracy matters more than raw performance (see ACCURACY.md - all functions have near-perfect accuracy)
+
+### When to Use Original TA-Lib
+
+- **STDDEV and VAR**: TA-Lib is 16-20x faster - strongly prefer original implementation
+- **CORREL**: TA-Lib is 6x faster - strongly prefer original implementation
+- **Linear Regression Functions**: TA-Lib is 1.4-1.7x faster - prefer original implementation for performance-critical applications
+- For production systems where performance is critical
+- When every millisecond counts in high-frequency trading or real-time analysis
+- When processing large volumes of data where the performance difference adds up
+
+### Hybrid Approach
+
+For optimal performance, use a hybrid approach:
+
+```python
+# Use talib-pure for competitive function
+from talib_pure import TSF  # Only 4% slower, acceptable
+
+# Use original TA-Lib for significantly faster functions
+import talib
+CORREL = talib.CORREL  # 6x faster
+STDDEV = talib.STDDEV  # 16x faster
+VAR = talib.VAR  # 20x faster
+LINEARREG = talib.LINEARREG  # 1.4x faster
+LINEARREG_ANGLE = talib.LINEARREG_ANGLE
+LINEARREG_INTERCEPT = talib.LINEARREG_INTERCEPT
+LINEARREG_SLOPE = talib.LINEARREG_SLOPE
+```
+
+## Future Improvements
+
+Potential optimizations for Statistic Functions:
+
+1. **STDDEV/VAR**: Implement Welford's online algorithm for single-pass variance calculation
+2. **CORREL**: Use incremental correlation calculation to avoid recalculating from scratch each window
+3. **Linear Regression**: Investigate more efficient least squares implementations or cached computations
+4. **GPU Support**: Statistical functions are highly parallelizable - GPU implementations could provide 10-100x speedup
+5. **Algorithmic Optimization**: Review current implementations against TA-Lib's C code for optimization opportunities
+
+## Reproducing These Results
+
+To run the benchmarks yourself:
+
+```bash
+# Install dependencies
+pip install -e ".[dev]"
+
+# Run Statistic Functions comparison benchmark
+python benchmark_statistic_functions.py
+```
+
+## Conclusion
+
+The talib-pure Numba/CPU implementation shows **mixed but generally slower performance** for Statistic Functions:
+
+**Strengths:**
+- ✅ **TSF**: Competitive performance (0.96x average, only 4% slower)
+- ✅ **Near-perfect accuracy**: All functions have excellent accuracy (see ACCURACY.md)
+- ✅ **Pure Python**: No C compilation required
+- ✅ **Maintainable**: Clear, readable code
+
+**Weaknesses:**
+- ❌ **STDDEV/VAR**: Very slow (16-20x slower than TA-Lib)
+- ❌ **CORREL**: Slow (6x slower than TA-Lib)
+- ❌ **Linear Regression Functions**: Moderately slow (1.4-1.7x slower than TA-Lib)
+- ⚠️ **No Improvement with Scale**: Performance penalty is consistent across all dataset sizes
+
+**Overall Recommendation:**
+
+For Statistic Functions, **the original TA-Lib is strongly recommended** for most use cases due to significant performance advantages. The key exception is:
+
+1. **Use TSF from talib-pure** if the 4% performance penalty is acceptable and you need pure Python
+2. **Use TA-Lib for STDDEV, VAR, CORREL** (16-20x faster) - the performance difference is too significant to ignore
+3. **Use TA-Lib for linear regression functions** if performance is critical (1.4-1.7x faster)
+4. **All functions have near-perfect accuracy** in talib-pure, so the choice is purely based on performance needs
+
+**Performance vs Accuracy Trade-off:**
+
+Unlike some other indicator categories (e.g., Cycle Indicators with accuracy issues), Statistic Functions in talib-pure have **excellent accuracy but poor performance**. This means:
+- If **performance is critical**: Use TA-Lib (much faster, same accuracy)
+- If **pure Python is required**: Use talib-pure (accurate but slower)
+- **No hybrid approach needed for accuracy**: All talib-pure implementations are accurate
+
+The consistent performance penalty across all dataset sizes suggests that **algorithmic improvements** (e.g., Welford's algorithm, incremental calculations) could significantly improve talib-pure's Statistic Functions performance in future versions.

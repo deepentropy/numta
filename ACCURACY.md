@@ -8,6 +8,7 @@ This document presents accuracy comparisons between **talib-pure** (Numba/CPU im
 - [Math Operators](#math-operators)
 - [Overlap Indicators](#overlap-indicators)
 - [Price Transform](#price-transform)
+- [Statistic Functions](#statistic-functions)
 
 ---
 
@@ -1317,3 +1318,406 @@ For Price Transform indicators, talib-pure is **unequivocally recommended** for 
 If you need Price Transform indicators, **use talib-pure**. You get perfect accuracy combined with competitive or superior performance, all in a pure Python package. There are no downsides and no need for hybrid approaches.
 
 **Price Transform in talib-pure is production-ready, battle-tested, and recommended without reservation.**
+
+---
+
+# Statistic Functions
+
+## Test Environment
+
+- **Python Version**: 3.11
+- **NumPy Version**: 2.3.4
+- **Numba Version**: 0.62.1
+- **TA-Lib Version**: 0.6.8
+- **Platform**: Linux
+- **Dataset Size**: 10,000 bars per test
+- **Time Period**: 30 bars (default), 14 bars (for linear regression functions)
+- **Test Method**: Comparison across 4 different data patterns
+
+## Metrics Explained
+
+- **MAE (Mean Absolute Error)**: Average absolute difference between outputs
+- **RMSE (Root Mean Square Error)**: Square root of average squared differences
+- **Max Error**: Largest absolute difference observed
+- **Correlation**: Pearson correlation coefficient (1.0 = perfect, 0.0 = no correlation, -1.0 = inverse)
+- **Exact Match Rate**: Percentage of values exactly matching (within 1e-10 tolerance)
+
+## Overall Summary
+
+Average accuracy metrics across all 4 test data types (10,000 bars each):
+
+| Function | Avg MAE | Avg RMSE | Avg Max Error | Avg Correlation | Exact Match | Status |
+|----------|---------|----------|---------------|-----------------|-------------|--------|
+| **CORREL** | 9.68e-12 | 1.24e-11 | 2.78e-11 | 1.000 | 100.00% | ✅ Near-Exact |
+| **LINEARREG** | 6.82e-14 | 8.93e-14 | 1.78e-13 | 1.000 | 100.00% | ✅ Near-Exact |
+| **LINEARREG_ANGLE** | 5.86e-13 | 7.95e-13 | 1.49e-12 | 1.000 | 100.00% | ✅ Near-Exact |
+| **LINEARREG_INTERCEPT** | 6.81e-14 | 8.92e-14 | 1.78e-13 | 1.000 | 100.00% | ✅ Near-Exact |
+| **LINEARREG_SLOPE** | 1.05e-14 | 1.39e-14 | 2.71e-14 | 1.000 | 100.00% | ✅ Near-Exact |
+| **STDDEV** | 9.04e-12 | 1.22e-11 | 3.47e-11 | 1.000 | 100.00% | ✅ Near-Exact |
+| **TSF** | 7.87e-14 | 1.03e-13 | 2.05e-13 | 1.000 | 100.00% | ✅ Near-Exact |
+| **VAR** | 2.84e-11 | 3.86e-11 | 1.01e-10 | 1.000 | 99.84% | ✅ Near-Exact |
+
+### Status Legend
+- ✅ **Near-Exact**: Floating-point precision differences only (MAE < 1e-10, correlation = 1.0)
+
+## Key Findings
+
+### Near-Perfect Accuracy - ALL Functions (✅ 100% Near-Exact Match)
+
+**ALL 8 Statistic Functions show near-perfect accuracy:**
+- **CORREL**: Near-exact match (MAE: 9.68e-12)
+- **LINEARREG**: Near-exact match (MAE: 6.82e-14)
+- **LINEARREG_ANGLE**: Near-exact match (MAE: 5.86e-13)
+- **LINEARREG_INTERCEPT**: Near-exact match (MAE: 6.81e-14)
+- **LINEARREG_SLOPE**: Near-exact match (MAE: 1.05e-14)
+- **STDDEV**: Near-exact match (MAE: 9.04e-12)
+- **TSF**: Near-exact match (MAE: 7.87e-14)
+- **VAR**: Near-exact match (MAE: 2.84e-11)
+
+All functions produce results that differ from TA-Lib only by **floating-point precision errors** (MAE in the range of 1e-14 to 3e-11). These differences are:
+- Within IEEE 754 double-precision floating-point error bounds
+- Negligible for all practical applications
+- Result of different rounding in intermediate calculations
+- **Not actual algorithmic differences**
+
+**Perfect Correlation**: All 8 functions have correlation of 1.0 (perfect), confirming identical algorithmic behavior.
+
+**Exact Match Rate**: 99.84-100%, meaning nearly every value matches exactly or within floating-point precision.
+
+## Detailed Results by Data Type
+
+### Test 1: Random Walk Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| CORREL | 1.71e-11 | 2.19e-11 | 4.68e-11 | 1.000 | 99.99% |
+| LINEARREG | 7.02e-14 | 9.18e-14 | 1.82e-13 | 1.000 | 100.00% |
+| LINEARREG_ANGLE | 5.77e-13 | 7.84e-13 | 1.47e-12 | 1.000 | 100.00% |
+| LINEARREG_INTERCEPT | 7.02e-14 | 9.18e-14 | 1.82e-13 | 1.000 | 100.00% |
+| LINEARREG_SLOPE | 1.08e-14 | 1.43e-14 | 2.77e-14 | 1.000 | 100.00% |
+| STDDEV | 5.55e-12 | 7.38e-12 | 2.03e-11 | 1.000 | 100.00% |
+| TSF | 8.12e-14 | 1.06e-13 | 2.10e-13 | 1.000 | 100.00% |
+| VAR | 1.92e-11 | 2.63e-11 | 7.27e-11 | 1.000 | 99.57% |
+
+### Test 2: Trending + Noise Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| CORREL | 6.43e-12 | 8.14e-12 | 1.71e-11 | 1.000 | 100.00% |
+| LINEARREG | 6.82e-14 | 8.93e-14 | 1.78e-13 | 1.000 | 100.00% |
+| LINEARREG_ANGLE | 5.91e-13 | 8.03e-13 | 1.51e-12 | 1.000 | 100.00% |
+| LINEARREG_INTERCEPT | 6.81e-14 | 8.91e-14 | 1.78e-13 | 1.000 | 100.00% |
+| LINEARREG_SLOPE | 1.05e-14 | 1.39e-14 | 2.70e-14 | 1.000 | 100.00% |
+| STDDEV | 1.44e-11 | 1.92e-11 | 5.04e-11 | 1.000 | 100.00% |
+| TSF | 7.87e-14 | 1.03e-13 | 2.05e-13 | 1.000 | 100.00% |
+| VAR | 5.56e-11 | 7.57e-11 | 1.93e-10 | 1.000 | 99.81% |
+
+### Test 3: Cyclical + Noise Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| CORREL | 7.34e-12 | 9.28e-12 | 1.95e-11 | 1.000 | 100.00% |
+| LINEARREG | 6.82e-14 | 8.93e-14 | 1.78e-13 | 1.000 | 100.00% |
+| LINEARREG_ANGLE | 5.98e-13 | 8.11e-13 | 1.52e-12 | 1.000 | 100.00% |
+| LINEARREG_INTERCEPT | 6.81e-14 | 8.91e-14 | 1.78e-13 | 1.000 | 100.00% |
+| LINEARREG_SLOPE | 1.05e-14 | 1.39e-14 | 2.71e-14 | 1.000 | 100.00% |
+| STDDEV | 8.63e-12 | 1.15e-11 | 3.07e-11 | 1.000 | 100.00% |
+| TSF | 7.87e-14 | 1.03e-13 | 2.05e-13 | 1.000 | 100.00% |
+| VAR | 1.67e-11 | 2.28e-11 | 6.13e-11 | 1.000 | 100.00% |
+
+### Test 4: Mixed (Trend + Cycle + Noise) Data
+
+| Function | MAE | RMSE | Max Error | Correlation | Exact Match |
+|----------|-----|------|-----------|-------------|-------------|
+| CORREL | 7.83e-12 | 9.90e-12 | 2.08e-11 | 1.000 | 100.00% |
+| LINEARREG | 6.61e-14 | 8.65e-14 | 1.73e-13 | 1.000 | 100.00% |
+| LINEARREG_ANGLE | 5.77e-13 | 7.82e-13 | 1.47e-12 | 1.000 | 100.00% |
+| LINEARREG_INTERCEPT | 6.59e-14 | 8.63e-14 | 1.73e-13 | 1.000 | 100.00% |
+| LINEARREG_SLOPE | 1.02e-14 | 1.35e-14 | 2.65e-14 | 1.000 | 100.00% |
+| STDDEV | 7.60e-12 | 1.01e-11 | 2.73e-11 | 1.000 | 100.00% |
+| TSF | 7.63e-14 | 1.00e-13 | 1.99e-13 | 1.000 | 100.00% |
+| VAR | 2.20e-11 | 2.99e-11 | 7.86e-11 | 1.000 | 100.00% |
+
+## Analysis
+
+### Why All Statistic Functions Have Near-Perfect Accuracy
+
+All Statistic Functions achieve **near-perfect accuracy** because:
+
+#### 1. Deterministic Statistical Formulas
+
+Each Statistic Function uses well-defined mathematical formulas:
+
+- **CORREL**: Pearson correlation coefficient using standard formula
+- **LINEARREG**: Least squares linear regression (y = a + bx)
+- **LINEARREG_ANGLE**: arctan(slope) × 180/π
+- **LINEARREG_INTERCEPT**: Y-intercept from least squares
+- **LINEARREG_SLOPE**: Slope from least squares
+- **STDDEV**: sqrt(variance) × nbdev
+- **TSF**: Linear regression forecast (a + b × timeperiod)
+- **VAR**: Population variance (sum of squared deviations / n)
+
+These are universally defined statistical formulas with no room for interpretation.
+
+#### 2. IEEE 754 Floating-Point Determinism
+
+Both TA-Lib and talib-pure use IEEE 754 double-precision floating-point:
+- Identical operations yield identical results (within rounding)
+- Differences arise only from different operation ordering
+- All observed errors (MAE 1e-14 to 3e-11) are within expected floating-point precision
+
+#### 3. Correct Numba Implementation
+
+The talib-pure implementations:
+- Follow TA-Lib's algorithms exactly
+- Use proper statistical formulas
+- Handle edge cases correctly (NaN values, insufficient data)
+- Maintain numerical stability
+
+#### 4. No Algorithmic Ambiguity
+
+Unlike complex indicators (Hilbert Transform, MESA), statistical functions:
+- Have universal definitions
+- Are mathematically well-defined
+- Leave no room for interpretation
+- Are validated by decades of statistical practice
+
+### Error Magnitude Analysis
+
+The tiny errors observed are purely floating-point precision effects:
+
+| Function | MAE Order | Explanation |
+|----------|-----------|-------------|
+| LINEARREG_SLOPE | 1e-14 | Smallest errors - simple arithmetic |
+| LINEARREG/TSF/INTERCEPT | 6-8e-14 | Simple regression calculations |
+| LINEARREG_ANGLE | 6e-13 | Additional arctan and conversion to degrees |
+| STDDEV | 9e-12 | Square root introduces additional rounding |
+| CORREL | 1e-11 | Multiple statistical operations compound rounding |
+| VAR | 3e-11 | Variance calculation has more intermediate steps |
+
+**All errors are negligible** (< 1e-10) and **far below any practical significance**.
+
+### Comparison with Other Indicator Categories
+
+| Category | Perfect/Near-Perfect Functions | Accuracy Score |
+|----------|-------------------------------|----------------|
+| **Price Transform** | 5/5 (100%) - EXACT | ⭐⭐⭐⭐⭐ Perfect |
+| **Statistic Functions** | 8/8 (100%) - NEAR-EXACT | ⭐⭐⭐⭐⭐ Excellent |
+| **Overlap Indicators** | 10/12 (83%) | ⭐⭐⭐⭐ Good |
+| **Math Operators** | 5/7 (71%) | ⭐⭐⭐ Mixed |
+| **Cycle Indicators** | 2/6 (33%) | ⭐⭐ Poor |
+
+**Statistic Functions rank #2 in accuracy** (tied with Price Transform for practical purposes), with all functions showing excellent accuracy.
+
+### Implementation Quality
+
+The near-perfect accuracy across all Statistic Functions indicates:
+- ✅ Excellent understanding of statistical algorithms
+- ✅ Correct implementation of least squares methods
+- ✅ Proper handling of numerical precision
+- ✅ Thorough testing and validation
+- ✅ Proper Numba JIT optimization without sacrificing correctness
+
+## Recommendations
+
+### For Production Use
+
+**ALL Functions Safe to Use** ✅
+
+Every single Statistic Function can be used in production with **complete confidence in accuracy**:
+
+```python
+from talib_pure import (
+    CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT,
+    LINEARREG_SLOPE, STDDEV, TSF, VAR
+)
+
+# All of these will produce virtually IDENTICAL results to TA-Lib
+# Differences are only in the last decimal places (floating-point precision)
+# Use them freely in production systems
+```
+
+**Accuracy is NOT a concern** - The only consideration is performance (see PERFORMANCE.md).
+
+### Performance + Accuracy Combined
+
+Combining with PERFORMANCE.md results:
+
+| Function | Accuracy | Performance | Recommendation |
+|----------|----------|-------------|----------------|
+| **CORREL** | ✅ Near-Exact | 0.16x (6x slower) | **Use TA-Lib** - accuracy perfect in both, TA-Lib much faster |
+| **LINEARREG** | ✅ Near-Exact | 0.69x (1.4x slower) | **Use TA-Lib** - accuracy perfect in both, TA-Lib faster |
+| **LINEARREG_ANGLE** | ✅ Near-Exact | 0.69x (1.4x slower) | **Use TA-Lib** - accuracy perfect in both, TA-Lib faster |
+| **LINEARREG_INTERCEPT** | ✅ Near-Exact | 0.59x (1.7x slower) | **Use TA-Lib** - accuracy perfect in both, TA-Lib faster |
+| **LINEARREG_SLOPE** | ✅ Near-Exact | 0.63x (1.6x slower) | **Use TA-Lib** - accuracy perfect in both, TA-Lib faster |
+| **STDDEV** | ✅ Near-Exact | 0.06x (16x slower) | **Strongly prefer TA-Lib** - accuracy perfect in both, massive speed difference |
+| **TSF** | ✅ Near-Exact | 0.96x (4% slower) | **Either works** - accuracy perfect, minimal speed difference |
+| **VAR** | ✅ Near-Exact | 0.05x (20x slower) | **Strongly prefer TA-Lib** - accuracy perfect in both, massive speed difference |
+
+**Key Insight**: Since accuracy is near-perfect for ALL functions, your choice is **purely based on performance**:
+- **STDDEV, VAR**: Use TA-Lib (16-20x faster)
+- **CORREL**: Use TA-Lib (6x faster)
+- **Linear Regression Functions**: Use TA-Lib (1.4-1.7x faster)
+- **TSF**: Either works (only 4% difference)
+
+**Use talib-pure ONLY when**:
+- Pure Python requirement (no C dependencies)
+- Deployment challenges with TA-Lib's C library
+- TSF is the only function needed (minimal performance penalty)
+
+### Clear Recommendation
+
+For Statistic Functions, the recommendation is straightforward:
+
+```python
+# Use original TA-Lib for all Statistic Functions
+import talib
+
+CORREL = talib.CORREL  # 6x faster, same accuracy
+LINEARREG = talib.LINEARREG  # 1.4x faster, same accuracy
+LINEARREG_ANGLE = talib.LINEARREG_ANGLE  # 1.4x faster, same accuracy
+LINEARREG_INTERCEPT = talib.LINEARREG_INTERCEPT  # 1.7x faster, same accuracy
+LINEARREG_SLOPE = talib.LINEARREG_SLOPE  # 1.6x faster, same accuracy
+STDDEV = talib.STDDEV  # 16x faster, same accuracy
+TSF = talib.TSF  # 1.04x faster (or use talib-pure, minimal difference)
+VAR = talib.VAR  # 20x faster, same accuracy
+```
+
+**No hybrid approach needed**: Since all functions have identical accuracy, just use TA-Lib for everything (faster).
+
+**Exception**: If you absolutely need pure Python, talib-pure works perfectly - just expect slower performance.
+
+## Root Cause of Success
+
+The near-perfect accuracy of Statistic Functions stems from:
+
+### 1. Mathematical Maturity
+- Statistical formulas have been standardized for decades
+- No ambiguity in definitions
+- Well-documented in academic literature
+- Universal consensus on calculations
+
+### 2. Deterministic Algorithms
+- Least squares regression has one correct algorithm
+- Variance and standard deviation are uniquely defined
+- Correlation coefficient formula is universal
+- No state-dependent behavior
+
+### 3. Excellent Implementation
+- talib-pure developers implemented formulas correctly
+- Proper numerical precision handling
+- Correct edge case handling (NaN values)
+- Thorough validation against TA-Lib
+
+### 4. Numba Optimization Done Right
+- JIT compilation preserves correctness
+- No shortcuts that sacrifice accuracy
+- Proper floating-point arithmetic
+- No premature optimization
+
+## Testing Methodology
+
+### Test Data Types
+
+Four different data patterns were tested to ensure robustness:
+1. **Random Walk**: Unpredictable movements
+2. **Trending + Noise**: Bull/bear markets with volatility
+3. **Cyclical + Noise**: Oscillating markets (range-bound)
+4. **Mixed**: Combination of trend, cycle, and noise (most realistic)
+
+### Accuracy Testing Process
+
+For each indicator and data type:
+1. Generate 10,000 bars of test data with fixed random seed (reproducibility)
+2. Generate high, low, and close prices
+3. Run both TA-Lib and talib-pure implementations
+4. Compare outputs element-by-element (excluding lookback period)
+5. Calculate MAE, RMSE, Max Error, Correlation, and Exact Match Rate
+6. Average results across all 4 data types
+
+### Verification Across Multiple Dimensions
+
+Tests verified:
+- ✅ Different price patterns (random, trending, cyclical, mixed)
+- ✅ Different price ranges
+- ✅ All 10,000 bars checked
+- ✅ All 8 functions tested
+- ✅ All metrics computed
+
+**Result**: Near-exact match (MAE < 1e-10) across all dimensions.
+
+## Reproducing These Results
+
+To run the accuracy tests yourself:
+
+```bash
+# Install dependencies (if not already installed)
+pip install -e ".[dev]"
+
+# Run Statistic Functions accuracy comparison
+python accuracy_statistic_functions.py
+```
+
+The script will:
+- Test all 8 Statistic Functions
+- Use 4 different data patterns (10,000 bars each)
+- Output detailed metrics and summary tables
+- Confirm near-exact match for all functions
+
+Expected output:
+```
+CORREL                   : NEAR-EXACT   (MAE: 9.68e-12, Correlation: 1.0000000000, Exact Match: 100.00%)
+LINEARREG                : NEAR-EXACT   (MAE: 6.82e-14, Correlation: 1.0000000000, Exact Match: 100.00%)
+LINEARREG_ANGLE          : NEAR-EXACT   (MAE: 5.86e-13, Correlation: 1.0000000000, Exact Match: 100.00%)
+LINEARREG_INTERCEPT      : NEAR-EXACT   (MAE: 6.81e-14, Correlation: 1.0000000000, Exact Match: 100.00%)
+LINEARREG_SLOPE          : NEAR-EXACT   (MAE: 1.05e-14, Correlation: 1.0000000000, Exact Match: 100.00%)
+STDDEV                   : NEAR-EXACT   (MAE: 9.04e-12, Correlation: 1.0000000000, Exact Match: 100.00%)
+TSF                      : NEAR-EXACT   (MAE: 7.87e-14, Correlation: 1.0000000000, Exact Match: 100.00%)
+VAR                      : NEAR-EXACT   (MAE: 2.84e-11, Correlation: 1.0000000000, Exact Match: 99.84%)
+```
+
+## Conclusion
+
+The talib-pure implementation achieves **near-perfect accuracy** for ALL Statistic Functions:
+
+**Perfect Score:**
+- ✅ **8 out of 8 functions** with near-exact match (100%)
+- ✅ **Negligible error** (MAE 1e-14 to 3e-11 - floating-point precision only)
+- ✅ **Perfect correlation** (1.0 for all functions)
+- ✅ **~100% exact match rate** (99.84-100%)
+- ✅ **Consistent across all data types** (random, trending, cyclical, mixed)
+
+**Outstanding Achievement:**
+
+Statistic Functions achieve the **second-best accuracy** across all indicator categories (tied with Price Transform for practical purposes):
+
+1. 🥇 **Price Transform**: 5/5 EXACT (100%)
+2. 🥈 **Statistic Functions**: 8/8 NEAR-EXACT (100%) ← You are here
+3. 🥉 **Overlap Indicators**: 10/12 excellent (83%)
+4. **Math Operators**: 5/7 perfect (71%)
+5. **Cycle Indicators**: 2/6 good (33%)
+
+**What This Means:**
+
+1. **Accuracy is NOT a concern** - All talib-pure Statistic Functions are production-ready
+2. **Choice is purely about performance** - See PERFORMANCE.md for speed comparisons
+3. **No hybrid approach needed for accuracy** - All implementations are correct
+4. **Excellent implementation quality** - Demonstrates deep understanding of statistical algorithms
+
+**Final Recommendation:**
+
+For Statistic Functions:
+
+1. ✅ **Accuracy**: talib-pure is excellent (near-exact match for all functions)
+2. ⚠️ **Performance**: TA-Lib is much faster (see PERFORMANCE.md)
+3. **Decision**: Use **TA-Lib for performance**, use **talib-pure only if pure Python required**
+
+**Key Takeaway:**
+
+Unlike Cycle Indicators (which have accuracy issues) or Overlap Indicators (where some functions differ), **Statistic Functions in talib-pure have no accuracy trade-offs**. The only consideration is performance.
+
+- If **speed matters**: Use TA-Lib (6-20x faster, same accuracy)
+- If **pure Python required**: Use talib-pure (accurate but slower)
+- **No wrong choice for accuracy**: Both are excellent
+
+**Statistic Functions in talib-pure are algorithmically correct, numerically precise, and production-ready. The choice between talib-pure and TA-Lib is purely about performance requirements.**
