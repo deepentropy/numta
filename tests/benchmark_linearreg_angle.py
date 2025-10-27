@@ -8,7 +8,7 @@ import time
 
 def benchmark_linearreg_angle():
     """Benchmark LINEARREG_ANGLE"""
-    from talib_pure import LINEARREG_ANGLE
+    from numta import LINEARREG_ANGLE
 
     print("=" * 80)
     print("LINEARREG_ANGLE Benchmark")

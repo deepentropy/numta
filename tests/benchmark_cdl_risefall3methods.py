@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlrisefall3methods():
     """Benchmark CDLRISEFALL3METHODS"""
-    from talib_pure import CDLRISEFALL3METHODS
+    from numta import CDLRISEFALL3METHODS
 
     print("=" * 80)
     print("CDLRISEFALL3METHODS Benchmark")

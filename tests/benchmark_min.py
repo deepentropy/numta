@@ -8,7 +8,7 @@ import time
 
 def benchmark_min():
     """Benchmark MIN"""
-    from talib_pure import MIN
+    from numta import MIN
 
     print("=" * 80)
     print("MIN Benchmark")

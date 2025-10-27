@@ -6,7 +6,7 @@ for Overlap Indicators
 import numpy as np
 import time
 import talib
-from talib_pure import (
+from numta import (
     SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, T3, BBANDS, SAR, SAREXT
 )
 

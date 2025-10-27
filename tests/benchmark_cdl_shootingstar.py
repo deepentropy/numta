@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlshootingstar():
     """Benchmark CDLSHOOTINGSTAR"""
-    from talib_pure import CDLSHOOTINGSTAR
+    from numta import CDLSHOOTINGSTAR
 
     print("=" * 80)
     print("CDLSHOOTINGSTAR Benchmark")

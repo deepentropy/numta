@@ -3,11 +3,11 @@ Test suite for CDLTAKURI
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdltakuri_pattern():
     """Test Takuri (Dragonfly Doji) pattern detection"""
-    from talib_pure import CDLTAKURI
+    from numta import CDLTAKURI
 
     # Build context with shadows, then takuri
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
@@ -25,7 +25,7 @@ def test_cdltakuri_pattern():
 
 def test_cdltakuri_no_pattern():
     """Test no pattern when not doji"""
-    from talib_pure import CDLTAKURI
+    from numta import CDLTAKURI
 
     open_ = np.array([90, 91, 100])  # Large body
     high = np.array([91, 92, 101])

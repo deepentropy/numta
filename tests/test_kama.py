@@ -7,7 +7,7 @@ import pytest
 
 def test_kama_basic():
     """Test KAMA basic calculation"""
-    from talib_pure import KAMA
+    from numta import KAMA
 
     close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
                      110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
@@ -23,7 +23,7 @@ def test_kama_basic():
 
 def test_kama_trending():
     """Test KAMA follows trend"""
-    from talib_pure import KAMA
+    from numta import KAMA
 
     # Strong uptrend
     close = np.linspace(100, 150, 50)
@@ -37,7 +37,7 @@ def test_kama_trending():
 
 def test_kama_efficiency():
     """Test that KAMA responds to market efficiency"""
-    from talib_pure import KAMA
+    from numta import KAMA
 
     # Create efficient trending market vs choppy market
     np.random.seed(42)
@@ -57,7 +57,7 @@ def test_kama_efficiency():
 
 def test_kama_empty_input():
     """Test KAMA with empty array"""
-    from talib_pure import KAMA
+    from numta import KAMA
 
     empty = np.array([])
     result = KAMA(empty)
@@ -66,7 +66,7 @@ def test_kama_empty_input():
 
 def test_kama_input_validation():
     """Test KAMA validates input"""
-    from talib_pure import KAMA
+    from numta import KAMA
 
     close = np.array([100, 105])
 

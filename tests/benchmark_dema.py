@@ -8,7 +8,7 @@ import time
 
 def benchmark_dema():
     """Benchmark DEMA"""
-    from talib_pure import DEMA
+    from numta import DEMA
 
     print("=" * 80)
     print("DEMA Benchmark")

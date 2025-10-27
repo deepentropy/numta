@@ -8,7 +8,7 @@ import time
 
 def benchmark_ht_dcphase():
     """Benchmark HT_DCPHASE"""
-    from talib_pure import HT_DCPHASE
+    from numta import HT_DCPHASE
 
     print("=" * 80)
     print("HT_DCPHASE Benchmark")

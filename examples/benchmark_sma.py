@@ -1,18 +1,17 @@
 """
-Example: Benchmarking SMA performance between talib-pure and TA-Lib
+Example: Benchmarking SMA performance between numta and TA-Lib
 
 This script demonstrates how to use the PerformanceMeasurement class
-to compare the performance of talib-pure against the original TA-Lib.
+to compare the performance of numta against the original TA-Lib.
 """
 
 import numpy as np
-import sys
 
 
 def main():
-    # Import talib-pure
-    from talib_pure import SMA as SMA_pure
-    from talib_pure.benchmark import PerformanceMeasurement
+    # Import numta
+    from numta import SMA as SMA_numta
+    from numta.benchmark import PerformanceMeasurement
 
     # Try to import TA-Lib
     try:
@@ -20,7 +19,7 @@ def main():
         has_talib = True
     except ImportError:
         has_talib = False
-        print("Warning: TA-Lib not installed. Only benchmarking talib-pure.")
+        print("Warning: TA-Lib not installed. Only benchmarking numta.")
         print("To install TA-Lib: pip install TA-Lib")
 
     # Create benchmark instance
@@ -37,7 +36,7 @@ def main():
     timeperiod = 30
 
     bench.clear()
-    bench.add_function("talib-pure SMA", SMA_pure, data, timeperiod=timeperiod)
+    bench.add_function("numta SMA", SMA_numta, data, timeperiod=timeperiod)
     if has_talib:
         bench.add_function("TA-Lib SMA", talib.SMA, data, timeperiod=timeperiod)
 
@@ -48,7 +47,7 @@ def main():
     if has_talib:
         print("\n### Test 2: Performance Across Different Data Sizes ###")
         func_pairs = [
-            ("talib-pure", SMA_pure, {"timeperiod": 30}),
+            ("numta", SMA_numta, {"timeperiod": 30}),
             ("TA-Lib", talib.SMA, {"timeperiod": 30}),
         ]
 
@@ -68,7 +67,7 @@ def main():
     for period in [5, 20, 50, 200]:
         print(f"\nTimeperiod: {period}")
         bench.clear()
-        bench.add_function("talib-pure", SMA_pure, data, timeperiod=period)
+        bench.add_function("numta", SMA_numta, data, timeperiod=period)
         if has_talib:
             bench.add_function("TA-Lib", talib.SMA, data, timeperiod=period)
 

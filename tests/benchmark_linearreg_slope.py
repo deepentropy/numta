@@ -8,7 +8,7 @@ import time
 
 def benchmark_linearreg_slope():
     """Benchmark LINEARREG_SLOPE"""
-    from talib_pure import LINEARREG_SLOPE
+    from numta import LINEARREG_SLOPE
 
     print("=" * 80)
     print("LINEARREG_SLOPE Benchmark")

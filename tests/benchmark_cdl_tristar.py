@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdltristar():
     """Benchmark CDLTRISTAR"""
-    from talib_pure import CDLTRISTAR
+    from numta import CDLTRISTAR
 
     print("=" * 80)
     print("CDLTRISTAR Benchmark")

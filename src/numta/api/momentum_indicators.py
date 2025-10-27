@@ -85,7 +85,7 @@ def ADX(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ADX
+    >>> from numta import ADX
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> close = np.array([9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
@@ -180,7 +180,7 @@ def ADXR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ADXR
+    >>> from numta import ADXR
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> close = np.array([9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
@@ -279,7 +279,7 @@ def APO(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import APO
+    >>> from numta import APO
     >>> close = np.array([100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
     >>> apo = APO(close, fastperiod=3, slowperiod=5)
     >>> print(apo)
@@ -376,7 +376,7 @@ def AROON(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import AROON
+    >>> from numta import AROON
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> aroondown, aroonup = AROON(high, low, timeperiod=5)
@@ -470,7 +470,7 @@ def AROONOSC(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import AROONOSC
+    >>> from numta import AROONOSC
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> aroonosc = AROONOSC(high, low, timeperiod=5)
@@ -574,7 +574,7 @@ def ATR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ATR
+    >>> from numta import ATR
     >>> high = np.array([48, 49, 50, 51, 52, 51, 50, 49, 50, 51, 52])
     >>> low = np.array([46, 47, 48, 49, 50, 49, 48, 47, 48, 49, 50])
     >>> close = np.array([47, 48, 49, 50, 51, 50, 49, 48, 49, 50, 51])
@@ -682,7 +682,7 @@ def BOP(open_price: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import BOP
+    >>> from numta import BOP
     >>> open_price = np.array([100, 101, 102, 103, 104])
     >>> high = np.array([105, 106, 107, 108, 109])
     >>> low = np.array([99, 100, 101, 102, 103])
@@ -797,7 +797,7 @@ def CCI(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CCI
+    >>> from numta import CCI
     >>> high = np.array([83, 84, 85, 86, 87])
     >>> low = np.array([81, 82, 83, 84, 85])
     >>> close = np.array([82, 83, 84, 85, 86])
@@ -919,7 +919,7 @@ def ROC(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROC
+    >>> from numta import ROC
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> roc = ROC(close, timeperiod=10)
     >>> print(roc)
@@ -986,7 +986,7 @@ def ROCP(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROCP
+    >>> from numta import ROCP
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> rocp = ROCP(close, timeperiod=10)
     >>> # rocp[10] = (111 - 100) / 100 = 0.11 (11%)
@@ -1043,7 +1043,7 @@ def ROCR(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROCR
+    >>> from numta import ROCR
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> rocr = ROCR(close, timeperiod=10)
     >>> # rocr[10] = 111 / 100 = 1.11
@@ -1101,7 +1101,7 @@ def ROCR100(data: Union[np.ndarray, list], timeperiod: int = 10) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ROCR100
+    >>> from numta import ROCR100
     >>> close = np.array([100, 102, 104, 103, 105, 107, 106, 108, 110, 109, 111])
     >>> rocr100 = ROCR100(close, timeperiod=10)
     >>> # rocr100[10] = (111 / 100) * 100 = 111
@@ -1249,7 +1249,7 @@ def RSI(data: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import RSI
+    >>> from numta import RSI
     >>> close = np.array([44, 44.5, 45, 45.5, 45, 44.5, 44, 44.5, 45, 45.5,
     ...                   46, 46.5, 47, 47.5, 48])
     >>> rsi = RSI(close, timeperiod=14)
@@ -1572,7 +1572,7 @@ def CMO(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CMO
+    >>> from numta import CMO
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
     ...                   111, 110, 112, 114, 113])
     >>> cmo = CMO(close, timeperiod=14)
@@ -1697,7 +1697,7 @@ def DX(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import DX
+    >>> from numta import DX
     >>> high = np.array([10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20])
     >>> low = np.array([9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19])
     >>> close = np.array([9.5, 10.5, 11.5, 12.5, 13.5, 14.5, 15.5, 16.5, 17.5, 18.5, 19.5])
@@ -1845,7 +1845,7 @@ def MACD(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MACD
+    >>> from numta import MACD
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
     ...                   110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
     ...                   120, 122, 121, 123, 125, 124, 126, 128, 127, 129,
@@ -1960,7 +1960,7 @@ def MACDEXT(close: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MACDEXT
+    >>> from numta import MACDEXT
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
     ...                   110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
     ...                   120, 122, 121, 123, 125, 124, 126, 128, 127, 129,
@@ -1981,261 +1981,45 @@ def MACDEXT(close: Union[np.ndarray, list],
 
     backend = get_backend()
 
-    fastk[i] = ((close[i] - lowest) / (highest - lowest)) * 100.0
 
-    # Calculate Fast %D (SMA of Fast %K)
-    from .overlap import SMA
-    fastd = SMA(fastk, timeperiod=fastd_period)
+    # Import MA function from overlap module
 
-    return fastk, fastd
+    # Validate inputs
+    if fastperiod < 2:
+        raise ValueError("fastperiod must be >= 2")
+    if slowperiod < 2:
+        raise ValueError("slowperiod must be >= 2")
+    if signalperiod < 1:
+        raise ValueError("signalperiod must be >= 1")
+    if fastperiod >= slowperiod:
+        raise ValueError("fastperiod must be < slowperiod")
 
-
-def STOCH(high: Union[np.ndarray, list],
-          low: Union[np.ndarray, list],
-          close: Union[np.ndarray, list],
-          fastk_period: int = 5,
-          slowk_period: int = 3,
-          slowk_matype: int = 0,
-          slowd_period: int = 3,
-          slowd_matype: int = 0) -> tuple:
-    """
-    Stochastic (STOCH)
-
-    Stochastic is a momentum oscillator that shows the position of the closing price
-    relative to the high-low range over a set period. The slow version applies additional
-    smoothing to reduce noise and provide more reliable signals.
-
-    It consists of two lines: %K (slow) and %D (signal line). The slow version smooths
-    the fast %K to create slow %K, then smooths that to create slow %D.
-
-    Parameters
-    ----------
-    high : array-like
-        High prices array
-    low : array-like
-        Low prices array
-    close : array-like
-        Close prices array
-    fastk_period : int, optional
-        Period for initial %K calculation (default: 5)
-    slowk_period : int, optional
-        Period for smoothing fast %K to slow %K (default: 3)
-    slowk_matype : int, optional
-        Type of moving average for slow %K (default: 0 = SMA)
-    slowd_period : int, optional
-        Period for smoothing slow %K to slow %D (default: 3)
-    slowd_matype : int, optional
-        Type of moving average for slow %D (default: 0 = SMA)
-
-    Returns
-    -------
-    tuple of np.ndarray
-        (slowk, slowd) - Slow %K and Slow %D arrays
-
-    Notes
-    -----
-    - Compatible with TA-Lib STOCH signature
-    - Slow version (additional smoothing)
-    - Values range from 0 to 100
-    - Less sensitive than STOCHF
-    - Provides more reliable signals
-
-    Formula
-    -------
-    1. Calculate Fast %K (same as STOCHF)
-    2. Slow %K = SMA(Fast %K, slowk_period)
-    3. Slow %D = SMA(Slow %K, slowd_period)
-
-    Interpretation:
-    - %K > 80: Overbought (consider selling)
-    - %K < 20: Oversold (consider buying)
-    - %K crosses above %D: Bullish signal (buy)
-    - %K crosses below %D: Bearish signal (sell)
-    - Divergence: Price makes new high/low but stochastic doesn't
-
-    Trading Signals:
-    1. Overbought/Oversold:
-       - Buy when %K crosses above 20 from below
-       - Sell when %K crosses below 80 from above
-
-    2. Crossovers:
-       - Buy when %K crosses above %D
-       - Sell when %K crosses below %D
-
-    3. Divergence:
-       - Bullish: Price makes lower low, stochastic makes higher low
-       - Bearish: Price makes higher high, stochastic makes lower high
-
-    4. Combined:
-       - Best signals: Crossover in overbought/oversold zone
-       - Buy: %K crosses above %D while both < 20
-       - Sell: %K crosses below %D while both > 80
-
-    Parameter Adjustment:
-    - fastk_period (default 5):
-      - Shorter (3): More sensitive, more signals
-      - Longer (14): Less sensitive, smoother
-
-    - slowk_period (default 3):
-      - Controls smoothing of %K
-      - Longer = smoother, less whipsaw
-
-    Common Settings:
-    - Fast Stochastic: (5, 3, 3)
-    - Slow Stochastic: (14, 3, 3)
-    - Lane's Original: (5, 3, 3)
-
-    Advantages:
-    - Clear overbought/oversold levels
-    - Bounded (0-100) for easy interpretation
-    - Works well in ranging markets
-    - Multiple signal types
-    - Divergence detection
-
-    Disadvantages:
-    - Whipsaw in trending markets
-    - Can stay overbought/oversold for long periods
-    - Requires confirmation
-    - Less effective in strong trends
-
-    Comparison with Related Indicators:
-    - STOCHF: Faster, more signals, more noise
-    - RSI: Similar concept, different calculation
-    - CCI: Unbounded oscillator
-    - Williams %R: Inverted stochastic
-
-    Examples
-    --------
-    >>> import numpy as np
-    >>> from talib_pure import STOCH
-    >>> high = np.array([110, 112, 111, 113, 115, 114, 116, 118])
-    >>> low = np.array([100, 102, 101, 103, 105, 104, 106, 108])
-    >>> close = np.array([105, 107, 106, 108, 110, 109, 111, 113])
-    >>> slowk, slowd = STOCH(high, low, close)
-    >>> # slowk and slowd range from 0 to 100
-
-    See Also
-    --------
-    STOCHF : Stochastic Fast
-    RSI : Relative Strength Index
-    CCI : Commodity Channel Index
-    """
-    # Convert to numpy arrays
-    high = np.asarray(high, dtype=np.float64)
-    low = np.asarray(low, dtype=np.float64)
+    # Convert to numpy array if needed
     close = np.asarray(close, dtype=np.float64)
 
-    n = len(high)
-    if len(low) != n or len(close) != n:
-        raise ValueError("high, low, and close must have the same length")
-
+    n = len(close)
     if n == 0:
         empty = np.array([], dtype=np.float64)
-        return empty, empty
+        return empty, empty, empty
 
-    if fastk_period < 1:
-        raise ValueError("fastk_period must be >= 1")
-    if slowk_period < 1:
-        raise ValueError("slowk_period must be >= 1")
-    if slowd_period < 1:
-        raise ValueError("slowd_period must be >= 1")
+    # Calculate fast and slow MAs
+    fast_ma = MA(close, timeperiod=fastperiod, matype=fastmatype)
+    slow_ma = MA(close, timeperiod=slowperiod, matype=slowmatype)
 
-    # Calculate Fast %K directly
-    fastk = np.empty(n, dtype=np.float64)
-    for i in range(fastk_period - 1):
-        fastk[i] = np.nan
-    for i in range(fastk_period - 1, n):
-        highest = high[i]
-        lowest = low[i]
-        for j in range(i - fastk_period + 1, i + 1):
-            if high[j] > highest:
-                highest = high[j]
-            if low[j] < lowest:
-                lowest = low[j]
-        if highest - lowest == 0:
-            fastk[i] = 50.0
-        else:
-            fastk[i] = ((close[i] - lowest) / (highest - lowest)) * 100.0
+    # Calculate MACD line
+    macd = fast_ma - slow_ma
 
-    # Smooth Fast %K to get Slow %K
-    from .overlap import SMA
-    slowk = SMA(fastk, timeperiod=slowk_period)
+    # Calculate signal line (MA of MACD)
+    signal = MA(macd, timeperiod=signalperiod, matype=signalmatype)
 
-    # Smooth Slow %K to get Slow %D
-    slowd = SMA(slowk, timeperiod=slowd_period)
+    # Calculate histogram
+    hist = macd - signal
 
-    return slowk, slowd
+    return macd, signal, hist
 
 
-def STOCHRSI(data: Union[np.ndarray, list],
-             timeperiod: int = 14,
-             fastk_period: int = 5,
-             fastd_period: int = 3,
-             fastd_matype: int = 0) -> tuple:
-    """
-    Stochastic Relative Strength Index (STOCHRSI)
 
-    STOCHRSI applies the Stochastic oscillator formula to RSI values instead of price.
-    It measures the level of RSI relative to its high-low range over a set period,
-    providing a more sensitive momentum indicator that oscillates between 0 and 100.
 
-    Parameters
-    ----------
-    data : array-like
-        Input data array (typically close prices)
-    timeperiod : int, optional
-        Period for RSI calculation (default: 14)
-    fastk_period : int, optional
-        Period for Stochastic %K calculation (default: 5)
-    fastd_period : int, optional
-        Period for %D (moving average of %K) (default: 3)
-    fastd_matype : int, optional
-        Type of moving average for %D (default: 0 = SMA)
-
-    Returns
-    -------
-    tuple of np.ndarray
-        (fastk, fastd) - StochRSI %K and %D arrays
-
-    Notes
-    -----
-    - More sensitive than regular Stochastic
-    - Combines RSI and Stochastic concepts
-    - Values range from 0 to 100
-    - Prone to more whipsaw signals
-
-    Formula
-    -------
-    1. Calculate RSI(timeperiod)
-    2. Apply Stochastic formula to RSI:
-       StochRSI %K = ((RSI - Lowest RSI) / (Highest RSI - Lowest RSI)) * 100
-    3. StochRSI %D = SMA(StochRSI %K, fastd_period)
-
-    See Also
-    --------
-    RSI : Relative Strength Index
-    STOCH : Stochastic Oscillator
-    """
-    data = np.asarray(data, dtype=np.float64)
-    n = len(data)
-
-    if n == 0:
-        empty = np.array([], dtype=np.float64)
-        return empty, empty
-
-    # Calculate RSI
-    rsi = RSI(data, timeperiod=timeperiod)
-
-    # Apply Stochastic formula to RSI using Numba-optimized implementation
-    from ..cpu.momentum_indicators import _stochrsi_numba
-    fastk = np.empty(n, dtype=np.float64)
-    _stochrsi_numba(rsi, fastk_period, fastk)
-
-    # Calculate %D (SMA of %K)
-    from .overlap import SMA
-    fastd = SMA(fastk, timeperiod=fastd_period)
-
-    return fastk, fastd
 
 
 def TRIX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
@@ -2300,7 +2084,7 @@ def TRIX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import TRIX
+    >>> from numta import TRIX
     >>> close = np.linspace(100, 120, 100)
     >>> trix = TRIX(close, timeperiod=15)
 
@@ -2424,7 +2208,7 @@ def ULTOSC(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import ULTOSC
+    >>> from numta import ULTOSC
     >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
     >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
     >>> close = np.array([105, 107, 109, 108, 110, 112, 111])
@@ -2566,7 +2350,7 @@ def WILLR(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import WILLR
+    >>> from numta import WILLR
     >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
     >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
     >>> close = np.array([105, 107, 109, 108, 110, 112, 111])

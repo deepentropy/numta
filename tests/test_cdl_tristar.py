@@ -3,11 +3,11 @@ Test suite for CDLTRISTAR
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdltristar_bearish():
     """Test Bearish Tristar (gap up, three dojis)"""
-    from talib_pure import CDLTRISTAR
+    from numta import CDLTRISTAR
 
     # Build context + tristar (three dojis with gap up)
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
@@ -25,7 +25,7 @@ def test_cdltristar_bearish():
 
 def test_cdltristar_bullish():
     """Test Bullish Tristar (gap down, three dojis)"""
-    from talib_pure import CDLTRISTAR
+    from numta import CDLTRISTAR
 
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
                       105.0, 100.0, 100.1])  # Three dojis, second gaps down
@@ -42,7 +42,7 @@ def test_cdltristar_bullish():
 
 def test_cdltristar_no_pattern():
     """Test no pattern when not dojis"""
-    from talib_pure import CDLTRISTAR
+    from numta import CDLTRISTAR
 
     open_ = np.array([90, 91, 100, 105, 110])
     high = np.array([91, 92, 105, 110, 115])

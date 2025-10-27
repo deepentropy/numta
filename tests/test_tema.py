@@ -3,8 +3,9 @@ Test suite for TEMA
 """
 
 import numpy as np
-import pytest
-from talib_pure import TEMA, EMA
+
+from numta import TEMA
+
 
 class TestTEMA:
     """Tests for TEMA"""
@@ -20,7 +21,7 @@ class TestTEMA:
 
     def test_tema_less_lag_than_ema(self):
         """Test that TEMA responds faster than EMA"""
-        from talib_pure import EMA
+        from numta import EMA
 
         # Create data with sudden jump
         close = np.concatenate([

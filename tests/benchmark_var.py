@@ -8,7 +8,7 @@ import time
 
 def benchmark_var():
     """Benchmark VAR"""
-    from talib_pure import VAR
+    from numta import VAR
 
     print("=" * 80)
     print("VAR Benchmark")

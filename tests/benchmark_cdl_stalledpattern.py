@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlstalledpattern():
     """Benchmark CDLSTALLEDPATTERN"""
-    from talib_pure import CDLSTALLEDPATTERN
+    from numta import CDLSTALLEDPATTERN
 
     print("=" * 80)
     print("CDLSTALLEDPATTERN Benchmark")

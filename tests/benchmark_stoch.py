@@ -8,7 +8,7 @@ import time
 
 def benchmark_stoch():
     """Benchmark STOCH"""
-    from talib_pure import STOCH
+    from numta import STOCH
 
     print("=" * 80)
     print("STOCH Benchmark")

@@ -3,11 +3,11 @@ Test suite for MAMA
 """
 
 import numpy as np
-import pytest
+
 
 def test_mama_basic():
     """Test MAMA basic calculation"""
-    from talib_pure import MAMA
+    from numta import MAMA
 
     close = np.linspace(100, 150, 50)
     mama, fama = MAMA(close, fastlimit=0.5, slowlimit=0.05)
@@ -20,7 +20,7 @@ def test_mama_basic():
 
 def test_mama_empty_input():
     """Test MAMA with empty array"""
-    from talib_pure import MAMA
+    from numta import MAMA
 
     empty = np.array([])
     mama, fama = MAMA(empty)

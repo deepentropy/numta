@@ -158,7 +158,7 @@ def CORREL(high: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CORREL
+    >>> from numta import CORREL
     >>> # Positively correlated high and low
     >>> high = np.array([105, 106, 107, 108, 109, 110, 111, 112, 113, 114])
     >>> low = np.array([100, 101, 102, 103, 104, 105, 106, 107, 108, 109])
@@ -279,7 +279,7 @@ def LINEARREG(close: Union[np.ndarray, list], timeperiod: int = 14) -> np.ndarra
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import LINEARREG
+    >>> from numta import LINEARREG
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109, 111, 110, 112, 114, 113])
     >>> linreg = LINEARREG(close, timeperiod=14)
     >>> print(linreg)
@@ -409,7 +409,7 @@ def LINEARREG_ANGLE(close: Union[np.ndarray, list], timeperiod: int = 14) -> np.
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import LINEARREG_ANGLE
+    >>> from numta import LINEARREG_ANGLE
     >>> # Uptrending prices
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109, 111, 110, 112, 114, 113])
     >>> angle = LINEARREG_ANGLE(close, timeperiod=14)
@@ -519,7 +519,7 @@ def LINEARREG_INTERCEPT(close: Union[np.ndarray, list], timeperiod: int = 14) ->
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import LINEARREG_INTERCEPT
+    >>> from numta import LINEARREG_INTERCEPT
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109, 111, 110, 112, 114, 113])
     >>> intercept = LINEARREG_INTERCEPT(close, timeperiod=14)
     >>> print(intercept)
@@ -639,7 +639,7 @@ def LINEARREG_SLOPE(close: Union[np.ndarray, list], timeperiod: int = 14) -> np.
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import LINEARREG_SLOPE
+    >>> from numta import LINEARREG_SLOPE
     >>> # Uptrending prices
     >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109, 111, 110, 112, 114, 113])
     >>> slope = LINEARREG_SLOPE(close, timeperiod=14)

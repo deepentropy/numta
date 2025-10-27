@@ -6,7 +6,7 @@ for Math Operators
 import numpy as np
 import time
 import talib
-from talib_pure import (
+from numta import (
     MAX, MIN, MINMAX, MAXINDEX, MININDEX, MINMAXINDEX, SUM
 )
 

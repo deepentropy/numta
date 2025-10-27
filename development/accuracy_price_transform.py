@@ -5,7 +5,7 @@ for Price Transform Indicators
 
 import numpy as np
 import talib
-from talib_pure import (
+from numta import (
     MEDPRICE, MIDPOINT, MIDPRICE, TYPPRICE, WCLPRICE
 )
 

@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlunique3river():
     """Benchmark CDLUNIQUE3RIVER"""
-    from talib_pure import CDLUNIQUE3RIVER
+    from numta import CDLUNIQUE3RIVER
 
     print("=" * 80)
     print("CDLUNIQUE3RIVER Benchmark")

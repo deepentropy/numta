@@ -3,11 +3,11 @@ Test suite for CDLUPSIDEGAP2CROWS
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlupsidegap2crows_pattern():
     """Test Upside Gap Two Crows pattern detection"""
-    from talib_pure import CDLUPSIDEGAP2CROWS
+    from numta import CDLUPSIDEGAP2CROWS
 
     # Build context + upside gap two crows (white, black gaps up, black engulfs)
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -25,7 +25,7 @@ def test_cdlupsidegap2crows_pattern():
 
 def test_cdlupsidegap2crows_no_pattern():
     """Test no pattern when no gap"""
-    from talib_pure import CDLUPSIDEGAP2CROWS
+    from numta import CDLUPSIDEGAP2CROWS
 
     open_ = np.array([90, 91, 100, 101, 102])
     high = np.array([91, 92, 110, 102, 103])

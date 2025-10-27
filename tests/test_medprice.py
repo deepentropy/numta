@@ -7,7 +7,7 @@ import pytest
 
 def test_medprice_basic():
     """Test MEDPRICE basic calculation"""
-    from talib_pure import MEDPRICE
+    from numta import MEDPRICE
 
     high = np.array([105, 106, 108, 107, 109])
     low = np.array([100, 101, 103, 102, 104])
@@ -20,7 +20,7 @@ def test_medprice_basic():
 
 def test_medprice_empty_input():
     """Test MEDPRICE with empty arrays"""
-    from talib_pure import MEDPRICE
+    from numta import MEDPRICE
 
     empty = np.array([])
     result = MEDPRICE(empty, empty)
@@ -29,7 +29,7 @@ def test_medprice_empty_input():
 
 def test_medprice_input_validation():
     """Test MEDPRICE validates input lengths"""
-    from talib_pure import MEDPRICE
+    from numta import MEDPRICE
 
     high = np.array([105, 106])
     low = np.array([100])

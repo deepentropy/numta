@@ -8,7 +8,7 @@ import time
 
 def benchmark_midpoint():
     """Benchmark MIDPOINT"""
-    from talib_pure import MIDPOINT
+    from numta import MIDPOINT
 
     print("=" * 80)
     print("MIDPOINT Benchmark")

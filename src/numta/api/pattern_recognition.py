@@ -306,7 +306,7 @@ def CDLMARUBOZU(open_: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CDLMARUBOZU
+    >>> from numta import CDLMARUBOZU
     >>> # Bullish Marubozu example
     >>> open_ = np.array([100.0, 102.0, 104.0])
     >>> high = np.array([105.0, 107.0, 109.0])
@@ -426,7 +426,7 @@ def CDLMATCHINGLOW(open_: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CDLMATCHINGLOW
+    >>> from numta import CDLMATCHINGLOW
     >>> # Matching Low example - two black candles with matching closes
     >>> open_ = np.array([110.0, 105.0, 102.0])
     >>> high = np.array([112.0, 106.0, 103.0])
@@ -542,7 +542,7 @@ def CDLMATHOLD(open_: Union[np.ndarray, list],
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import CDLMATHOLD
+    >>> from numta import CDLMATHOLD
     >>> # Mat Hold example
     >>> open_ = np.array([100.0, 110.0, 112.0, 111.0, 110.0, 113.0])
     >>> high = np.array([110.0, 112.0, 113.0, 112.0, 111.0, 115.0])
@@ -646,8 +646,6 @@ def CDLMORNINGDOJISTAR(open_: Union[np.ndarray, list],
         return np.zeros(n, dtype=np.int32)
 
     backend = get_backend()
-
-    # Use CPU implementation (default)
     output = np.zeros(n, dtype=np.int32)
     _cdlmorningdojistar_numba(open_, high, low, close, penetration, output)
     return output
@@ -703,8 +701,6 @@ def CDLMORNINGSTAR(open_: Union[np.ndarray, list],
         return np.zeros(n, dtype=np.int32)
 
     backend = get_backend()
-
-    # Use CPU implementation (default)
     output = np.zeros(n, dtype=np.int32)
     _cdlmorningstar_numba(open_, high, low, close, penetration, output)
     return output
@@ -756,8 +752,6 @@ def CDLONNECK(open_: Union[np.ndarray, list],
         return np.zeros(n, dtype=np.int32)
 
     backend = get_backend()
-
-    # Use CPU implementation (default)
     output = np.zeros(n, dtype=np.int32)
     _cdlonneck_numba(open_, high, low, close, output)
     return output
@@ -810,8 +804,6 @@ def CDLPIERCING(open_: Union[np.ndarray, list],
         return np.zeros(n, dtype=np.int32)
 
     backend = get_backend()
-
-    # Use CPU implementation (default)
     output = np.zeros(n, dtype=np.int32)
     _cdlpiercing_numba(open_, high, low, close, output)
     return output

@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlxsidegap3methods():
     """Benchmark CDLXSIDEGAP3METHODS"""
-    from talib_pure import CDLXSIDEGAP3METHODS
+    from numta import CDLXSIDEGAP3METHODS
 
     print("=" * 80)
     print("CDLXSIDEGAP3METHODS Benchmark")

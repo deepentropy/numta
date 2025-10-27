@@ -8,7 +8,7 @@ import time
 
 def benchmark_typprice():
     """Benchmark TYPPRICE"""
-    from talib_pure import TYPPRICE
+    from numta import TYPPRICE
 
     print("=" * 80)
     print("TYPPRICE Benchmark")

@@ -8,7 +8,7 @@ between talib-pure (Numba/CPU) and the original TA-Lib library.
 import numpy as np
 import talib
 import time
-from talib_pure import CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE, STDDEV, TSF, VAR
+from numta import CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE, STDDEV, TSF, VAR
 
 
 def generate_test_data(size):

@@ -1,6 +1,6 @@
-# talib-pure Function Implementation Status
+# numta Function Implementation Status
 
-This table shows which talib-pure functions have Numba (CPU) implementations.
+This table shows which numta functions have Numba (CPU) implementations.
 
 | Category | Function Name | Numba (CPU) Notes |
 |----------|---------------|-------------|------------|-------|

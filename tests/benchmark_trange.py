@@ -8,7 +8,7 @@ import time
 
 def benchmark_trange():
     """Benchmark TRANGE"""
-    from talib_pure import TRANGE
+    from numta import TRANGE
 
     print("=" * 80)
     print("TRANGE Benchmark")

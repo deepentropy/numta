@@ -3,11 +3,11 @@ Test suite for CDLSHORTLINE
 """
 
 import numpy as np
-import pytest
+
 
 def test_cdlshortline_white():
     """Test Short Line white candle detection"""
-    from talib_pure import CDLSHORTLINE
+    from numta import CDLSHORTLINE
 
     # Build context with larger candles + short line pattern (need shadows in context)
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
@@ -25,7 +25,7 @@ def test_cdlshortline_white():
 
 def test_cdlshortline_black():
     """Test Short Line black candle detection"""
-    from talib_pure import CDLSHORTLINE
+    from numta import CDLSHORTLINE
 
     open_ = np.array([90, 100, 92, 102, 94, 104, 96, 106, 98, 108,
                       100.1])  # Short body
@@ -42,7 +42,7 @@ def test_cdlshortline_black():
 
 def test_cdlshortline_no_pattern():
     """Test no pattern when candle is long"""
-    from talib_pure import CDLSHORTLINE
+    from numta import CDLSHORTLINE
 
     open_ = np.array([90, 91, 100])  # Long candle
     high = np.array([91, 92, 120])

@@ -3,11 +3,11 @@ Test suite for HT_DCPHASE
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_dcphase_basic():
     """Test HT_DCPHASE basic calculation"""
-    from talib_pure import HT_DCPHASE
+    from numta import HT_DCPHASE
 
     # Create cyclic data
     n = 100
@@ -25,7 +25,7 @@ def test_ht_dcphase_basic():
 
 def test_ht_dcphase_empty_input():
     """Test HT_DCPHASE with empty array"""
-    from talib_pure import HT_DCPHASE
+    from numta import HT_DCPHASE
 
     empty = np.array([])
     result = HT_DCPHASE(empty)

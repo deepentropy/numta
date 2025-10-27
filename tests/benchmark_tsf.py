@@ -8,7 +8,7 @@ import time
 
 def benchmark_tsf():
     """Benchmark TSF"""
-    from talib_pure import TSF
+    from numta import TSF
 
     print("=" * 80)
     print("TSF Benchmark")

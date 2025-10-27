@@ -1,20 +1,20 @@
 """
 Comprehensive benchmark comparing all SMA implementations:
 - TA-Lib (C implementation)
-- talib-pure original (np.convolve)
-- talib-pure cumsum (O(n) algorithm)
-- talib-pure Numba (JIT compiled)
+- numta original (np.convolve)
+- numta cumsum (O(n) algorithm)
+- numta Numba (JIT compiled)
 """
 
 import numpy as np
-import sys
-from talib_pure.benchmark import PerformanceMeasurement
-from talib_pure.optimized import (
-    SMA_cumsum, SMA_auto, get_available_backends,
+
+from numta.benchmark import PerformanceMeasurement
+from numta.optimized import (
+    SMA_cumsum, get_available_backends, HAS_NUMBA,
 )
 
 if HAS_NUMBA:
-    from talib_pure.optimized import SMA_numba
+    from numta.optimized import SMA_numba
 
 
 
@@ -34,7 +34,7 @@ def print_backend_status():
 
 def benchmark_implementations():
     """Benchmark all available implementations"""
-    from talib_pure import SMA as SMA_original
+    from numta import SMA as SMA_original
 
     # Try to import TA-Lib
     try:
@@ -59,11 +59,11 @@ def benchmark_implementations():
     bench.clear()
     if has_talib:
         bench.add_function("TA-Lib (C)", talib.SMA, data, timeperiod=timeperiod)
-    bench.add_function("talib-pure (convolve)", SMA_original, data, timeperiod=timeperiod)
-    bench.add_function("talib-pure (cumsum)", SMA_cumsum, data, timeperiod=timeperiod)
+    bench.add_function("numta (convolve)", SMA_original, data, timeperiod=timeperiod)
+    bench.add_function("numta (cumsum)", SMA_cumsum, data, timeperiod=timeperiod)
 
     if HAS_NUMBA:
-        bench.add_function("talib-pure (Numba)", SMA_numba, data, timeperiod=timeperiod)
+        bench.add_function("numta (Numba)", SMA_numba, data, timeperiod=timeperiod)
 
 
     results = bench.run(iterations=1000, warmup=50)
@@ -79,11 +79,11 @@ def benchmark_implementations():
     bench.clear()
     if has_talib:
         bench.add_function("TA-Lib (C)", talib.SMA, data_large, timeperiod=timeperiod)
-    bench.add_function("talib-pure (convolve)", SMA_original, data_large, timeperiod=timeperiod)
-    bench.add_function("talib-pure (cumsum)", SMA_cumsum, data_large, timeperiod=timeperiod)
+    bench.add_function("numta (convolve)", SMA_original, data_large, timeperiod=timeperiod)
+    bench.add_function("numta (cumsum)", SMA_cumsum, data_large, timeperiod=timeperiod)
 
     if HAS_NUMBA:
-        bench.add_function("talib-pure (Numba)", SMA_numba, data_large, timeperiod=timeperiod)
+        bench.add_function("numta (Numba)", SMA_numba, data_large, timeperiod=timeperiod)
 
 
     results = bench.run(iterations=500, warmup=20)
@@ -99,11 +99,11 @@ def benchmark_implementations():
     bench.clear()
     if has_talib:
         bench.add_function("TA-Lib (C)", talib.SMA, data_xlarge, timeperiod=timeperiod)
-    bench.add_function("talib-pure (convolve)", SMA_original, data_xlarge, timeperiod=timeperiod)
-    bench.add_function("talib-pure (cumsum)", SMA_cumsum, data_xlarge, timeperiod=timeperiod)
+    bench.add_function("numta (convolve)", SMA_original, data_xlarge, timeperiod=timeperiod)
+    bench.add_function("numta (cumsum)", SMA_cumsum, data_xlarge, timeperiod=timeperiod)
 
     if HAS_NUMBA:
-        bench.add_function("talib-pure (Numba)", SMA_numba, data_xlarge, timeperiod=timeperiod)
+        bench.add_function("numta (Numba)", SMA_numba, data_xlarge, timeperiod=timeperiod)
 
 
     results = bench.run(iterations=100, warmup=10)
@@ -173,7 +173,7 @@ def benchmark_implementations():
         print("  pip install numba              # For Numba optimization")
 
     print("\nExample usage:")
-    print("  from talib_pure.optimized import SMA_auto")
+    print("  from numta.optimized import SMA_auto")
     print("  sma = SMA_auto(close, timeperiod=30, backend='auto')  # Auto-select best")
     print("  sma = SMA_auto(close, timeperiod=30, backend='numba') # Force Numba")
 

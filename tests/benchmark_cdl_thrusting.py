@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlthrusting():
     """Benchmark CDLTHRUSTING"""
-    from talib_pure import CDLTHRUSTING
+    from numta import CDLTHRUSTING
 
     print("=" * 80)
     print("CDLTHRUSTING Benchmark")

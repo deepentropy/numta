@@ -3,8 +3,9 @@ Test suite for TSF
 """
 
 import numpy as np
-import pytest
-from talib_pure import TSF, SMA
+
+from numta import TSF
+
 
 class TestTSF:
     """Tests for TSF"""
@@ -32,7 +33,7 @@ class TestTSF:
 
     def test_tsf_faster_than_sma(self):
         """Test that TSF reacts faster than SMA"""
-        from talib_pure import SMA
+        from numta import SMA
 
         # Create data with sudden jump
         close = np.concatenate([

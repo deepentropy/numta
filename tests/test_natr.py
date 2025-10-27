@@ -3,8 +3,9 @@ Test suite for NATR
 """
 
 import numpy as np
-import pytest
-from talib_pure import NATR
+
+from numta import NATR
+
 
 class TestNATR:
     """Tests for NATR (Normalized Average True Range)"""

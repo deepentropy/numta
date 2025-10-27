@@ -7,7 +7,7 @@ import pytest
 
 def test_max_basic():
     """Test MAX basic calculation"""
-    from talib_pure import MAX
+    from numta import MAX
 
     data = np.array([100, 105, 103, 108, 106, 110, 107, 109, 104, 111])
     result = MAX(data, timeperiod=5)
@@ -19,7 +19,7 @@ def test_max_basic():
 
 def test_max_empty_input():
     """Test MAX with empty array"""
-    from talib_pure import MAX
+    from numta import MAX
 
     empty = np.array([])
     result = MAX(empty)
@@ -28,7 +28,7 @@ def test_max_empty_input():
 
 def test_max_input_validation():
     """Test MAX validates input"""
-    from talib_pure import MAX
+    from numta import MAX
 
     data = np.array([100, 105])
     with pytest.raises(ValueError):

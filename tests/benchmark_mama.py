@@ -8,7 +8,7 @@ import time
 
 def benchmark_mama():
     """Benchmark MAMA"""
-    from talib_pure import MAMA
+    from numta import MAMA
 
     print("=" * 80)
     print("MAMA Benchmark")

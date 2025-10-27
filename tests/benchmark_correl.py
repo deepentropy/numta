@@ -8,7 +8,7 @@ import time
 
 def benchmark_correl():
     """Benchmark CORREL"""
-    from talib_pure import CORREL
+    from numta import CORREL
 
     print("=" * 80)
     print("CORREL Benchmark")

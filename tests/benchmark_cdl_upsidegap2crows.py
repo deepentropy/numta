@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlupsidegap2crows():
     """Benchmark CDLUPSIDEGAP2CROWS"""
-    from talib_pure import CDLUPSIDEGAP2CROWS
+    from numta import CDLUPSIDEGAP2CROWS
 
     print("=" * 80)
     print("CDLUPSIDEGAP2CROWS Benchmark")

@@ -4,7 +4,7 @@ Test suite for OBV
 
 import numpy as np
 import pytest
-from talib_pure import OBV
+from numta import OBV
 
 class TestOBV:
     """Tests for OBV (On Balance Volume)"""

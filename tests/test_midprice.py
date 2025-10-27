@@ -4,7 +4,7 @@ Test suite for MIDPRICE
 
 import numpy as np
 import pytest
-from talib_pure import MIDPRICE
+from numta import MIDPRICE
 
 class TestMIDPRICE:
     """Tests for MIDPRICE (Midpoint Price over period)"""

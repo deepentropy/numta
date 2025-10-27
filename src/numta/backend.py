@@ -26,7 +26,7 @@ def set_backend(backend: str) -> None:
 
     Examples
     --------
-    >>> from talib_pure import set_backend
+    >>> from numta import set_backend
     >>> set_backend("cpu")  # Use CPU with Numba
     """
     global _current_backend
@@ -50,7 +50,7 @@ def get_backend() -> str:
 
     Examples
     --------
-    >>> from talib_pure import get_backend
+    >>> from numta import get_backend
     >>> backend = get_backend()
     >>> print(f"Current backend: {backend}")
     """
@@ -71,7 +71,7 @@ def get_backend_info() -> Dict[str, any]:
 
     Examples
     --------
-    >>> from talib_pure import get_backend_info
+    >>> from numta import get_backend_info
     >>> info = get_backend_info()
     >>> print(f"Current: {info['current']}")
     >>> print(f"Numba Available: {info['numba_available']}")

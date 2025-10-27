@@ -80,7 +80,7 @@ def MAX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MAX
+    >>> from numta import MAX
     >>> close = np.array([100, 105, 103, 108, 106, 110, 107, 109, 104, 111])
     >>> max_val = MAX(close, timeperiod=5)
     >>> print(max_val)
@@ -189,7 +189,7 @@ def MAXINDEX(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure import MAXINDEX
+    >>> from numta import MAXINDEX
     >>> close = np.array([100, 105, 103, 108, 106, 110, 107, 109, 104, 111])
     >>> maxidx = MAXINDEX(close, timeperiod=5)
     >>> print(maxidx)

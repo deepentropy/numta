@@ -3,11 +3,11 @@ Test suite for HT_TRENDMODE
 """
 
 import numpy as np
-import pytest
+
 
 def test_ht_trendmode_basic():
     """Test HT_TRENDMODE basic calculation"""
-    from talib_pure import HT_TRENDMODE
+    from numta import HT_TRENDMODE
 
     # Create trending data
     close = np.linspace(100, 150, 100)
@@ -23,7 +23,7 @@ def test_ht_trendmode_basic():
 
 def test_ht_trendmode_trending():
     """Test HT_TRENDMODE detects trending market"""
-    from talib_pure import HT_TRENDMODE
+    from numta import HT_TRENDMODE
 
     # Strong trend
     close = np.linspace(100, 150, 100)
@@ -39,7 +39,7 @@ def test_ht_trendmode_trending():
 
 def test_ht_trendmode_empty_input():
     """Test HT_TRENDMODE with empty array"""
-    from talib_pure import HT_TRENDMODE
+    from numta import HT_TRENDMODE
 
     empty = np.array([])
     result = HT_TRENDMODE(empty)

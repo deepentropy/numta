@@ -8,7 +8,7 @@ import time
 
 def benchmark_medprice():
     """Benchmark MEDPRICE"""
-    from talib_pure import MEDPRICE
+    from numta import MEDPRICE
 
     print("=" * 80)
     print("MEDPRICE Benchmark")

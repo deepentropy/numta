@@ -8,7 +8,7 @@ import time
 
 def benchmark_t3():
     """Benchmark T3"""
-    from talib_pure import T3
+    from numta import T3
 
     print("=" * 80)
     print("T3 Benchmark")

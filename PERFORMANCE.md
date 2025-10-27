@@ -1,6 +1,6 @@
 # Performance Comparison
 
-This document presents performance comparisons between **talib-pure** (Numba/CPU implementation) and the **original TA-Lib** library.
+This document presents performance comparisons between **numta** (Numba/CPU implementation) and the **original TA-Lib** library.
 
 ## Contents
 
@@ -25,18 +25,18 @@ This document presents performance comparisons between **talib-pure** (Numba/CPU
 
 ## Summary
 
-The following table shows the speedup factor (talib-pure vs TA-Lib) across different dataset sizes:
+The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
-| Function | 1K bars | 10K bars | 100K bars | Average |
-|----------|---------|----------|-----------|---------|
-| **HT_DCPERIOD** | 0.79x | 0.32x | 0.38x | **0.50x** |
-| **HT_DCPHASE** | 7.60x | 2.01x | 2.85x | **4.15x** |
-| **HT_PHASOR** | 3.21x | 0.52x | 0.87x | **1.53x** |
-| **HT_SINE** | 3.20x | 1.55x | 1.85x | **2.20x** |
-| **HT_TRENDLINE** | 26.08x | 46.59x | 36.64x | **36.44x** |
-| **HT_TRENDMODE** | 15.23x | 15.25x | 7.61x | **12.70x** |
+| Function         | 1K bars | 10K bars | 100K bars | Average    |
+|------------------|---------|----------|-----------|------------|
+| **HT_DCPERIOD**  | 0.79x   | 0.32x    | 0.38x     | **0.50x**  |
+| **HT_DCPHASE**   | 7.60x   | 2.01x    | 2.85x     | **4.15x**  |
+| **HT_PHASOR**    | 3.21x   | 0.52x    | 0.87x     | **1.53x**  |
+| **HT_SINE**      | 3.20x   | 1.55x    | 1.85x     | **2.20x**  |
+| **HT_TRENDLINE** | 26.08x  | 46.59x   | 36.64x    | **36.44x** |
+| **HT_TRENDMODE** | 15.23x  | 15.25x   | 7.61x     | **12.70x** |
 
-**Note**: Values greater than 1.0x indicate talib-pure is faster; values less than 1.0x indicate TA-Lib is faster.
+**Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
 ## Key Findings
 
@@ -56,36 +56,36 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| HT_DCPERIOD | 0.0578 | 0.0734 | **0.79x** |
-| HT_DCPHASE | 0.2571 | 0.0338 | **7.60x** |
-| HT_PHASOR | 0.0575 | 0.0179 | **3.21x** |
-| HT_SINE | 0.3059 | 0.0956 | **3.20x** |
-| HT_TRENDLINE | 0.0580 | 0.0022 | **26.08x** |
-| HT_TRENDMODE | 0.3118 | 0.0205 | **15.23x** |
+| Function     | TA-Lib (ms) | numta (ms) | Speedup    |
+|--------------|-------------|------------|------------|
+| HT_DCPERIOD  | 0.0578      | 0.0734     | **0.79x**  |
+| HT_DCPHASE   | 0.2571      | 0.0338     | **7.60x**  |
+| HT_PHASOR    | 0.0575      | 0.0179     | **3.21x**  |
+| HT_SINE      | 0.3059      | 0.0956     | **3.20x**  |
+| HT_TRENDLINE | 0.0580      | 0.0022     | **26.08x** |
+| HT_TRENDMODE | 0.3118      | 0.0205     | **15.23x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| HT_DCPERIOD | 0.5839 | 1.8229 | **0.32x** |
-| HT_DCPHASE | 2.7919 | 1.3868 | **2.01x** |
-| HT_PHASOR | 0.5810 | 1.1187 | **0.52x** |
-| HT_SINE | 3.2005 | 2.0708 | **1.55x** |
-| HT_TRENDLINE | 0.6517 | 0.0140 | **46.59x** |
-| HT_TRENDMODE | 3.2921 | 0.2159 | **15.25x** |
+| Function     | TA-Lib (ms) | numta (ms) | Speedup    |
+|--------------|-------------|------------|------------|
+| HT_DCPERIOD  | 0.5839      | 1.8229     | **0.32x**  |
+| HT_DCPHASE   | 2.7919      | 1.3868     | **2.01x**  |
+| HT_PHASOR    | 0.5810      | 1.1187     | **0.52x**  |
+| HT_SINE      | 3.2005      | 2.0708     | **1.55x**  |
+| HT_TRENDLINE | 0.6517      | 0.0140     | **46.59x** |
+| HT_TRENDMODE | 3.2921      | 0.2159     | **15.25x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| HT_DCPERIOD | 5.9591 | 15.8113 | **0.38x** |
-| HT_DCPHASE | 28.9483 | 10.1458 | **2.85x** |
-| HT_PHASOR | 6.7063 | 7.6714 | **0.87x** |
-| HT_SINE | 35.2159 | 19.0322 | **1.85x** |
-| HT_TRENDLINE | 6.8711 | 0.1875 | **36.64x** |
-| HT_TRENDMODE | 33.3462 | 4.3796 | **7.61x** |
+| Function     | TA-Lib (ms) | numta (ms) | Speedup    |
+|--------------|-------------|------------|------------|
+| HT_DCPERIOD  | 5.9591      | 15.8113    | **0.38x**  |
+| HT_DCPHASE   | 28.9483     | 10.1458    | **2.85x**  |
+| HT_PHASOR    | 6.7063      | 7.6714     | **0.87x**  |
+| HT_SINE      | 35.2159     | 19.0322    | **1.85x**  |
+| HT_TRENDLINE | 6.8711      | 0.1875     | **36.64x** |
+| HT_TRENDMODE | 33.3462     | 4.3796     | **7.61x**  |
 
 ## Analysis
 
@@ -105,13 +105,13 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Performance Characteristics
 
-- **Small datasets (1K bars)**: talib-pure generally shows excellent performance due to efficient Numba JIT compilation and minimal overhead
+- **Small datasets (1K bars)**: numta generally shows excellent performance due to efficient Numba JIT compilation and minimal overhead
 - **Medium datasets (10K bars)**: Mixed results, with some functions showing reduced speedup as JIT compilation overhead becomes more apparent
 - **Large datasets (100K bars)**: Performance stabilizes, with most functions showing consistent speedup patterns
 
 ## Implementation Details
 
-All cycle indicators in talib-pure are implemented using:
+All cycle indicators in numta are implemented using:
 - **Numba JIT compilation** with `@jit(nopython=True, cache=True)` decorator
 - **Array-based computations** for efficient vectorization
 - **Identical algorithms** to TA-Lib for compatibility
@@ -119,9 +119,9 @@ All cycle indicators in talib-pure are implemented using:
 
 ## Recommendations
 
-### When to Use talib-pure
-- **HT_TRENDLINE** and **HT_TRENDMODE**: Always prefer talib-pure (10x+ faster)
-- **HT_DCPHASE** and **HT_SINE**: Use talib-pure for 1.5-7.6x speedup
+### When to Use numta
+- **HT_TRENDLINE** and **HT_TRENDMODE**: Always prefer numta (10x+ faster)
+- **HT_DCPHASE** and **HT_SINE**: Use numta for 1.5-7.6x speedup
 - When you need a pure Python implementation without C dependencies
 - For deployment environments where installing TA-Lib's C library is challenging
 
@@ -133,8 +133,8 @@ All cycle indicators in talib-pure are implemented using:
 ### Best of Both Worlds
 Consider using a hybrid approach:
 ```python
-# Use talib-pure for fast functions
-from talib_pure import HT_TRENDLINE, HT_TRENDMODE, HT_DCPHASE, HT_SINE
+# Use numta for fast functions
+from numta import HT_TRENDLINE, HT_TRENDMODE, HT_DCPHASE, HT_SINE
 
 # Use original TA-Lib for slower functions
 import talib
@@ -170,9 +170,9 @@ python tests/benchmark_ht_trendmode.py
 
 ## Conclusion
 
-The talib-pure Numba/CPU implementation demonstrates **strong overall performance** for Cycle Indicators, with 4 out of 6 functions showing significant speedups (1.5x to 46x). While HT_DCPERIOD and HT_PHASOR are slower in certain scenarios, the majority of cycle indicators benefit substantially from the Numba-optimized implementation.
+The numta Numba/CPU implementation demonstrates **strong overall performance** for Cycle Indicators, with 4 out of 6 functions showing significant speedups (1.5x to 46x). While HT_DCPERIOD and HT_PHASOR are slower in certain scenarios, the majority of cycle indicators benefit substantially from the Numba-optimized implementation.
 
-For typical use cases involving HT_TRENDLINE, HT_TRENDMODE, HT_DCPHASE, and HT_SINE, talib-pure offers compelling performance advantages while maintaining full API compatibility with the original TA-Lib library.
+For typical use cases involving HT_TRENDLINE, HT_TRENDMODE, HT_DCPHASE, and HT_SINE, numta offers compelling performance advantages while maintaining full API compatibility with the original TA-Lib library.
 
 ---
 
@@ -190,24 +190,24 @@ For typical use cases involving HT_TRENDLINE, HT_TRENDMODE, HT_DCPHASE, and HT_S
 
 ## Summary
 
-The following table shows the speedup factor (talib-pure vs TA-Lib) across different dataset sizes:
+The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
-| Function | 1K bars | 10K bars | 100K bars | Average |
-|----------|---------|----------|-----------|---------|
-| **MAX** | 0.20x | 0.15x | 0.24x | **0.20x** |
-| **MIN** | 0.17x | 0.15x | 0.25x | **0.19x** |
-| **MINMAX** | 0.20x | 0.18x | 0.40x | **0.26x** |
-| **MAXINDEX** | 0.13x | 0.13x | 0.14x | **0.13x** |
-| **MININDEX** | 0.13x | 0.11x | 0.14x | **0.13x** |
-| **MINMAXINDEX** | 0.14x | 0.11x | 0.14x | **0.13x** |
-| **SUM** | 0.80x | 1.02x | 1.24x | **1.02x** |
+| Function        | 1K bars | 10K bars | 100K bars | Average   |
+|-----------------|---------|----------|-----------|-----------|
+| **MAX**         | 0.20x   | 0.15x    | 0.24x     | **0.20x** |
+| **MIN**         | 0.17x   | 0.15x    | 0.25x     | **0.19x** |
+| **MINMAX**      | 0.20x   | 0.18x    | 0.40x     | **0.26x** |
+| **MAXINDEX**    | 0.13x   | 0.13x    | 0.14x     | **0.13x** |
+| **MININDEX**    | 0.13x   | 0.11x    | 0.14x     | **0.13x** |
+| **MINMAXINDEX** | 0.14x   | 0.11x    | 0.14x     | **0.13x** |
+| **SUM**         | 0.80x   | 1.02x    | 1.24x     | **1.02x** |
 
-**Note**: Values greater than 1.0x indicate talib-pure is faster; values less than 1.0x indicate TA-Lib is faster.
+**Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
 ## Key Findings
 
 ### Faster Function (1.0x+ speedup)
-- **SUM**: 0.8-1.24x faster - The only Math Operator where talib-pure matches or exceeds TA-Lib performance, thanks to optimized rolling window implementation
+- **SUM**: 0.8-1.24x faster - The only Math Operator where numta matches or exceeds TA-Lib performance, thanks to optimized rolling window implementation
 
 ### Slower Functions (< 1.0x)
 - **MAX/MIN/MINMAX**: 0.15-0.40x - Original TA-Lib is 2.5-7x faster
@@ -217,45 +217,45 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MAX | 0.0041 | 0.0206 | **0.20x** |
-| MIN | 0.0035 | 0.0204 | **0.17x** |
-| MINMAX | 0.0047 | 0.0237 | **0.20x** |
-| MAXINDEX | 0.0039 | 0.0303 | **0.13x** |
-| MININDEX | 0.0040 | 0.0305 | **0.13x** |
-| MINMAXINDEX | 0.0062 | 0.0455 | **0.14x** |
-| SUM | 0.0028 | 0.0035 | **0.80x** |
+| Function    | TA-Lib (ms) | numta (ms) | Speedup   |
+|-------------|-------------|------------|-----------|
+| MAX         | 0.0041      | 0.0206     | **0.20x** |
+| MIN         | 0.0035      | 0.0204     | **0.17x** |
+| MINMAX      | 0.0047      | 0.0237     | **0.20x** |
+| MAXINDEX    | 0.0039      | 0.0303     | **0.13x** |
+| MININDEX    | 0.0040      | 0.0305     | **0.13x** |
+| MINMAXINDEX | 0.0062      | 0.0455     | **0.14x** |
+| SUM         | 0.0028      | 0.0035     | **0.80x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MAX | 0.0329 | 0.2191 | **0.15x** |
-| MIN | 0.0334 | 0.2194 | **0.15x** |
-| MINMAX | 0.0435 | 0.2353 | **0.18x** |
-| MAXINDEX | 0.0383 | 0.3058 | **0.13x** |
-| MININDEX | 0.0379 | 0.3403 | **0.11x** |
-| MINMAXINDEX | 0.0521 | 0.4545 | **0.11x** |
-| SUM | 0.0255 | 0.0250 | **1.02x** |
+| Function    | TA-Lib (ms) | numta (ms) | Speedup   |
+|-------------|-------------|------------|-----------|
+| MAX         | 0.0329      | 0.2191     | **0.15x** |
+| MIN         | 0.0334      | 0.2194     | **0.15x** |
+| MINMAX      | 0.0435      | 0.2353     | **0.18x** |
+| MAXINDEX    | 0.0383      | 0.3058     | **0.13x** |
+| MININDEX    | 0.0379      | 0.3403     | **0.11x** |
+| MINMAXINDEX | 0.0521      | 0.4545     | **0.11x** |
+| SUM         | 0.0255      | 0.0250     | **1.02x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MAX | 0.5125 | 2.1407 | **0.24x** |
-| MIN | 0.5107 | 2.0619 | **0.25x** |
-| MINMAX | 1.1511 | 2.8434 | **0.40x** |
-| MAXINDEX | 0.4467 | 3.1797 | **0.14x** |
-| MININDEX | 0.4389 | 3.1948 | **0.14x** |
-| MINMAXINDEX | 0.7230 | 5.1243 | **0.14x** |
-| SUM | 0.3793 | 0.3050 | **1.24x** |
+| Function    | TA-Lib (ms) | numta (ms) | Speedup   |
+|-------------|-------------|------------|-----------|
+| MAX         | 0.5125      | 2.1407     | **0.24x** |
+| MIN         | 0.5107      | 2.0619     | **0.25x** |
+| MINMAX      | 1.1511      | 2.8434     | **0.40x** |
+| MAXINDEX    | 0.4467      | 3.1797     | **0.14x** |
+| MININDEX    | 0.4389      | 3.1948     | **0.14x** |
+| MINMAXINDEX | 0.7230      | 5.1243     | **0.14x** |
+| SUM         | 0.3793      | 0.3050     | **1.24x** |
 
 ## Analysis
 
 ### Why SUM Is Competitive
 
-**SUM** is the only Math Operator where talib-pure approaches or exceeds TA-Lib performance:
+**SUM** is the only Math Operator where numta approaches or exceeds TA-Lib performance:
 
 1. **Optimized Algorithm**: Uses incremental rolling window calculation (add new value, subtract old value) rather than recalculating the entire sum each time
 2. **O(n) Complexity**: Linear time complexity vs O(n*timeperiod) for naive implementations
@@ -264,7 +264,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Why Most Math Operators Are Slower
 
-The majority of Math Operators (MAX, MIN, and their variants) are significantly slower in talib-pure:
+The majority of Math Operators (MAX, MIN, and their variants) are significantly slower in numta:
 
 1. **Highly Optimized C Code**: TA-Lib's C implementation uses highly optimized algorithms with minimal overhead for simple operations like finding min/max values
 
@@ -276,13 +276,13 @@ The majority of Math Operators (MAX, MIN, and their variants) are significantly 
 
 ### Performance Characteristics
 
-- **Small datasets (1K bars)**: talib-pure shows relatively better performance (0.13-0.80x) due to smaller overhead
+- **Small datasets (1K bars)**: numta shows relatively better performance (0.13-0.80x) due to smaller overhead
 - **Medium datasets (10K bars)**: Performance gap widens (0.11-1.02x) as TA-Lib's optimizations become more apparent
-- **Large datasets (100K bars)**: Performance stabilizes (0.14-1.24x), with SUM becoming noticeably faster in talib-pure
+- **Large datasets (100K bars)**: Performance stabilizes (0.14-1.24x), with SUM becoming noticeably faster in numta
 
 ## Implementation Details
 
-All Math Operators in talib-pure are implemented using:
+All Math Operators in numta are implemented using:
 - **Numba JIT compilation** with `@jit(nopython=True, cache=True)` decorator
 - **Rolling window operations** for most functions (O(n*timeperiod) complexity)
 - **Optimized SUM** using incremental calculation (O(n) complexity)
@@ -291,7 +291,7 @@ All Math Operators in talib-pure are implemented using:
 
 ## Recommendations
 
-### When to Use talib-pure
+### When to Use numta
 - **SUM**: Slightly faster on large datasets (1.02x average), safe to use
 - When you need a pure Python implementation without C dependencies
 - For deployment environments where installing TA-Lib's C library is challenging
@@ -308,8 +308,8 @@ All Math Operators in talib-pure are implemented using:
 For Math Operators, the recommendation is clear:
 
 ```python
-# Use talib-pure for SUM (comparable performance)
-from talib_pure import SUM
+# Use numta for SUM (comparable performance)
+from numta import SUM
 
 # Use original TA-Lib for all other Math Operators (much faster)
 import talib
@@ -328,7 +328,7 @@ Potential optimizations for Math Operators:
 1. **MAX/MIN Functions**: Investigate using more efficient data structures (e.g., deque with monotonic stack) to reduce window search time
 2. **INDEX Functions**: Optimize position tracking algorithm
 
-4. **Specialized Algorithms**: Consider using segment trees or other advanced data structures for range queries
+3. **Specialized Algorithms**: Consider using segment trees or other advanced data structures for range queries
 
 ## Reproducing These Results
 
@@ -353,9 +353,9 @@ python tests/benchmark_sum.py
 
 ## Conclusion
 
-The talib-pure Numba/CPU implementation shows **mixed performance** for Math Operators. While **SUM** is competitive and even slightly faster on large datasets (1.02x average), all other Math Operators are **significantly slower** than the original TA-Lib (5-9x slower).
+The numta Numba/CPU implementation shows **mixed performance** for Math Operators. While **SUM** is competitive and even slightly faster on large datasets (1.02x average), all other Math Operators are **significantly slower** than the original TA-Lib (5-9x slower).
 
-**Key Takeaway**: For Math Operators, the original TA-Lib's highly optimized C implementation provides superior performance for most operations. The exception is **SUM**, where talib-pure's optimized rolling window algorithm makes it competitive.
+**Key Takeaway**: For Math Operators, the original TA-Lib's highly optimized C implementation provides superior performance for most operations. The exception is **SUM**, where numta's optimized rolling window algorithm makes it competitive.
 
 **Recommendation**: Use the original TA-Lib for Math Operators unless you specifically need a pure Python implementation or are primarily using SUM. The performance penalty for MAX/MIN/INDEX functions is too significant to ignore in performance-critical applications.
 ---
@@ -374,24 +374,24 @@ The talib-pure Numba/CPU implementation shows **mixed performance** for Math Ope
 
 ## Summary
 
-The following table shows the speedup factor (talib-pure vs TA-Lib) across different dataset sizes:
+The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
-| Function | 1K bars | 10K bars | 100K bars | Average |
-|----------|---------|----------|-----------|---------|
-| **SMA** | 0.65x | 0.83x | 1.17x | **0.88x** |
-| **EMA** | 0.73x | 0.83x | 0.92x | **0.83x** |
-| **WMA** | 0.75x | 0.94x | 1.17x | **0.95x** |
-| **DEMA** | 0.81x | 0.86x | 1.52x | **1.06x** |
-| **TEMA** | 0.76x | 0.82x | 0.96x | **0.85x** |
-| **TRIMA** | 0.66x | 0.91x | 0.42x | **0.66x** |
-| **KAMA** | 0.77x | 0.91x | 1.20x | **0.96x** |
-| **MAMA** | 2.88x | 2.55x | 2.31x | **2.58x** |
-| **T3** | 0.18x | 0.18x | 0.10x | **0.15x** |
-| **BBANDS** | 0.19x | 0.17x | 0.32x | **0.23x** |
-| **SAR** | 0.58x | 0.94x | 1.13x | **0.88x** |
-| **SAREXT** | 0.62x | 0.76x | 1.09x | **0.83x** |
+| Function   | 1K bars | 10K bars | 100K bars | Average   |
+|------------|---------|----------|-----------|-----------|
+| **SMA**    | 0.65x   | 0.83x    | 1.17x     | **0.88x** |
+| **EMA**    | 0.73x   | 0.83x    | 0.92x     | **0.83x** |
+| **WMA**    | 0.75x   | 0.94x    | 1.17x     | **0.95x** |
+| **DEMA**   | 0.81x   | 0.86x    | 1.52x     | **1.06x** |
+| **TEMA**   | 0.76x   | 0.82x    | 0.96x     | **0.85x** |
+| **TRIMA**  | 0.66x   | 0.91x    | 0.42x     | **0.66x** |
+| **KAMA**   | 0.77x   | 0.91x    | 1.20x     | **0.96x** |
+| **MAMA**   | 2.88x   | 2.55x    | 2.31x     | **2.58x** |
+| **T3**     | 0.18x   | 0.18x    | 0.10x     | **0.15x** |
+| **BBANDS** | 0.19x   | 0.17x    | 0.32x     | **0.23x** |
+| **SAR**    | 0.58x   | 0.94x    | 1.13x     | **0.88x** |
+| **SAREXT** | 0.62x   | 0.76x    | 1.09x     | **0.83x** |
 
-**Note**: Values greater than 1.0x indicate talib-pure is faster; values less than 1.0x indicate TA-Lib is faster.
+**Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
 ## Key Findings
 
@@ -416,54 +416,54 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| SMA | 0.0027 | 0.0042 | **0.65x** |
-| EMA | 0.0039 | 0.0053 | **0.73x** |
-| WMA | 0.0029 | 0.0039 | **0.75x** |
-| DEMA | 0.0080 | 0.0099 | **0.81x** |
-| TEMA | 0.0112 | 0.0147 | **0.76x** |
-| TRIMA | 0.0042 | 0.0064 | **0.66x** |
-| KAMA | 0.0041 | 0.0053 | **0.77x** |
-| MAMA | 0.0632 | 0.0219 | **2.88x** |
-| T3 | 0.0052 | 0.0293 | **0.18x** |
-| BBANDS | 0.0080 | 0.0411 | **0.19x** |
-| SAR | 0.0035 | 0.0061 | **0.58x** |
-| SAREXT | 0.0039 | 0.0063 | **0.62x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| SMA      | 0.0027      | 0.0042     | **0.65x** |
+| EMA      | 0.0039      | 0.0053     | **0.73x** |
+| WMA      | 0.0029      | 0.0039     | **0.75x** |
+| DEMA     | 0.0080      | 0.0099     | **0.81x** |
+| TEMA     | 0.0112      | 0.0147     | **0.76x** |
+| TRIMA    | 0.0042      | 0.0064     | **0.66x** |
+| KAMA     | 0.0041      | 0.0053     | **0.77x** |
+| MAMA     | 0.0632      | 0.0219     | **2.88x** |
+| T3       | 0.0052      | 0.0293     | **0.18x** |
+| BBANDS   | 0.0080      | 0.0411     | **0.19x** |
+| SAR      | 0.0035      | 0.0061     | **0.58x** |
+| SAREXT   | 0.0039      | 0.0063     | **0.62x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| SMA | 0.0244 | 0.0293 | **0.83x** |
-| EMA | 0.0361 | 0.0434 | **0.83x** |
-| WMA | 0.0248 | 0.0262 | **0.94x** |
-| DEMA | 0.0763 | 0.0891 | **0.86x** |
-| TEMA | 0.1137 | 0.1393 | **0.82x** |
-| TRIMA | 0.0454 | 0.0500 | **0.91x** |
-| KAMA | 0.0378 | 0.0416 | **0.91x** |
-| MAMA | 0.6653 | 0.2604 | **2.55x** |
-| T3 | 0.0511 | 0.2841 | **0.18x** |
-| BBANDS | 0.0642 | 0.3741 | **0.17x** |
-| SAR | 0.0396 | 0.0423 | **0.94x** |
-| SAREXT | 0.0454 | 0.0594 | **0.76x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| SMA      | 0.0244      | 0.0293     | **0.83x** |
+| EMA      | 0.0361      | 0.0434     | **0.83x** |
+| WMA      | 0.0248      | 0.0262     | **0.94x** |
+| DEMA     | 0.0763      | 0.0891     | **0.86x** |
+| TEMA     | 0.1137      | 0.1393     | **0.82x** |
+| TRIMA    | 0.0454      | 0.0500     | **0.91x** |
+| KAMA     | 0.0378      | 0.0416     | **0.91x** |
+| MAMA     | 0.6653      | 0.2604     | **2.55x** |
+| T3       | 0.0511      | 0.2841     | **0.18x** |
+| BBANDS   | 0.0642      | 0.3741     | **0.17x** |
+| SAR      | 0.0396      | 0.0423     | **0.94x** |
+| SAREXT   | 0.0454      | 0.0594     | **0.76x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| SMA | 0.3913 | 0.3335 | **1.17x** |
-| EMA | 0.5116 | 0.5583 | **0.92x** |
-| WMA | 0.3778 | 0.3226 | **1.17x** |
-| DEMA | 2.3650 | 1.5513 | **1.52x** |
-| TEMA | 3.1520 | 3.2938 | **0.96x** |
-| TRIMA | 0.5212 | 1.2526 | **0.42x** |
-| KAMA | 0.5352 | 0.4454 | **1.20x** |
-| MAMA | 8.0934 | 3.5074 | **2.31x** |
-| T3 | 0.6133 | 6.1001 | **0.10x** |
-| BBANDS | 1.4770 | 4.5768 | **0.32x** |
-| SAR | 0.8558 | 0.7585 | **1.13x** |
-| SAREXT | 0.8343 | 0.7651 | **1.09x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| SMA      | 0.3913      | 0.3335     | **1.17x** |
+| EMA      | 0.5116      | 0.5583     | **0.92x** |
+| WMA      | 0.3778      | 0.3226     | **1.17x** |
+| DEMA     | 2.3650      | 1.5513     | **1.52x** |
+| TEMA     | 3.1520      | 3.2938     | **0.96x** |
+| TRIMA    | 0.5212      | 1.2526     | **0.42x** |
+| KAMA     | 0.5352      | 0.4454     | **1.20x** |
+| MAMA     | 8.0934      | 3.5074     | **2.31x** |
+| T3       | 0.6133      | 6.1001     | **0.10x** |
+| BBANDS   | 1.4770      | 4.5768     | **0.32x** |
+| SAR      | 0.8558      | 0.7585     | **1.13x** |
+| SAREXT   | 0.8343      | 0.7651     | **1.09x** |
 
 ## Analysis
 
@@ -471,7 +471,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 **MAMA** (MESA Adaptive Moving Average) is the standout performer in Overlap indicators:
 
-1. **Simplified Implementation**: talib-pure uses an EMA-based simplified implementation that is easier for Numba to optimize
+1. **Simplified Implementation**: numta uses an EMA-based simplified implementation that is easier for Numba to optimize
 2. **Excellent JIT Optimization**: The adaptive algorithm benefits greatly from Numba's JIT compilation
 3. **TA-Lib's Complex Implementation**: The original TA-Lib likely uses more complex Hilbert Transform calculations that are inherently slower
 
@@ -493,7 +493,7 @@ This is because:
 
 1. **T3 Complexity**: Uses 6 nested EMAs with a volume factor, creating complex nested loops that Numba struggles to optimize as effectively as TA-Lib's C implementation
 
-2. **BBANDS Overhead**: Requires calculating SMA plus standard deviation, with multiple passes through the data. The overhead compounds in the talib-pure implementation
+2. **BBANDS Overhead**: Requires calculating SMA plus standard deviation, with multiple passes through the data. The overhead compounds in the numta implementation
 
 3. **TA-Lib Optimizations**: The original TA-Lib has highly optimized C code for these complex operations
 
@@ -503,11 +503,11 @@ This is because:
 - **Medium datasets (10K bars)**: Performance improves to 0.76-0.94x for most functions
 - **Large datasets (100K bars)**: Several functions become faster than TA-Lib (>1.0x)
 
-**Pattern**: talib-pure performance improves relative to TA-Lib as dataset size increases, except for T3 and BBANDS which remain consistently slow.
+**Pattern**: numta performance improves relative to TA-Lib as dataset size increases, except for T3 and BBANDS which remain consistently slow.
 
 ## Implementation Details
 
-All Overlap indicators in talib-pure are implemented using:
+All Overlap indicators in numta are implemented using:
 - **Numba JIT compilation** with `@jit(nopython=True, cache=True)` decorator
 - **Sequential processing** with rolling windows
 - **Identical algorithms** to TA-Lib for compatibility
@@ -515,8 +515,8 @@ All Overlap indicators in talib-pure are implemented using:
 
 ## Recommendations
 
-### When to Use talib-pure
-- **MAMA**: Always prefer talib-pure (2.31-2.88x faster)
+### When to Use numta
+- **MAMA**: Always prefer numta (2.31-2.88x faster)
 - **Large datasets (100K+ bars)**: SMA, WMA, DEMA, KAMA, SAR, SAREXT all become faster
 - When you need a pure Python implementation without C dependencies
 - For deployment environments where installing TA-Lib's C library is challenging
@@ -532,8 +532,8 @@ All Overlap indicators in talib-pure are implemented using:
 For optimal performance, combine both libraries:
 
 ```python
-# Use talib-pure for faster functions
-from talib_pure import MAMA, DEMA, SMA, WMA, KAMA, SAR, SAREXT  # On large datasets
+# Use numta for faster functions
+from numta import MAMA, DEMA, SMA, WMA, KAMA, SAR, SAREXT  # On large datasets
 
 # Use original TA-Lib for slower functions and small datasets
 import talib
@@ -574,7 +574,7 @@ python tests/benchmark_sar.py
 
 ## Conclusion
 
-The talib-pure Numba/CPU implementation shows **good overall performance** for Overlap Indicators:
+The numta Numba/CPU implementation shows **good overall performance** for Overlap Indicators:
 
 **Strengths:**
 - ✅ **MAMA**: Exceptionally fast (2.31-2.88x faster)
@@ -588,13 +588,13 @@ The talib-pure Numba/CPU implementation shows **good overall performance** for O
 
 **Overall Recommendation:**
 
-Overlap indicators in talib-pure are **production-ready for most use cases**, especially with large datasets. The key is to:
-1. **Always use talib-pure for MAMA** (much faster)
-2. **Avoid T3 and BBANDS** in talib-pure (use original TA-Lib instead)
-3. **For large datasets (100K+ bars)**, talib-pure is generally competitive or faster
+Overlap indicators in numta are **production-ready for most use cases**, especially with large datasets. The key is to:
+1. **Always use numta for MAMA** (much faster)
+2. **Avoid T3 and BBANDS** in numta (use original TA-Lib instead)
+3. **For large datasets (100K+ bars)**, numta is generally competitive or faster
 4. **For small datasets (< 10K bars)**, consider using original TA-Lib for better performance
 
-The performance profile makes talib-pure an excellent choice for backtesting systems and analytics where datasets are typically large, while production trading systems with real-time small datasets might benefit from the original TA-Lib for most indicators.
+The performance profile makes numta an excellent choice for backtesting systems and analytics where datasets are typically large, while production trading systems with real-time small datasets might benefit from the original TA-Lib for most indicators.
 
 ---
 
@@ -612,7 +612,7 @@ The performance profile makes talib-pure an excellent choice for backtesting sys
 
 ## Summary
 
-The following table shows the speedup factor (talib-pure vs TA-Lib) across different dataset sizes:
+The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
 | Function | 1K bars | 10K bars | 100K bars | Average |
 |----------|---------|----------|-----------|---------|
@@ -622,7 +622,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 | **MIDPOINT** | 0.79x | 1.87x | 1.81x | **1.49x** |
 | **MIDPRICE** | 0.57x | 0.55x | 0.65x | **0.59x** |
 
-**Note**: Values greater than 1.0x indicate talib-pure is faster; values less than 1.0x indicate TA-Lib is faster.
+**Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
 ## Key Findings
 
@@ -641,39 +641,39 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MEDPRICE | 0.0026 | 0.0076 | **0.34x** |
-| TYPPRICE | 0.0026 | 0.0044 | **0.60x** |
-| WCLPRICE | 0.0030 | 0.0088 | **0.34x** |
-| MIDPOINT | 0.0025 | 0.0032 | **0.79x** |
-| MIDPRICE | 0.0026 | 0.0046 | **0.57x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| MEDPRICE | 0.0026      | 0.0076     | **0.34x** |
+| TYPPRICE | 0.0026      | 0.0044     | **0.60x** |
+| WCLPRICE | 0.0030      | 0.0088     | **0.34x** |
+| MIDPOINT | 0.0025      | 0.0032     | **0.79x** |
+| MIDPRICE | 0.0026      | 0.0046     | **0.57x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MEDPRICE | 0.0250 | 0.0267 | **0.94x** |
-| TYPPRICE | 0.0253 | 0.0267 | **0.95x** |
-| WCLPRICE | 0.0269 | 0.0292 | **0.92x** |
-| MIDPOINT | 0.0247 | 0.0132 | **1.87x** |
-| MIDPRICE | 0.0237 | 0.0427 | **0.55x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| MEDPRICE | 0.0250      | 0.0267     | **0.94x** |
+| TYPPRICE | 0.0253      | 0.0267     | **0.95x** |
+| WCLPRICE | 0.0269      | 0.0292     | **0.92x** |
+| MIDPOINT | 0.0247      | 0.0132     | **1.87x** |
+| MIDPRICE | 0.0237      | 0.0427     | **0.55x** |
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| MEDPRICE | 0.4024 | 0.2252 | **1.79x** |
-| TYPPRICE | 0.4175 | 0.3260 | **1.28x** |
-| WCLPRICE | 0.4293 | 0.3512 | **1.22x** |
-| MIDPOINT | 0.3921 | 0.2162 | **1.81x** |
-| MIDPRICE | 0.4081 | 0.6290 | **0.65x** |
+| Function | TA-Lib (ms) | numta (ms) | Speedup   |
+|----------|-------------|------------|-----------|
+| MEDPRICE | 0.4024      | 0.2252     | **1.79x** |
+| TYPPRICE | 0.4175      | 0.3260     | **1.28x** |
+| WCLPRICE | 0.4293      | 0.3512     | **1.22x** |
+| MIDPOINT | 0.3921      | 0.2162     | **1.81x** |
+| MIDPRICE | 0.4081      | 0.6290     | **0.65x** |
 
 ## Analysis
 
 ### Why MIDPOINT Is the Fastest
 
-**MIDPOINT** is the best-performing Price Transform indicator in talib-pure:
+**MIDPOINT** is the best-performing Price Transform indicator in numta:
 
 1. **Simple Algorithm**: Calculates the midpoint (average of highest and lowest values) over a rolling window of size `timeperiod`
 2. **Efficient Array Operations**: Numba optimizes the simple max/min calculations extremely well
@@ -709,7 +709,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Performance Characteristics
 
-- **Small datasets (1K bars)**: talib-pure is generally slower (0.34-0.79x) due to JIT overhead
+- **Small datasets (1K bars)**: numta is generally slower (0.34-0.79x) due to JIT overhead
 - **Medium datasets (10K bars)**: Performance becomes competitive (0.55-1.87x), with MIDPOINT showing excellent speedup
 - **Large datasets (100K bars)**: Most functions are faster or comparable (0.65-1.81x), except MIDPRICE
 
@@ -717,7 +717,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ## Implementation Details
 
-All Price Transform indicators in talib-pure are implemented using:
+All Price Transform indicators in numta are implemented using:
 - **Numba JIT compilation** with `@jit(nopython=True, cache=True)` decorator
 - **Vectorized operations** for element-wise calculations (MEDPRICE, TYPPRICE, WCLPRICE)
 - **Rolling window operations** for MIDPOINT and MIDPRICE
@@ -726,11 +726,11 @@ All Price Transform indicators in talib-pure are implemented using:
 
 ## Recommendations
 
-### When to Use talib-pure
+### When to Use numta
 
-- **MIDPOINT**: Always prefer talib-pure (1.49x average speedup, 1.81-1.87x on medium/large datasets)
-- **MEDPRICE**: Use talib-pure for large datasets (1.79x faster on 100K+ bars)
-- **TYPPRICE**: Competitive performance, safe to use in talib-pure
+- **MIDPOINT**: Always prefer numta (1.49x average speedup, 1.81-1.87x on medium/large datasets)
+- **MEDPRICE**: Use numta for large datasets (1.79x faster on 100K+ bars)
+- **TYPPRICE**: Competitive performance, safe to use in numta
 - **WCLPRICE**: Reasonably competitive, acceptable for pure Python deployments
 - When you need a pure Python implementation without C dependencies
 - For large dataset analysis and backtesting (100K+ bars)
@@ -747,8 +747,8 @@ All Price Transform indicators in talib-pure are implemented using:
 For optimal performance:
 
 ```python
-# Use talib-pure for fast functions and large datasets
-from talib_pure import MIDPOINT, MEDPRICE, TYPPRICE, WCLPRICE
+# Use numta for fast functions and large datasets
+from numta import MIDPOINT, MEDPRICE, TYPPRICE, WCLPRICE
 
 # Use original TA-Lib for MIDPRICE (faster)
 import talib
@@ -762,7 +762,7 @@ Potential optimizations for Price Transform indicators:
 1. **MIDPRICE**: Investigate more efficient rolling min/max algorithms (e.g., monotonic deque)
 2. **Small Dataset Optimization**: Reduce JIT overhead for small datasets
 
-4. **Batch Processing**: Optimize for multiple simultaneous calculations
+3. **Batch Processing**: Optimize for multiple simultaneous calculations
 
 ## Reproducing These Results
 
@@ -778,7 +778,7 @@ python benchmark_price_transform.py
 
 ## Conclusion
 
-The talib-pure Numba/CPU implementation shows **excellent overall performance** for Price Transform indicators:
+The numta Numba/CPU implementation shows **excellent overall performance** for Price Transform indicators:
 
 **Strengths:**
 - ✅ **MIDPOINT**: Significantly faster (1.49x average, up to 1.87x)
@@ -793,15 +793,15 @@ The talib-pure Numba/CPU implementation shows **excellent overall performance** 
 
 **Overall Recommendation:**
 
-Price Transform indicators in talib-pure are **highly recommended for production use**, especially with medium to large datasets. Key takeaways:
+Price Transform indicators in numta are **highly recommended for production use**, especially with medium to large datasets. Key takeaways:
 
-1. **Use MIDPOINT in talib-pure** - consistently faster across all dataset sizes
-2. **Use MEDPRICE in talib-pure for large datasets** - excellent performance on 10K+ bars
+1. **Use MIDPOINT in numta** - consistently faster across all dataset sizes
+2. **Use MEDPRICE in numta for large datasets** - excellent performance on 10K+ bars
 3. **TYPPRICE and WCLPRICE are safe to use** - competitive performance with perfect accuracy
 4. **Consider TA-Lib for MIDPRICE** - 40% faster on average
 5. **All functions have perfect accuracy** - no trade-offs between speed and correctness for MIDPOINT, MEDPRICE, TYPPRICE, and WCLPRICE
 
-The combination of strong performance scaling and **100% exact accuracy** makes Price Transform indicators in talib-pure an excellent choice for backtesting, analytics, and production trading systems working with medium to large datasets.
+The combination of strong performance scaling and **100% exact accuracy** makes Price Transform indicators in numta an excellent choice for backtesting, analytics, and production trading systems working with medium to large datasets.
 
 ---
 
@@ -819,7 +819,7 @@ The combination of strong performance scaling and **100% exact accuracy** makes 
 
 ## Summary
 
-The following table shows the speedup factor (talib-pure vs TA-Lib) across different dataset sizes:
+The following table shows the speedup factor (numta vs TA-Lib) across different dataset sizes:
 
 | Function | 1K bars | 10K bars | 100K bars | Average |
 |----------|---------|----------|-----------|---------|
@@ -832,7 +832,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 | **TSF** | 0.97x | 0.97x | 0.94x | **0.96x** |
 | **VAR** | 0.06x | 0.05x | 0.05x | **0.05x** |
 
-**Note**: Values greater than 1.0x indicate talib-pure is faster; values less than 1.0x indicate TA-Lib is faster.
+**Note**: Values greater than 1.0x indicate numta is faster; values less than 1.0x indicate TA-Lib is faster.
 
 ## Key Findings
 
@@ -851,20 +851,20 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Dataset: 1,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
-|----------|-------------|-----------------|---------|
-| CORREL | 0.0082 | 0.0522 | **0.16x** |
-| LINEARREG | 0.0146 | 0.0209 | **0.70x** |
-| LINEARREG_ANGLE | 0.0216 | 0.0311 | **0.69x** |
-| LINEARREG_INTERCEPT | 0.0152 | 0.0220 | **0.69x** |
-| LINEARREG_SLOPE | 0.0122 | 0.0200 | **0.61x** |
-| STDDEV | 0.0040 | 0.0594 | **0.07x** |
-| TSF | 0.0152 | 0.0158 | **0.97x** |
-| VAR | 0.0031 | 0.0560 | **0.06x** |
+| Function            | TA-Lib (ms) | numta (ms) | Speedup   |
+|---------------------|-------------|------------|-----------|
+| CORREL              | 0.0082      | 0.0522     | **0.16x** |
+| LINEARREG           | 0.0146      | 0.0209     | **0.70x** |
+| LINEARREG_ANGLE     | 0.0216      | 0.0311     | **0.69x** |
+| LINEARREG_INTERCEPT | 0.0152      | 0.0220     | **0.69x** |
+| LINEARREG_SLOPE     | 0.0122      | 0.0200     | **0.61x** |
+| STDDEV              | 0.0040      | 0.0594     | **0.07x** |
+| TSF                 | 0.0152      | 0.0158     | **0.97x** |
+| VAR                 | 0.0031      | 0.0560     | **0.06x** |
 
 ### Dataset: 10,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
+| Function | TA-Lib (ms) | numta (ms) | Speedup |
 |----------|-------------|-----------------|---------|
 | CORREL | 0.0713 | 0.4516 | **0.16x** |
 | LINEARREG | 0.1483 | 0.2104 | **0.70x** |
@@ -877,7 +877,7 @@ The following table shows the speedup factor (talib-pure vs TA-Lib) across diffe
 
 ### Dataset: 100,000 bars
 
-| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |
+| Function | TA-Lib (ms) | numta (ms) | Speedup |
 |----------|-------------|-----------------|---------|
 | CORREL | 0.8052 | 5.2147 | **0.15x** |
 | LINEARREG | 1.4692 | 2.1959 | **0.67x** |
@@ -950,7 +950,7 @@ The linear regression family (LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, L
 
 ### Performance Characteristics
 
-- **Small datasets (1K bars)**: talib-pure shows poor performance (0.06-0.97x) with significant JIT overhead
+- **Small datasets (1K bars)**: numta shows poor performance (0.06-0.97x) with significant JIT overhead
 - **Medium datasets (10K bars)**: Performance remains similar (0.05-0.97x), indicating algorithmic differences rather than startup overhead
 - **Large datasets (100K bars)**: Performance is consistent (0.05-0.94x), confirming algorithmic bottlenecks
 
@@ -958,7 +958,7 @@ The linear regression family (LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, L
 
 ## Implementation Details
 
-All Statistic Functions in talib-pure are implemented using:
+All Statistic Functions in numta are implemented using:
 - **Numba JIT compilation** with `@jit(nopython=True, cache=True)` decorator
 - **Rolling window operations** for most statistical calculations
 - **Least squares method** for linear regression functions
@@ -967,7 +967,7 @@ All Statistic Functions in talib-pure are implemented using:
 
 ## Recommendations
 
-### When to Use talib-pure
+### When to Use numta
 
 - **TSF**: Competitive performance (0.96x average), acceptable for most use cases
 - When you need a pure Python implementation without C dependencies
@@ -988,8 +988,8 @@ All Statistic Functions in talib-pure are implemented using:
 For optimal performance, use a hybrid approach:
 
 ```python
-# Use talib-pure for competitive function
-from talib_pure import TSF  # Only 4% slower, acceptable
+# Use numta for competitive function
+from numta import TSF  # Only 4% slower, acceptable
 
 # Use original TA-Lib for significantly faster functions
 import talib
@@ -1010,7 +1010,7 @@ Potential optimizations for Statistic Functions:
 2. **CORREL**: Use incremental correlation calculation to avoid recalculating from scratch each window
 3. **Linear Regression**: Investigate more efficient least squares implementations or cached computations
 
-5. **Algorithmic Optimization**: Review current implementations against TA-Lib's C code for optimization opportunities
+4. **Algorithmic Optimization**: Review current implementations against TA-Lib's C code for optimization opportunities
 
 ## Reproducing These Results
 
@@ -1026,7 +1026,7 @@ python benchmark_statistic_functions.py
 
 ## Conclusion
 
-The talib-pure Numba/CPU implementation shows **mixed but generally slower performance** for Statistic Functions:
+The numta Numba/CPU implementation shows **mixed but generally slower performance** for Statistic Functions:
 
 **Strengths:**
 - ✅ **TSF**: Competitive performance (0.96x average, only 4% slower)
@@ -1044,16 +1044,16 @@ The talib-pure Numba/CPU implementation shows **mixed but generally slower perfo
 
 For Statistic Functions, **the original TA-Lib is strongly recommended** for most use cases due to significant performance advantages. The key exception is:
 
-1. **Use TSF from talib-pure** if the 4% performance penalty is acceptable and you need pure Python
+1. **Use TSF from numta** if the 4% performance penalty is acceptable and you need pure Python
 2. **Use TA-Lib for STDDEV, VAR, CORREL** (16-20x faster) - the performance difference is too significant to ignore
 3. **Use TA-Lib for linear regression functions** if performance is critical (1.4-1.7x faster)
-4. **All functions have near-perfect accuracy** in talib-pure, so the choice is purely based on performance needs
+4. **All functions have near-perfect accuracy** in numta, so the choice is purely based on performance needs
 
 **Performance vs Accuracy Trade-off:**
 
-Unlike some other indicator categories (e.g., Cycle Indicators with accuracy issues), Statistic Functions in talib-pure have **excellent accuracy but poor performance**. This means:
+Unlike some other indicator categories (e.g., Cycle Indicators with accuracy issues), Statistic Functions in numta have **excellent accuracy but poor performance**. This means:
 - If **performance is critical**: Use TA-Lib (much faster, same accuracy)
-- If **pure Python is required**: Use talib-pure (accurate but slower)
-- **No hybrid approach needed for accuracy**: All talib-pure implementations are accurate
+- If **pure Python is required**: Use numta (accurate but slower)
+- **No hybrid approach needed for accuracy**: All numta implementations are accurate
 
-The consistent performance penalty across all dataset sizes suggests that **algorithmic improvements** (e.g., Welford's algorithm, incremental calculations) could significantly improve talib-pure's Statistic Functions performance in future versions.
+The consistent performance penalty across all dataset sizes suggests that **algorithmic improvements** (e.g., Welford's algorithm, incremental calculations) could significantly improve numta's Statistic Functions performance in future versions.

@@ -8,7 +8,7 @@ import time
 
 def benchmark_ht_sine():
     """Benchmark HT_SINE"""
-    from talib_pure import HT_SINE
+    from numta import HT_SINE
 
     print("=" * 80)
     print("HT_SINE Benchmark")

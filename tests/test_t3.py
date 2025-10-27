@@ -3,8 +3,9 @@ Test suite for T3
 """
 
 import numpy as np
-import pytest
-from talib_pure import T3
+
+from numta import T3
+
 
 class TestT3:
     """Tests for T3"""

@@ -3,8 +3,9 @@ Test suite for MINMAX
 """
 
 import numpy as np
-import pytest
-from talib_pure import MINMAX
+
+from numta import MINMAX
+
 
 class TestMINMAX:
     """Tests for MINMAX (Lowest and highest values)"""

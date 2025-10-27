@@ -8,7 +8,7 @@ import time
 
 def benchmark_minmaxindex():
     """Benchmark MINMAXINDEX"""
-    from talib_pure import MINMAXINDEX
+    from numta import MINMAXINDEX
 
     print("=" * 80)
     print("MINMAXINDEX Benchmark")

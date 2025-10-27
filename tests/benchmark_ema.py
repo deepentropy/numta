@@ -8,7 +8,7 @@ import time
 
 def benchmark_ema():
     """Benchmark EMA"""
-    from talib_pure import EMA
+    from numta import EMA
 
     print("=" * 80)
     print("EMA Benchmark")

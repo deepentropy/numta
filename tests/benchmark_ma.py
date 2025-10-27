@@ -8,7 +8,7 @@ import time
 
 def benchmark_ma():
     """Benchmark MA"""
-    from talib_pure import MA
+    from numta import MA
 
     print("=" * 80)
     print("MA Benchmark")

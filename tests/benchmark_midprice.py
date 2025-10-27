@@ -8,7 +8,7 @@ import time
 
 def benchmark_midprice():
     """Benchmark MIDPRICE"""
-    from talib_pure import MIDPRICE
+    from numta import MIDPRICE
 
     print("=" * 80)
     print("MIDPRICE Benchmark")

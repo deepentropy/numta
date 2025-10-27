@@ -8,7 +8,7 @@ import time
 
 def benchmark_sarext():
     """Benchmark SAREXT"""
-    from talib_pure import SAREXT
+    from numta import SAREXT
 
     print("=" * 80)
     print("SAREXT Benchmark")

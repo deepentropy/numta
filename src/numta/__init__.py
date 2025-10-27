@@ -3,9 +3,8 @@ talib-pure: Pure Python TA-Lib library with focus on performance
 
 Optimized with Numba JIT compilation for fast CPU computation.
 """
-
-# Import from API layer
 # TODO MACDFIX, MFI, MINUS_DI, MINUS_DM, MOM, PLUS_DI, PLUS_DM, PPO
+# Import from API layer
 from .api.overlap import SMA, EMA, DEMA, BBANDS, KAMA, MA, MAMA, SAR, SAREXT, T3, TEMA, TRIMA, WMA
 from .api.statistics import STDDEV, TSF, VAR
 from .api.volatility_indicators import NATR, TRANGE
@@ -50,7 +49,7 @@ if HAS_NUMBA:
     from .optimized import SMA_numba
 
 __version__ = "0.1.0"
-# TODO "MACDFIX", "MFI", "MINUS_DI", "MINUS_DM", "MOM", "PLUS_DI", "PLUS_DM", "PPO",
+
 __all__ = [
     # Indicators
     "SMA", "EMA", "DEMA", "BBANDS", "KAMA", "MA", "MAMA", "SAR", "SAREXT", "T3", "TEMA", "TRIMA", "WMA",

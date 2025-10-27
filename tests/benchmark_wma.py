@@ -8,7 +8,7 @@ import time
 
 def benchmark_wma():
     """Benchmark WMA"""
-    from talib_pure import WMA
+    from numta import WMA
 
     print("=" * 80)
     print("WMA Benchmark")

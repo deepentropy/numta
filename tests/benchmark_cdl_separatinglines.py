@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdlseparatinglines():
     """Benchmark CDLSEPARATINGLINES"""
-    from talib_pure import CDLSEPARATINGLINES
+    from numta import CDLSEPARATINGLINES
 
     print("=" * 80)
     print("CDLSEPARATINGLINES Benchmark")

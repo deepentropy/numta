@@ -18,8 +18,8 @@ class PerformanceMeasurement:
     Examples
     --------
     >>> import numpy as np
-    >>> from talib_pure.benchmark import PerformanceMeasurement
-    >>> from talib_pure import SMA as SMA_pure
+    >>> from numta.benchmark import PerformanceMeasurement
+    >>> from numta import SMA as SMA_pure
     >>> import talib
     >>>
     >>> # Create test data

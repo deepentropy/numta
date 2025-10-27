@@ -3,8 +3,9 @@ Test suite for MININDEX
 """
 
 import numpy as np
-import pytest
-from talib_pure import MININDEX
+
+from numta import MININDEX
+
 
 class TestMININDEX:
     """Tests for MININDEX (Index of lowest value)"""

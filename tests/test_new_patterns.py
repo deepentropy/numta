@@ -10,7 +10,7 @@ import pytest
 
 def test_cdlmorningdojistar_pattern():
     """Test Morning Doji Star pattern detection"""
-    from talib_pure import CDLMORNINGDOJISTAR
+    from numta import CDLMORNINGDOJISTAR
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -28,7 +28,7 @@ def test_cdlmorningdojistar_pattern():
 
 def test_cdlmorningdojistar_no_pattern():
     """Test no pattern when conditions not met"""
-    from talib_pure import CDLMORNINGDOJISTAR
+    from numta import CDLMORNINGDOJISTAR
 
     # No doji in middle
     open_ = np.array([90, 91, 110, 105, 111])
@@ -44,7 +44,7 @@ def test_cdlmorningdojistar_no_pattern():
 
 def test_cdlmorningstar_pattern():
     """Test Morning Star pattern detection"""
-    from talib_pure import CDLMORNINGSTAR
+    from numta import CDLMORNINGSTAR
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -62,7 +62,7 @@ def test_cdlmorningstar_pattern():
 
 def test_cdlmorningstar_no_gap():
     """Test no pattern without gap"""
-    from talib_pure import CDLMORNINGSTAR
+    from numta import CDLMORNINGSTAR
 
     open_ = np.array([90, 91, 110, 100.5, 111])  # No gap
     high = np.array([91, 92, 110, 101, 115])
@@ -77,7 +77,7 @@ def test_cdlmorningstar_no_gap():
 
 def test_cdlonneck_pattern():
     """Test On-Neck pattern detection"""
-    from talib_pure import CDLONNECK
+    from numta import CDLONNECK
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -95,7 +95,7 @@ def test_cdlonneck_pattern():
 
 def test_cdlonneck_no_pattern():
     """Test no pattern when close doesn't match low"""
-    from talib_pure import CDLONNECK
+    from numta import CDLONNECK
 
     open_ = np.array([90, 91, 110, 95])
     high = np.array([91, 92, 110, 102])
@@ -110,7 +110,7 @@ def test_cdlonneck_no_pattern():
 
 def test_cdlpiercing_pattern():
     """Test Piercing Pattern detection"""
-    from talib_pure import CDLPIERCING
+    from numta import CDLPIERCING
 
     # Build context + pattern
     open_ = np.array([90, 91, 92, 93, 94, 95, 96, 97, 98, 99,
@@ -128,7 +128,7 @@ def test_cdlpiercing_pattern():
 
 def test_cdlpiercing_no_pattern_insufficient_penetration():
     """Test no pattern when penetration insufficient"""
-    from talib_pure import CDLPIERCING
+    from numta import CDLPIERCING
 
     open_ = np.array([90, 91, 110, 95])
     high = np.array([91, 92, 110, 103])
@@ -143,7 +143,7 @@ def test_cdlpiercing_no_pattern_insufficient_penetration():
 
 def test_all_patterns_empty_input():
     """Test all patterns with empty arrays"""
-    from talib_pure import CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING
+    from numta import CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING
 
     empty = np.array([])
 
@@ -155,7 +155,7 @@ def test_all_patterns_empty_input():
 
 def test_all_patterns_input_validation():
     """Test all patterns validate input lengths"""
-    from talib_pure import CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING
+    from numta import CDLMORNINGDOJISTAR, CDLMORNINGSTAR, CDLONNECK, CDLPIERCING
 
     open_ = np.array([100, 105])
     high = np.array([105, 106])
@@ -170,4 +170,6 @@ def test_all_patterns_input_validation():
         CDLONNECK(open_, high, low, close)
     with pytest.raises(ValueError, match="same length"):
         CDLPIERCING(open_, high, low, close)
+
+
 

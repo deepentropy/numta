@@ -8,7 +8,7 @@ import time
 
 def benchmark_cdltasukigap():
     """Benchmark CDLTASUKIGAP"""
-    from talib_pure import CDLTASUKIGAP
+    from numta import CDLTASUKIGAP
 
     print("=" * 80)
     print("CDLTASUKIGAP Benchmark")

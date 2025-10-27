@@ -3,8 +3,9 @@ Test suite for SUM
 """
 
 import numpy as np
-import pytest
-from talib_pure import SUM, SMA
+
+from numta import SUM
+
 
 class TestSUM:
     """Tests for SUM"""
@@ -22,7 +23,7 @@ class TestSUM:
 
     def test_sum_relationship_to_sma(self):
         """Test SUM = SMA * timeperiod"""
-        from talib_pure import SMA
+        from numta import SMA
 
         data = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
         sum_result = SUM(data, timeperiod=5)

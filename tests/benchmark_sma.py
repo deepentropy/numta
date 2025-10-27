@@ -8,7 +8,7 @@ import time
 
 def benchmark_sma():
     """Benchmark SMA"""
-    from talib_pure import SMA
+    from numta import SMA
 
     print("=" * 80)
     print("SMA Benchmark")

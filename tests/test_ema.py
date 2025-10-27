@@ -3,11 +3,11 @@ Test suite for EMA
 """
 
 import numpy as np
-import pytest
+
 
 def test_ema_basic():
     """Test EMA basic calculation"""
-    from talib_pure import EMA
+    from numta import EMA
 
     close = np.array([100, 101, 102, 103, 104, 105, 106, 107, 108, 109, 110])
     result = EMA(close, timeperiod=5)
@@ -20,7 +20,7 @@ def test_ema_basic():
 
 def test_ema_trending():
     """Test EMA follows trend"""
-    from talib_pure import EMA
+    from numta import EMA
 
     # Uptrend
     close = np.linspace(100, 120, 20)
