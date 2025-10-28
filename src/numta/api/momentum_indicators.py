@@ -2387,3 +2387,684 @@ def WILLR(high: Union[np.ndarray, list],
     return output
 
 
+def MACDFIX(close: Union[np.ndarray, list],
+            signalperiod: int = 9) -> tuple:
+    """
+    Moving Average Convergence/Divergence Fix (MACDFIX)
+
+    MACDFIX is a variant of MACD with fixed fast and slow periods (12 and 26).
+    This optimized version provides faster computation by hard-coding the
+    standard MACD periods while still allowing customization of the signal period.
+
+    Parameters
+    ----------
+    close : array-like
+        Close prices array
+    signalperiod : int, optional
+        Period for signal line EMA (default: 9)
+
+    Returns
+    -------
+    tuple of np.ndarray
+        (macd, signal, histogram) - Three arrays with the MACD components
+
+    Notes
+    -----
+    - Compatible with TA-Lib MACDFIX signature
+    - Uses Numba JIT compilation for maximum performance
+    - Fixed fast period: 12
+    - Fixed slow period: 26
+    - Lookback period: 26 + signalperiod - 2
+    - All three outputs have the same length as input
+
+    Formula
+    -------
+    1. Fast EMA = EMA(close, 12)
+    2. Slow EMA = EMA(close, 26)
+    3. MACD Line = Fast EMA - Slow EMA
+    4. Signal Line = EMA(MACD Line, signalperiod)
+    5. Histogram = MACD Line - Signal Line
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import MACDFIX
+    >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
+    ...                   110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
+    ...                   120, 122, 121, 123, 125, 124, 126, 128, 127, 129,
+    ...                   130, 132, 131, 133, 135])
+    >>> macd, signal, hist = MACDFIX(close, signalperiod=9)
+
+    See Also
+    --------
+    MACD : MACD with customizable fast/slow periods
+    MACDEXT : MACD with controllable MA type
+    """
+    # Validate inputs
+    if signalperiod < 1:
+        raise ValueError("signalperiod must be >= 1")
+
+    # Convert to numpy array if needed
+    close = np.asarray(close, dtype=np.float64)
+
+    n = len(close)
+    if n == 0:
+        empty = np.array([], dtype=np.float64)
+        return empty, empty, empty
+
+    # Pre-allocate output arrays
+    macd = np.empty(n, dtype=np.float64)
+    signal = np.empty(n, dtype=np.float64)
+    hist = np.empty(n, dtype=np.float64)
+
+    _macdfix_numba(close, signalperiod, macd, signal, hist)
+
+    return macd, signal, hist
+
+
+def MFI(high: Union[np.ndarray, list],
+        low: Union[np.ndarray, list],
+        close: Union[np.ndarray, list],
+        volume: Union[np.ndarray, list],
+        timeperiod: int = 14) -> np.ndarray:
+    """
+    Money Flow Index (MFI)
+
+    The Money Flow Index is a momentum indicator that uses both price and volume
+    to measure buying and selling pressure. Often called the "volume-weighted RSI",
+    MFI oscillates between 0 and 100 and is used to identify overbought and
+    oversold conditions.
+
+    Parameters
+    ----------
+    high : array-like
+        High prices array
+    low : array-like
+        Low prices array
+    close : array-like
+        Close prices array
+    volume : array-like
+        Volume array
+    timeperiod : int, optional
+        Number of periods for the indicator (default: 14)
+
+    Returns
+    -------
+    np.ndarray
+        Array of MFI values with NaN for the lookback period
+
+    Notes
+    -----
+    - Compatible with TA-Lib MFI signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first timeperiod values will be NaN
+    - MFI values range from 0 to 100
+    - MFI > 80 typically indicates overbought conditions
+    - MFI < 20 typically indicates oversold conditions
+
+    Formula
+    -------
+    1. Typical Price = (High + Low + Close) / 3
+    2. Raw Money Flow = Typical Price * Volume
+    3. Money Flow is positive when Typical Price increases, negative when it decreases
+    4. Money Flow Ratio = (Sum of Positive Money Flow) / (Sum of Negative Money Flow) over timeperiod
+    5. MFI = 100 - [100 / (1 + Money Flow Ratio)]
+
+    Interpretation:
+    - MFI > 80: Overbought (potential sell signal)
+    - MFI < 20: Oversold (potential buy signal)
+    - Divergences between MFI and price indicate potential reversals
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import MFI
+    >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
+    >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
+    >>> close = np.array([105, 107, 109, 108, 110, 112, 111])
+    >>> volume = np.array([1000, 1200, 1100, 1300, 1400, 1250, 1350])
+    >>> mfi = MFI(high, low, close, volume, timeperiod=14)
+
+    See Also
+    --------
+    RSI : Relative Strength Index
+    OBV : On Balance Volume
+    """
+    # Validate inputs
+    if timeperiod < 2:
+        raise ValueError("timeperiod must be >= 2")
+
+    # Convert to numpy arrays
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+    close = np.asarray(close, dtype=np.float64)
+    volume = np.asarray(volume, dtype=np.float64)
+
+    n = len(high)
+    if len(low) != n or len(close) != n or len(volume) != n:
+        raise ValueError("high, low, close, and volume must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    if n <= timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    output = np.empty(n, dtype=np.float64)
+    _mfi_numba(high, low, close, volume, timeperiod, output)
+
+    return output
+
+
+def MINUS_DI(high: Union[np.ndarray, list],
+             low: Union[np.ndarray, list],
+             close: Union[np.ndarray, list],
+             timeperiod: int = 14) -> np.ndarray:
+    """
+    Minus Directional Indicator (MINUS_DI)
+
+    The Minus Directional Indicator is a component of the Directional Movement
+    System developed by J. Welles Wilder. It measures the strength of downward
+    price movement and is used in conjunction with PLUS_DI to determine trend
+    direction and strength.
+
+    Parameters
+    ----------
+    high : array-like
+        High prices array
+    low : array-like
+        Low prices array
+    close : array-like
+        Close prices array
+    timeperiod : int, optional
+        Number of periods for the indicator (default: 14)
+
+    Returns
+    -------
+    np.ndarray
+        Array of Minus Directional Indicator values
+
+    Notes
+    -----
+    - Compatible with TA-Lib MINUS_DI signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first (timeperiod - 1) values will be NaN
+    - Values range from 0 to 100
+    - Higher values indicate stronger downward movement
+
+    Formula
+    -------
+    1. Calculate True Range (TR) and Minus Directional Movement (-DM)
+    2. Apply Wilder's smoothing to both TR and -DM
+    3. -DI = 100 * (Smoothed -DM / Smoothed TR)
+
+    Interpretation:
+    - -DI > +DI: Downtrend dominates
+    - -DI < +DI: Uptrend dominates
+    - Use with +DI and ADX for complete trend analysis
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import MINUS_DI
+    >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
+    >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
+    >>> close = np.array([105, 107, 109, 108, 110, 112, 111])
+    >>> minus_di = MINUS_DI(high, low, close, timeperiod=14)
+
+    See Also
+    --------
+    PLUS_DI : Plus Directional Indicator
+    ADX : Average Directional Movement Index
+    DX : Directional Movement Index
+    """
+    # Validate inputs
+    if timeperiod < 2:
+        raise ValueError("timeperiod must be >= 2")
+
+    # Convert to numpy arrays
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+    close = np.asarray(close, dtype=np.float64)
+
+    n = len(high)
+    if len(low) != n or len(close) != n:
+        raise ValueError("high, low, and close must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    if n < timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    output = np.empty(n, dtype=np.float64)
+    _minus_di_numba(high, low, close, timeperiod, output)
+
+    return output
+
+
+def MINUS_DM(high: Union[np.ndarray, list],
+             low: Union[np.ndarray, list],
+             timeperiod: int = 14) -> np.ndarray:
+    """
+    Minus Directional Movement (MINUS_DM)
+
+    The Minus Directional Movement is a component of the Directional Movement
+    System developed by J. Welles Wilder. It represents the smoothed value of
+    downward price movement.
+
+    Parameters
+    ----------
+    high : array-like
+        High prices array
+    low : array-like
+        Low prices array
+    timeperiod : int, optional
+        Number of periods for smoothing (default: 14)
+
+    Returns
+    -------
+    np.ndarray
+        Array of smoothed Minus Directional Movement values
+
+    Notes
+    -----
+    - Compatible with TA-Lib MINUS_DM signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first (timeperiod - 1) values will be NaN
+    - Uses Wilder's smoothing method
+
+    Formula
+    -------
+    1. Raw -DM = Previous Low - Current Low (when down move > up move and > 0)
+    2. Otherwise -DM = 0
+    3. Apply Wilder's smoothing over timeperiod
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import MINUS_DM
+    >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
+    >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
+    >>> minus_dm = MINUS_DM(high, low, timeperiod=14)
+
+    See Also
+    --------
+    PLUS_DM : Plus Directional Movement
+    MINUS_DI : Minus Directional Indicator
+    ADX : Average Directional Movement Index
+    """
+    # Validate inputs
+    if timeperiod < 2:
+        raise ValueError("timeperiod must be >= 2")
+
+    # Convert to numpy arrays
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+
+    n = len(high)
+    if len(low) != n:
+        raise ValueError("high and low must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    if n < timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    output = np.empty(n, dtype=np.float64)
+    _minus_dm_numba(high, low, timeperiod, output)
+
+    return output
+
+
+def MOM(real: Union[np.ndarray, list],
+        timeperiod: int = 10) -> np.ndarray:
+    """
+    Momentum (MOM)
+
+    Momentum is a simple and direct measure of the rate of price change. It
+    calculates the difference between the current price and the price n periods
+    ago. Positive values indicate upward momentum, while negative values indicate
+    downward momentum.
+
+    Parameters
+    ----------
+    real : array-like
+        Array of real values (typically close prices)
+    timeperiod : int, optional
+        Number of periods to look back (default: 10)
+
+    Returns
+    -------
+    np.ndarray
+        Array of momentum values with NaN for the lookback period
+
+    Notes
+    -----
+    - Compatible with TA-Lib MOM signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first timeperiod values will be NaN
+    - Unbounded indicator (can be any positive or negative value)
+
+    Formula
+    -------
+    MOM = Current Price - Price n periods ago
+
+    Interpretation:
+    - MOM > 0: Upward momentum (price increased)
+    - MOM < 0: Downward momentum (price decreased)
+    - MOM = 0: No momentum (price unchanged)
+    - Increasing MOM: Accelerating trend
+    - Decreasing MOM: Decelerating trend
+
+    Trading Signals:
+    - Crossover above 0: Bullish signal
+    - Crossover below 0: Bearish signal
+    - Divergences indicate potential reversals
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import MOM
+    >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109, 110])
+    >>> mom = MOM(close, timeperiod=10)
+
+    See Also
+    --------
+    ROC : Rate of Change (percentage-based momentum)
+    RSI : Relative Strength Index
+    MACD : Moving Average Convergence/Divergence
+    """
+    # Validate inputs
+    if timeperiod < 1:
+        raise ValueError("timeperiod must be >= 1")
+
+    # Convert to numpy array
+    real = np.asarray(real, dtype=np.float64)
+
+    n = len(real)
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    if n <= timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    output = np.empty(n, dtype=np.float64)
+    _mom_numba(real, timeperiod, output)
+
+    return output
+
+
+def PLUS_DI(high: Union[np.ndarray, list],
+            low: Union[np.ndarray, list],
+            close: Union[np.ndarray, list],
+            timeperiod: int = 14) -> np.ndarray:
+    """
+    Plus Directional Indicator (PLUS_DI)
+
+    The Plus Directional Indicator is a component of the Directional Movement
+    System developed by J. Welles Wilder. It measures the strength of upward
+    price movement and is used in conjunction with MINUS_DI to determine trend
+    direction and strength.
+
+    Parameters
+    ----------
+    high : array-like
+        High prices array
+    low : array-like
+        Low prices array
+    close : array-like
+        Close prices array
+    timeperiod : int, optional
+        Number of periods for the indicator (default: 14)
+
+    Returns
+    -------
+    np.ndarray
+        Array of Plus Directional Indicator values
+
+    Notes
+    -----
+    - Compatible with TA-Lib PLUS_DI signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first (timeperiod - 1) values will be NaN
+    - Values range from 0 to 100
+    - Higher values indicate stronger upward movement
+
+    Formula
+    -------
+    1. Calculate True Range (TR) and Plus Directional Movement (+DM)
+    2. Apply Wilder's smoothing to both TR and +DM
+    3. +DI = 100 * (Smoothed +DM / Smoothed TR)
+
+    Interpretation:
+    - +DI > -DI: Uptrend dominates
+    - +DI < -DI: Downtrend dominates
+    - Use with -DI and ADX for complete trend analysis
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import PLUS_DI
+    >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
+    >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
+    >>> close = np.array([105, 107, 109, 108, 110, 112, 111])
+    >>> plus_di = PLUS_DI(high, low, close, timeperiod=14)
+
+    See Also
+    --------
+    MINUS_DI : Minus Directional Indicator
+    ADX : Average Directional Movement Index
+    DX : Directional Movement Index
+    """
+    # Validate inputs
+    if timeperiod < 2:
+        raise ValueError("timeperiod must be >= 2")
+
+    # Convert to numpy arrays
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+    close = np.asarray(close, dtype=np.float64)
+
+    n = len(high)
+    if len(low) != n or len(close) != n:
+        raise ValueError("high, low, and close must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    if n < timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    output = np.empty(n, dtype=np.float64)
+    _plus_di_numba(high, low, close, timeperiod, output)
+
+    return output
+
+
+def PLUS_DM(high: Union[np.ndarray, list],
+            low: Union[np.ndarray, list],
+            timeperiod: int = 14) -> np.ndarray:
+    """
+    Plus Directional Movement (PLUS_DM)
+
+    The Plus Directional Movement is a component of the Directional Movement
+    System developed by J. Welles Wilder. It represents the smoothed value of
+    upward price movement.
+
+    Parameters
+    ----------
+    high : array-like
+        High prices array
+    low : array-like
+        Low prices array
+    timeperiod : int, optional
+        Number of periods for smoothing (default: 14)
+
+    Returns
+    -------
+    np.ndarray
+        Array of smoothed Plus Directional Movement values
+
+    Notes
+    -----
+    - Compatible with TA-Lib PLUS_DM signature
+    - Uses Numba JIT compilation for maximum performance
+    - The first (timeperiod - 1) values will be NaN
+    - Uses Wilder's smoothing method
+
+    Formula
+    -------
+    1. Raw +DM = Current High - Previous High (when up move > down move and > 0)
+    2. Otherwise +DM = 0
+    3. Apply Wilder's smoothing over timeperiod
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import PLUS_DM
+    >>> high = np.array([110, 112, 114, 113, 115, 117, 116])
+    >>> low = np.array([100, 102, 104, 103, 105, 107, 106])
+    >>> plus_dm = PLUS_DM(high, low, timeperiod=14)
+
+    See Also
+    --------
+    MINUS_DM : Minus Directional Movement
+    PLUS_DI : Plus Directional Indicator
+    ADX : Average Directional Movement Index
+    """
+    # Validate inputs
+    if timeperiod < 2:
+        raise ValueError("timeperiod must be >= 2")
+
+    # Convert to numpy arrays
+    high = np.asarray(high, dtype=np.float64)
+    low = np.asarray(low, dtype=np.float64)
+
+    n = len(high)
+    if len(low) != n:
+        raise ValueError("high and low must have the same length")
+
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    if n < timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
+    output = np.empty(n, dtype=np.float64)
+    _plus_dm_numba(high, low, timeperiod, output)
+
+    return output
+
+
+def PPO(close: Union[np.ndarray, list],
+        fastperiod: int = 12,
+        slowperiod: int = 26,
+        matype: int = 0) -> np.ndarray:
+    """
+    Percentage Price Oscillator (PPO)
+
+    The Percentage Price Oscillator is a momentum oscillator that measures the
+    difference between two moving averages as a percentage of the larger moving
+    average. It is similar to MACD but expressed in percentage terms, making it
+    more suitable for comparing securities with different price levels.
+
+    Parameters
+    ----------
+    close : array-like
+        Close prices array
+    fastperiod : int, optional
+        Period for fast moving average (default: 12)
+    slowperiod : int, optional
+        Period for slow moving average (default: 26)
+    matype : int, optional
+        Type of moving average (default: 0 = EMA)
+        Currently only EMA (0) is supported
+
+    Returns
+    -------
+    np.ndarray
+        Array of PPO values with NaN for the lookback period
+
+    Notes
+    -----
+    - Compatible with TA-Lib PPO signature
+    - Uses Numba JIT compilation for maximum performance
+    - Lookback period: slowperiod - 1
+    - Unbounded indicator (can be any percentage value)
+    - More suitable than MACD for comparing different securities
+
+    Formula
+    -------
+    PPO = ((Fast EMA - Slow EMA) / Slow EMA) * 100
+
+    Where:
+    - Fast EMA = EMA(close, fastperiod)
+    - Slow EMA = EMA(close, slowperiod)
+
+    Interpretation:
+    - PPO > 0: Fast MA above slow MA (bullish)
+    - PPO < 0: Fast MA below slow MA (bearish)
+    - Rising PPO: Increasing bullish momentum
+    - Falling PPO: Increasing bearish momentum
+
+    Trading Signals:
+    - Crossover above 0: Bullish signal
+    - Crossover below 0: Bearish signal
+    - Divergences indicate potential reversals
+
+    Advantages over MACD:
+    - Percentage-based allows comparison across securities
+    - Not affected by absolute price levels
+    - Same interpretation regardless of price scale
+
+    Examples
+    --------
+    >>> import numpy as np
+    >>> from numta import PPO
+    >>> close = np.array([100, 102, 101, 103, 105, 104, 106, 108, 107, 109,
+    ...                   110, 112, 111, 113, 115, 114, 116, 118, 117, 119,
+    ...                   120, 122, 121, 123, 125, 124, 126, 128, 127, 129])
+    >>> ppo = PPO(close, fastperiod=12, slowperiod=26)
+
+    See Also
+    --------
+    MACD : Moving Average Convergence/Divergence
+    APO : Absolute Price Oscillator
+    EMA : Exponential Moving Average
+    """
+    # Validate inputs
+    if fastperiod < 2:
+        raise ValueError("fastperiod must be >= 2")
+    if slowperiod < 2:
+        raise ValueError("slowperiod must be >= 2")
+    if fastperiod >= slowperiod:
+        raise ValueError("fastperiod must be < slowperiod")
+    if matype != 0:
+        raise ValueError("Currently only matype=0 (EMA) is supported")
+
+    # Convert to numpy array
+    close = np.asarray(close, dtype=np.float64)
+
+    n = len(close)
+    if n == 0:
+        return np.array([], dtype=np.float64)
+
+    # Import EMA from overlap module
+    from ..api.overlap import EMA
+
+    # Calculate fast and slow EMAs
+    fast_ema = EMA(close, fastperiod)
+    slow_ema = EMA(close, slowperiod)
+
+    # Pre-allocate output array
+    output = np.empty(n, dtype=np.float64)
+
+    # Calculate PPO using numba function
+    _ppo_numba(fast_ema, slow_ema, output)
+
+    return output
+
+
+
