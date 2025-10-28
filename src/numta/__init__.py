@@ -47,7 +47,12 @@ from .optimized import (
 if HAS_NUMBA:
     from .optimized import SMA_numba
 
-__version__ = "0.1.1"
+# Version is automatically managed by setuptools-scm from git tags
+try:
+    from ._version import __version__
+except ImportError:
+    # Fallback for development installations without setuptools-scm
+    __version__ = "0.0.0+unknown"
 
 __all__ = [
     # Indicators
