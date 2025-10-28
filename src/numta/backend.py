@@ -1,5 +1,5 @@
 """
-Backend configuration for talib-pure
+Backend configuration for numta
 
 Uses CPU (Numba JIT) for accelerated computation.
 """

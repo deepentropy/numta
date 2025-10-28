@@ -93,8 +93,6 @@ sma_faster = SMA_numba(close_prices, timeperiod=30)   # 5-10x faster
 - Cumsum: 0.049ms (3.14x faster)
 - **Numba: 0.028ms (5.52x faster)** ⭐
 
-**See [PERFORMANCE.md](PERFORMANCE.md) for detailed performance analysis.**
-
 ## Implemented Indicators
 
 This library implements a comprehensive set of technical analysis indicators across multiple categories:

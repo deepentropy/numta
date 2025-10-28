@@ -1,31 +1,13 @@
 """
-Accuracy comparison between talib-pure (Numba/CPU) and original TA-Lib
-for Overlap Indicators
+Accuracy comparison between numta (Numba/CPU) and original TA-Lib
+for Price Transform Indicators
 """
 
 import numpy as np
 import talib
 from numta import (
-    SMA, EMA, WMA, DEMA, TEMA, TRIMA, KAMA, MAMA, T3, BBANDS, SAR, SAREXT
+    MEDPRICE, MIDPOINT, MIDPRICE, TYPPRICE, WCLPRICE
 )
-
-
-def calculate_accuracy_metrics(result_talib, result_pure, name):
-    """Calculate various accuracy metrics between two results"""
-
-    # Handle tuple outputs (BBANDS, MAMA)
-    if isinstance(result_talib, tuple):
-        metrics = []
-        if len(result_talib) == 3:  # BBANDS
-            output_names = ['Upper Band', 'Middle Band', 'Lower Band']
-        else:  # MAMA
-            output_names = ['MAMA', 'FAMA']
-
-        for i, (ta, pure) in enumerate(zip(result_talib, result_pure)):
-            metrics.append(calculate_single_accuracy(ta, pure, f"{name} - {output_names[i]}"))
-        return metrics
-    else:
-        return [calculate_single_accuracy(result_talib, result_pure, name)]
 
 
 def calculate_single_accuracy(result_talib, result_pure, name):
@@ -118,7 +100,7 @@ def test_indicator_accuracy(func_talib, func_pure, name, args):
     result_talib = func_talib(*args)
     result_pure = func_pure(*args)
 
-    metrics = calculate_accuracy_metrics(result_talib, result_pure, name)
+    metrics = calculate_single_accuracy(result_talib, result_pure, name)
 
     return metrics
 
@@ -127,8 +109,8 @@ def main():
     """Run all accuracy tests"""
 
     print("=" * 80)
-    print("Overlap Indicators Accuracy Comparison")
-    print("talib-pure (Numba/CPU) vs Original TA-Lib")
+    print("Price Transform Indicators Accuracy Comparison")
+    print("numta (Numba/CPU) vs Original TA-Lib")
     print("=" * 80)
     print()
 
@@ -142,50 +124,42 @@ def main():
     }
 
     size = 10000  # Test with 10K bars
-    timeperiod = 30
+    timeperiod = 14
 
     all_results = {}
 
     for data_type in data_types:
         print(f"\n{'=' * 80}")
         print(f"Test Data Type: {data_type_labels[data_type]}")
-        print(f"Dataset Size: {size:,} bars, timeperiod={timeperiod}")
+        print(f"Dataset Size: {size:,} bars, timeperiod={timeperiod} (where applicable)")
         print('=' * 80)
 
         close, high, low = generate_test_data(size, data_type)
 
         all_results[data_type] = {}
 
-        # Overlap indicators with their parameters (using positional args)
+        # Price Transform indicators
         indicators = [
-            ('SMA', talib.SMA, SMA, (close, timeperiod)),
-            ('EMA', talib.EMA, EMA, (close, timeperiod)),
-            ('WMA', talib.WMA, WMA, (close, timeperiod)),
-            ('DEMA', talib.DEMA, DEMA, (close, timeperiod)),
-            ('TEMA', talib.TEMA, TEMA, (close, timeperiod)),
-            ('TRIMA', talib.TRIMA, TRIMA, (close, timeperiod)),
-            ('KAMA', talib.KAMA, KAMA, (close, timeperiod)),
-            ('MAMA', talib.MAMA, MAMA, (close, 0.5, 0.05)),
-            ('T3', talib.T3, T3, (close, 5, 0.7)),
-            ('BBANDS', talib.BBANDS, BBANDS, (close, timeperiod, 2, 2)),
-            ('SAR', talib.SAR, SAR, (high, low, 0.02, 0.2)),
-            ('SAREXT', talib.SAREXT, SAREXT, (high, low, 0, 0, 0.02, 0.02, 0.2, 0.02, 0.02, 0.2)),
+            ('MEDPRICE', talib.MEDPRICE, MEDPRICE, (high, low)),
+            ('TYPPRICE', talib.TYPPRICE, TYPPRICE, (high, low, close)),
+            ('WCLPRICE', talib.WCLPRICE, WCLPRICE, (high, low, close)),
+            ('MIDPOINT', talib.MIDPOINT, MIDPOINT, (close, timeperiod)),
+            ('MIDPRICE', talib.MIDPRICE, MIDPRICE, (high, low, timeperiod)),
         ]
 
         for name, func_talib, func_pure, args in indicators:
-            metrics_list = test_indicator_accuracy(func_talib, func_pure, name, args)
+            metrics = test_indicator_accuracy(func_talib, func_pure, name, args)
 
-            all_results[data_type][name] = metrics_list
+            all_results[data_type][name] = metrics
 
-            # Print results for each output
-            for metrics in metrics_list:
-                print(f"\n{metrics['name']}:")
-                print(f"  MAE:              {metrics['mae']:.15f}")
-                print(f"  RMSE:             {metrics['rmse']:.15f}")
-                print(f"  Max Error:        {metrics['max_error']:.15f}")
-                print(f"  Correlation:      {metrics['correlation']:.15f}")
-                print(f"  Exact Match Rate: {metrics['exact_match_rate']:.2f}%")
-                print(f"  Valid/Total:      {metrics['valid_count']}/{metrics['total_count']}")
+            # Print results
+            print(f"\n{metrics['name']}:")
+            print(f"  MAE:              {metrics['mae']:.15f}")
+            print(f"  RMSE:             {metrics['rmse']:.15f}")
+            print(f"  Max Error:        {metrics['max_error']:.15f}")
+            print(f"  Correlation:      {metrics['correlation']:.15f}")
+            print(f"  Exact Match Rate: {metrics['exact_match_rate']:.2f}%")
+            print(f"  Valid/Total:      {metrics['valid_count']}/{metrics['total_count']}")
 
     print("\n" + "=" * 80)
     print("\nSummary Tables (for ACCURACY.md):")
@@ -198,17 +172,13 @@ def main():
         print("| Function | MAE | RMSE | Max Error | Correlation | Exact Match |")
         print("|----------|-----|------|-----------|-------------|-------------|")
 
-        indicator_names = ['SMA', 'EMA', 'WMA', 'DEMA', 'TEMA', 'TRIMA', 'KAMA', 'MAMA', 'T3', 'BBANDS', 'SAR', 'SAREXT']
+        indicator_names = ['MEDPRICE', 'TYPPRICE', 'WCLPRICE', 'MIDPOINT', 'MIDPRICE']
 
         for name in indicator_names:
-            metrics_list = all_results[data_type][name]
-
-            # For multi-output functions, show each output
-            for metrics in metrics_list:
-                display_name = metrics['name']
-                print(f"| {display_name:25} | {metrics['mae']:.2e} | "
-                      f"{metrics['rmse']:.2e} | {metrics['max_error']:.2e} | "
-                      f"{metrics['correlation']:.6f} | {metrics['exact_match_rate']:6.2f}% |")
+            metrics = all_results[data_type][name]
+            print(f"| {name:15} | {metrics['mae']:.2e} | "
+                  f"{metrics['rmse']:.2e} | {metrics['max_error']:.2e} | "
+                  f"{metrics['correlation']:.6f} | {metrics['exact_match_rate']:6.2f}% |")
 
     # Overall summary table
     print("\n### Overall Summary (Average across all data types)")
@@ -216,13 +186,11 @@ def main():
     print("| Function | Avg MAE | Avg RMSE | Avg Max Error | Avg Correlation | Avg Exact Match |")
     print("|----------|---------|----------|---------------|-----------------|-----------------|")
 
-    indicator_names = ['SMA', 'EMA', 'WMA', 'DEMA', 'TEMA', 'TRIMA', 'KAMA', 'MAMA', 'T3', 'BBANDS', 'SAR', 'SAREXT']
+    indicator_names = ['MEDPRICE', 'TYPPRICE', 'WCLPRICE', 'MIDPOINT', 'MIDPRICE']
 
     for name in indicator_names:
         # Calculate averages across all data types
-        all_metrics = []
-        for data_type in data_types:
-            all_metrics.extend(all_results[data_type][name])
+        all_metrics = [all_results[dt][name] for dt in data_types]
 
         avg_mae = np.mean([m['mae'] for m in all_metrics])
         avg_rmse = np.mean([m['rmse'] for m in all_metrics])
@@ -230,13 +198,7 @@ def main():
         avg_correlation = np.mean([m['correlation'] for m in all_metrics])
         avg_exact_match = np.mean([m['exact_match_rate'] for m in all_metrics])
 
-        # Determine if multi-output
-        if len(all_results[data_types[0]][name]) > 1:
-            name_display = f"{name} (all outputs)"
-        else:
-            name_display = name
-
-        print(f"| {name_display:25} | {avg_mae:.2e} | {avg_rmse:.2e} | "
+        print(f"| {name:15} | {avg_mae:.2e} | {avg_rmse:.2e} | "
               f"{avg_max_error:.2e} | {avg_correlation:.6f} | {avg_exact_match:6.2f}% |")
 
     print("\n" + "=" * 80)
@@ -245,9 +207,7 @@ def main():
 
     # Classify accuracy
     for name in indicator_names:
-        all_metrics = []
-        for data_type in data_types:
-            all_metrics.extend(all_results[data_type][name])
+        all_metrics = [all_results[dt][name] for dt in data_types]
 
         avg_mae = np.mean([m['mae'] for m in all_metrics])
         avg_correlation = np.mean([m['correlation'] for m in all_metrics])

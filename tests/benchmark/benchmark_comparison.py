@@ -1,34 +1,34 @@
 """
-Performance benchmark comparison between talib-pure (Numba/CPU) and original TA-Lib
-for Math Operators
+Benchmark comparison between numta (Numba/CPU) and original TA-Lib
+for Cycle Indicators
 """
 
 import numpy as np
 import time
 import talib
 from numta import (
-    MAX, MIN, MINMAX, MAXINDEX, MININDEX, MINMAXINDEX, SUM
+    HT_DCPERIOD, HT_DCPHASE, HT_PHASOR, HT_SINE, HT_TRENDLINE, HT_TRENDMODE
 )
 
 
-def benchmark_function(func_talib, func_pure, name, data, timeperiod=30, iterations=100):
+def benchmark_function(func_talib, func_pure, name, close_data, iterations=100):
     """Benchmark a function against both implementations"""
 
     # Warm up
-    _ = func_talib(data, timeperiod=timeperiod)
-    _ = func_pure(data, timeperiod=timeperiod)
+    _ = func_talib(close_data)
+    _ = func_pure(close_data)
 
     # Benchmark TA-Lib
     start = time.perf_counter()
     for _ in range(iterations):
-        result_talib = func_talib(data, timeperiod=timeperiod)
+        result_talib = func_talib(close_data)
     end = time.perf_counter()
     time_talib = (end - start) / iterations
 
-    # Benchmark talib-pure
+    # Benchmark numta
     start = time.perf_counter()
     for _ in range(iterations):
-        result_pure = func_pure(data, timeperiod=timeperiod)
+        result_pure = func_pure(close_data)
     end = time.perf_counter()
     time_pure = (end - start) / iterations
 
@@ -46,46 +46,44 @@ def main():
     """Run all benchmarks"""
 
     print("=" * 80)
-    print("Math Operators Performance Comparison")
-    print("talib-pure (Numba/CPU) vs Original TA-Lib")
+    print("Cycle Indicators Performance Comparison")
+    print("numta (Numba/CPU) vs Original TA-Lib")
     print("=" * 80)
     print()
 
     # Test configurations
     sizes = [1000, 10000, 100000]
-    timeperiod = 30
 
-    # Math operator functions
-    operators = [
-        ('MAX', talib.MAX, MAX),
-        ('MIN', talib.MIN, MIN),
-        ('MINMAX', talib.MINMAX, MINMAX),
-        ('MAXINDEX', talib.MAXINDEX, MAXINDEX),
-        ('MININDEX', talib.MININDEX, MININDEX),
-        ('MINMAXINDEX', talib.MINMAXINDEX, MINMAXINDEX),
-        ('SUM', talib.SUM, SUM),
+    # Cycle indicator functions
+    indicators = [
+        ('HT_DCPERIOD', talib.HT_DCPERIOD, HT_DCPERIOD),
+        ('HT_DCPHASE', talib.HT_DCPHASE, HT_DCPHASE),
+        ('HT_PHASOR', talib.HT_PHASOR, HT_PHASOR),
+        ('HT_SINE', talib.HT_SINE, HT_SINE),
+        ('HT_TRENDLINE', talib.HT_TRENDLINE, HT_TRENDLINE),
+        ('HT_TRENDMODE', talib.HT_TRENDMODE, HT_TRENDMODE),
     ]
 
     results = {}
 
     for size in sizes:
-        print(f"\nDataset size: {size:,} bars (timeperiod={timeperiod})")
+        print(f"\nDataset size: {size:,} bars")
         print("-" * 80)
 
         # Generate test data
         np.random.seed(42)
-        data = np.random.randn(size) * 10 + 100
+        close = np.random.randn(size) * 10 + 100
 
         iterations = 100 if size <= 10000 else 10
 
         results[size] = []
 
-        for name, func_talib, func_pure in operators:
-            result = benchmark_function(func_talib, func_pure, name, data, timeperiod, iterations)
+        for name, func_talib, func_pure in indicators:
+            result = benchmark_function(func_talib, func_pure, name, close, iterations)
             results[size].append(result)
 
             print(f"  {name:15} | TA-Lib: {result['talib_ms']:8.4f}ms | "
-                  f"talib-pure: {result['pure_ms']:8.4f}ms | "
+                  f"numta: {result['pure_ms']:8.4f}ms | "
                   f"Speedup: {result['speedup']:5.2f}x")
 
     print("\n" + "=" * 80)
@@ -94,18 +92,15 @@ def main():
     print()
 
     # Print markdown table
-    print("| Function | 1K bars | 10K bars | 100K bars | Avg Speedup |")
-    print("|----------|---------|----------|-----------|-------------|")
+    print("| Function | 1K bars | 10K bars | 100K bars |")
+    print("|----------|---------|----------|-----------|")
 
-    for i, (name, _, _) in enumerate(operators):
+    for i, (name, _, _) in enumerate(indicators):
         row = f"| {name}"
-        speedups = []
         for size in sizes:
             result = results[size][i]
             row += f" | {result['speedup']:.2f}x"
-            speedups.append(result['speedup'])
-        avg_speedup = np.mean(speedups)
-        row += f" | {avg_speedup:.2f}x |"
+        row += " |"
         print(row)
 
     print()
@@ -115,7 +110,7 @@ def main():
     for size in sizes:
         print(f"\n### {size:,} bars")
         print()
-        print("| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |")
+        print("| Function | TA-Lib (ms) | numta (ms) | Speedup |")
         print("|----------|-------------|-----------------|---------|")
         for result in results[size]:
             print(f"| {result['name']:15} | {result['talib_ms']:11.4f} | "

@@ -3,7 +3,7 @@
 This table shows which numta functions have Numba (CPU) implementations.
 
 | Category | Function Name | Numba (CPU) Notes |
-|----------|---------------|-------------|------------|-------|
+|----------|---------------|-------------|
 | Cycle Indicators | HT_DCPERIOD | - |
 | Cycle Indicators | HT_DCPHASE | - |
 | Cycle Indicators | HT_PHASOR | - |
