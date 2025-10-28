@@ -1,1 +1,1 @@
-"""Test suite for numta"""
+"""Test suite for talib-pure"""
