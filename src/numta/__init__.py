@@ -47,7 +47,7 @@ from .optimized import (
 if HAS_NUMBA:
     from .optimized import SMA_numba
 
-__version__ = "0.1.0"
+__version__ = "0.1.1"
 
 __all__ = [
     # Indicators
