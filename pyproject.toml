@@ -1,16 +1,16 @@
 [build-system]
-requires = ["setuptools>=61.0", "wheel"]
+requires = ["setuptools>=61.0", "wheel", "setuptools-scm>=8.0"]
 build-backend = "setuptools.build_meta"
 
 [project]
-name = "talib-pure"
-version = "0.1.0"
-description = "Pure Python TA-Lib library with focus on performance"
+name = "numta"
+dynamic = ["version"]
+description = "NumPy-based Technical Analysis library with focus on performance"
 readme = "README.md"
 requires-python = ">=3.8"
 license = {text = "MIT"}
 authors = [
-    {name = "talib-pure contributors"}
+    {name = "numta contributors"}
 ]
 classifiers = [
     "Development Status :: 3 - Alpha",
@@ -35,28 +35,24 @@ dependencies = [
 dev = [
     "pytest>=7.0.0",
     "pytest-benchmark>=4.0.0",
-    "TA-Lib>=0.4.0",  # For comparison tests
+]
+comparison = [
+    "TA-Lib>=0.4.0",  # For comparison with original TA-Lib (requires C library)
 ]
 numba = [
     "numba>=0.56.0",  # JIT compilation for faster execution
 ]
-gpu = [
-    "cupy>=12.0.0",  # GPU acceleration (requires CUDA)
-]
-all = [
-    "pytest>=7.0.0",
-    "pytest-benchmark>=4.0.0",
-    "TA-Lib>=0.4.0",
-    "numba>=0.56.0",
-    "cupy>=12.0.0",
-]
 
 [project.urls]
-Homepage = "https://github.com/houseofai/talib-pure"
-Repository = "https://github.com/houseofai/talib-pure"
+Homepage = "https://github.com/houseofai/numta"
+Repository = "https://github.com/houseofai/numta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
+
+[tool.setuptools_scm]
+version_file = "src/numta/_version.py"
+fallback_version = "0.0.0+unknown"
 
 [tool.pytest.ini_options]
 testpaths = ["tests"]

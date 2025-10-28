@@ -1,10 +1,12 @@
-# talib-pure
+# numta
 
 A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus on performance and compatibility.
 
 ## Overview
 
-`talib-pure` aims to provide the same functionality as the popular TA-Lib library but implemented entirely in pure Python using NumPy for performance. This eliminates the need for complex C library dependencies while maintaining high performance through optimized NumPy operations.
+`numta` (NumPy Technical Analysis) provides the same functionality as the popular TA-Lib library but implemented entirely in Python using NumPy and Numba for performance. This eliminates the need for complex C library dependencies while maintaining high performance through optimized NumPy operations and JIT compilation.
+
+**Disclaimer**: This is an independent implementation inspired by TA-Lib. It is not affiliated with, endorsed by, or connected to the original TA-Lib project. The technical analysis algorithms implemented here are based on publicly available mathematical formulas and are compatible with TA-Lib's function signatures for ease of migration.
 
 ## Features
 
@@ -14,7 +16,6 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
   - Default NumPy implementation
   - Optimized cumsum algorithm (3x faster, no dependencies)
   - Numba JIT compilation (5-10x faster)
-  - GPU acceleration via CuPy (10-50x faster for large datasets)
 - **Automatic backend selection** for optimal performance
 - **Easy installation** via pip
 - **Comprehensive test suite** comparing outputs with original TA-Lib
@@ -26,11 +27,11 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
 
 ```bash
 # From PyPI (when published)
-pip install talib-pure
+pip install numta
 
 # From source
-git clone https://github.com/houseofai/talib-pure.git
-cd talib-pure
+git clone https://github.com/houseofai/numta.git
+cd numta
 pip install -e .
 ```
 
@@ -38,20 +39,17 @@ pip install -e .
 
 ```bash
 # Install with Numba for 5-10x speedup
-pip install "talib-pure[numba]"
+pip install "numta[numba]"
 
-# Install with GPU support for 10-50x speedup on large datasets
-pip install "talib-pure[gpu]"
-
-# Install everything (for development)
-pip install "talib-pure[all]"
+# Install development dependencies
+pip install "numta[dev]"
 ```
 
 ## Quick Start
 
 ```python
 import numpy as np
-from talib_pure import SMA
+from numta import SMA
 
 # Create sample price data
 close_prices = np.random.uniform(100, 200, 100)
@@ -67,45 +65,66 @@ print(f"SMA values: {sma[-5:]}")  # Last 5 values
 
 ## Performance Optimization 🚀
 
-talib-pure can match or exceed TA-Lib's performance using optional optimization backends:
+numta can match or exceed TA-Lib's performance using optional optimization backends:
 
 ```python
-from talib_pure import SMA_auto
+from numta import SMA_auto
 
 # Automatic backend selection (recommended)
 sma = SMA_auto(close_prices, timeperiod=30, backend='auto')
 
 # Or choose specific backend
-from talib_pure import SMA_cumsum, SMA_numba, SMA_gpu
+from numta import SMA_cumsum, SMA_numba
 
 sma_fast = SMA_cumsum(close_prices, timeperiod=30)    # 3x faster, no deps
 sma_faster = SMA_numba(close_prices, timeperiod=30)   # 5-10x faster
-sma_fastest = SMA_gpu(close_prices, timeperiod=30)    # 10-50x faster
 ```
 
 ### Performance Comparison
 
-| Implementation | Speed vs Original | Requirements |
-|---------------|------------------|--------------|
-| **numpy (default)** | 1.0x (baseline) | None |
-| **cumsum** | **3.14x faster** | None |
-| **numba** | **5-10x faster** | `pip install numba` |
-| **gpu** | **10-50x faster** | `pip install cupy-cuda12x` |
+| Implementation      | Speed vs Original | Requirements        |
+|---------------------|-------------------|---------------------|
+| **numpy (default)** | 1.0x (baseline)   | None                |
+| **cumsum**          | **3.14x faster**  | None                |
+| **numba**           | **5-10x faster**  | `pip install numba` |
 
 **Benchmark Results (10,000 points):**
 - Original (numpy): 0.154ms
 - Cumsum: 0.049ms (3.14x faster)
 - **Numba: 0.028ms (5.52x faster)** ⭐
 
-**See [OPTIMIZATION.md](OPTIMIZATION.md) for detailed performance guide.**
-
 ## Implemented Indicators
 
+This library implements a comprehensive set of technical analysis indicators across multiple categories:
+
 ### Overlap Studies
+SMA, EMA, DEMA, TEMA, TRIMA, WMA, KAMA, MAMA, T3, BBANDS, MA, SAR, SAREXT
 
-- **SMA** - Simple Moving Average
+### Momentum Indicators
+RSI, MACD, MACDEXT, MACDFIX, STOCH, STOCHF, STOCHRSI, ADX, ADXR, APO, AROON, AROONOSC, ATR, BOP, CCI, CMO, DX, MFI, MINUS_DI, MINUS_DM, MOM, PLUS_DI, PLUS_DM, PPO, ROC, ROCP, ROCR, ROCR100, TRIX, ULTOSC, WILLR
 
-More indicators coming soon!
+### Volume Indicators
+AD, ADOSC, OBV
+
+### Volatility Indicators
+NATR, TRANGE
+
+### Cycle Indicators
+HT_DCPERIOD, HT_DCPHASE, HT_PHASOR, HT_SINE, HT_TRENDLINE, HT_TRENDMODE
+
+### Statistical Functions
+BETA, CORREL, LINEARREG, LINEARREG_ANGLE, LINEARREG_INTERCEPT, LINEARREG_SLOPE, STDDEV, TSF, VAR
+
+### Math Operators
+MAX, MAXINDEX, MIN, MININDEX, MINMAX, MINMAXINDEX, SUM
+
+### Price Transform
+MEDPRICE, MIDPOINT, MIDPRICE, TYPPRICE, WCLPRICE
+
+### Pattern Recognition
+60+ candlestick patterns including: Doji, Hammer, Engulfing, Morning Star, Evening Star, Three White Soldiers, and many more.
+
+**See [FUNCTION_IMPLEMENTATIONS.md](FUNCTION_IMPLEMENTATIONS.md) for detailed implementation status.**
 
 ## Usage Examples
 
@@ -113,7 +132,7 @@ More indicators coming soon!
 
 ```python
 import numpy as np
-from talib_pure import SMA
+from numta import SMA
 
 # Generate sample data
 close = np.array([1, 2, 3, 4, 5, 6, 7, 8, 9, 10], dtype=np.float64)
@@ -129,7 +148,7 @@ result = SMA(close, timeperiod=3)
 
 ```python
 import numpy as np
-from talib_pure import SMA
+from numta import SMA
 
 # Example with stock prices
 close_prices = np.array([
@@ -147,12 +166,12 @@ for i, (price, sma) in enumerate(zip(close_prices, sma_5)):
 
 ## Performance Benchmarking
 
-`talib-pure` includes a powerful benchmarking class to compare performance with the original TA-Lib:
+`numta` includes a powerful benchmarking class to compare performance with the original TA-Lib:
 
 ```python
 import numpy as np
-from talib_pure import SMA as SMA_pure
-from talib_pure.benchmark import PerformanceMeasurement
+from numta import SMA as SMA_numta
+from numta.benchmark import PerformanceMeasurement
 import talib
 
 # Create test data
@@ -160,7 +179,7 @@ data = np.random.uniform(100, 200, 10000)
 
 # Setup benchmark
 bench = PerformanceMeasurement()
-bench.add_function("talib-pure SMA", SMA_pure, data, timeperiod=30)
+bench.add_function("numta SMA", SMA_numta, data, timeperiod=30)
 bench.add_function("TA-Lib SMA", talib.SMA, data, timeperiod=30)
 
 # Run benchmark
@@ -195,8 +214,11 @@ pip install -e ".[dev]"
 # Run all tests
 pytest
 
+# Optional: Install TA-Lib for comparison tests (requires TA-Lib C library)
+pip install -e ".[comparison]"
+
 # Run specific test file
-pytest tests/test_sma_comparison.py
+pytest tests/test_sma.py
 
 # Run with verbose output
 pytest -v
@@ -214,33 +236,51 @@ pytest tests/test_benchmark.py
 
 ## API Compatibility
 
-`talib-pure` maintains full API compatibility with TA-Lib:
+`numta` maintains full API compatibility with TA-Lib:
 
-| Feature | TA-Lib | talib-pure |
-|---------|--------|------------|
-| Function signatures | ✓ | ✓ |
-| Return values | ✓ | ✓ |
-| NaN handling | ✓ | ✓ |
-| NumPy array support | ✓ | ✓ |
-| List support | ✓ | ✓ |
-| Default parameters | ✓ | ✓ |
+| Feature             | TA-Lib | numta |
+|---------------------|--------|-------|
+| Function signatures | ✓      | ✓     |
+| Return values       | ✓      | ✓     |
+| NaN handling        | ✓      | ✓     |
+| NumPy array support | ✓      | ✓     |
+| List support        | ✓      | ✓     |
+| Default parameters  | ✓      | ✓     |
 
 ## Development
 
 ### Project Structure
 
 ```
-talib-pure/
+numta/
 ├── src/
-│   └── talib_pure/
-│       ├── __init__.py
-│       ├── overlap.py      # Overlap studies (SMA, EMA, etc.)
-│       └── benchmark.py    # Performance measurement tools
-├── tests/
-│   ├── test_sma_comparison.py
+│   └── numta/
+│       ├── __init__.py           # Main package exports
+│       ├── backend.py            # Backend selection logic
+│       ├── benchmark.py          # Performance measurement tools
+│       ├── optimized.py          # Optimized implementations
+│       ├── api/                  # Public API layer
+│       │   ├── overlap.py        # Overlap studies (SMA, EMA, etc.)
+│       │   ├── momentum_indicators.py
+│       │   ├── volume_indicators.py
+│       │   └── ...
+│       └── cpu/                  # CPU/Numba implementations
+│           ├── overlap.py        # Numba-optimized overlap studies
+│           ├── math_operators.py
+│           └── ...
+├── tests/                        # Comprehensive test suite
+│   ├── test_sma.py
+│   ├── test_ema.py
 │   └── test_benchmark.py
-├── examples/
-│   └── benchmark_sma.py
+├── examples/                     # Usage examples
+│   ├── benchmark_sma.py
+│   └── benchmark_optimized.py
+├── development/                  # Development tools
+│   ├── accuracy_*.py             # Accuracy comparison scripts
+│   ├── benchmark_*.py            # Benchmark scripts
+│   └── ACCURACY.md               # Accuracy test results
+├── PERFORMANCE.md                # Performance analysis
+├── FUNCTION_IMPLEMENTATIONS.md   # Implementation details
 ├── pyproject.toml
 ├── LICENSE
 └── README.md
@@ -250,11 +290,12 @@ talib-pure/
 
 To add a new indicator:
 
-1. Implement the function in the appropriate module (e.g., `overlap.py` for overlap studies)
-2. Ensure the signature matches TA-Lib exactly
-3. Add comparison tests in `tests/`
-4. Update `__init__.py` to export the function
-5. Add documentation and examples
+1. Implement the function in the appropriate API module (e.g., `api/overlap.py` for overlap studies)
+2. Optionally add optimized Numba implementation in the corresponding `cpu/` module
+3. Ensure the signature matches TA-Lib exactly
+4. Add comparison tests in `tests/`
+5. Export the function in `__init__.py`
+6. Add documentation and examples
 
 Example:
 
@@ -291,7 +332,7 @@ Contributions are welcome! Please:
 
 ## Performance
 
-`talib-pure` uses NumPy's optimized functions (like `convolve`) to achieve performance competitive with the C-based TA-Lib. Benchmark results:
+`numta` uses NumPy's optimized functions and Numba JIT compilation to achieve performance competitive with the C-based TA-Lib. Benchmark results:
 
 - **SMA**: Comparable performance to TA-Lib for large datasets
 - **Lookback handling**: Efficient NaN placement
@@ -306,9 +347,9 @@ Run `python examples/benchmark_sma.py` to see detailed benchmarks on your system
 
 ### Optional Dependencies
 
-- TA-Lib >= 0.4.0 (for comparison tests only)
-- pytest >= 7.0.0 (for running tests)
-- pytest-benchmark >= 4.0.0 (for benchmark tests)
+- **Testing**: pytest >= 7.0.0, pytest-benchmark >= 4.0.0
+- **Performance**: numba >= 0.56.0 (for JIT compilation, 5-10x speedup)
+- **Comparison**: TA-Lib >= 0.4.0 (only for development/comparison scripts, requires C library)
 
 ## License
 
@@ -316,45 +357,56 @@ MIT License - see LICENSE file for details
 
 ## Acknowledgments
 
-- Original TA-Lib library: https://ta-lib.org/
-- TA-Lib Python wrapper: https://github.com/TA-Lib/ta-lib-python
+This project implements technical analysis algorithms that are publicly available mathematical formulas. We acknowledge and credit:
+
+- **TA-Lib** - The original Technical Analysis Library (Copyright (c) 1999-2024, Mario Fortier)
+  - Website: https://ta-lib.org/
+  - Python wrapper: https://github.com/TA-Lib/ta-lib-python
+  - License: BSD 3-Clause
+
+`numta` is an independent clean-room implementation and is not derived from TA-Lib's source code. All code in this repository is original work licensed under the MIT License (see LICENSE file).
 
 ## Roadmap
 
-### Phase 1 (Current)
-- [x] SMA (Simple Moving Average)
-- [x] Test framework
+### Completed ✅
+- [x] Core overlap studies (SMA, EMA, DEMA, TEMA, WMA, KAMA, etc.)
+- [x] Momentum indicators (RSI, MACD, STOCH, ADX, etc.)
+- [x] Volume indicators (OBV, AD, ADOSC)
+- [x] Volatility indicators (NATR, TRANGE)
+- [x] Pattern recognition (60+ candlestick patterns)
+- [x] Cycle indicators (Hilbert Transform functions)
+- [x] Statistical functions
+- [x] Math operators
+- [x] Price transforms
+- [x] Comprehensive test framework
 - [x] Performance benchmarking tools
+- [x] Multiple backend support (NumPy, Numba)
 
-### Phase 2 (Planned)
-- [ ] EMA (Exponential Moving Average)
-- [ ] WMA (Weighted Moving Average)
-- [ ] DEMA (Double Exponential Moving Average)
-- [ ] TEMA (Triple Exponential Moving Average)
-- [ ] RSI (Relative Strength Index)
-- [ ] MACD (Moving Average Convergence Divergence)
+### In Progress 🚧
+- [ ] Additional performance optimizations
+- [ ] Extended documentation and examples
+- [ ] More comprehensive benchmarks
 
-### Phase 3 (Future)
-- [ ] Complete overlap studies
-- [ ] Momentum indicators
-- [ ] Volume indicators
-- [ ] Volatility indicators
-- [ ] Pattern recognition
+### Future Plans 📋
+- [ ] Real-time streaming data support
+- [ ] Integration with popular data providers
+- [ ] Interactive visualization tools
+- [ ] Additional optimization backends
 
 ## Support
 
 For issues, questions, or contributions, please visit:
-https://github.com/houseofai/talib-pure/issues
+https://github.com/houseofai/numta/issues
 
 ## Citation
 
 If you use this library in your research or project, please cite:
 
 ```
-@software{talib_pure,
-  title={talib-pure: Pure Python Technical Analysis Library},
-  author={talib-pure contributors},
-  url={https://github.com/houseofai/talib-pure},
+@software{numta,
+  title={numta: NumPy-based Technical Analysis Library},
+  author={numta contributors},
+  url={https://github.com/houseofai/numta},
   year={2025}
 }
 ```
