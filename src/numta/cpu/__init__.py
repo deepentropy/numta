@@ -1,1 +1,1 @@
-"""CPU (Numba) implementations for talib-pure."""
+"""CPU (Numba) implementations for numta."""

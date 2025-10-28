@@ -1,5 +1,5 @@
 """
-talib-pure: Pure Python TA-Lib library with focus on performance
+numta: Pure Python TA-Lib library with focus on performance
 
 Optimized with Numba JIT compilation for fast CPU computation.
 """

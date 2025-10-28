@@ -1,1 +1,1 @@
-"""Public API functions for talib-pure."""
+"""Public API functions for numta."""

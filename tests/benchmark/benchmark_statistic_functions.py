@@ -1,8 +1,8 @@
 """
-Benchmark comparison for Statistic Functions: talib-pure vs TA-Lib
+Benchmark comparison for Statistic Functions: numta vs TA-Lib
 
 This script compares the performance of Statistic Functions implementations
-between talib-pure (Numba/CPU) and the original TA-Lib library.
+between numta (Numba/CPU) and the original TA-Lib library.
 """
 
 import numpy as np
@@ -26,10 +26,10 @@ def benchmark_function(func_talib, func_pure, name, talib_args, pure_args, itera
 
     Args:
         func_talib: TA-Lib function
-        func_pure: talib-pure function
+        func_pure: numta function
         name: Name of the function for display
         talib_args: Tuple of arguments for TA-Lib function
-        pure_args: Tuple of arguments for talib-pure function
+        pure_args: Tuple of arguments for numta function
         iterations: Number of iterations for timing
     """
     # Warm up
@@ -42,7 +42,7 @@ def benchmark_function(func_talib, func_pure, name, talib_args, pure_args, itera
     try:
         _ = func_pure(*pure_args)
     except Exception as e:
-        print(f"  {name}: talib-pure warm-up failed: {e}")
+        print(f"  {name}: numta warm-up failed: {e}")
         return None
 
     # Benchmark TA-Lib
@@ -52,14 +52,14 @@ def benchmark_function(func_talib, func_pure, name, talib_args, pure_args, itera
     end = time.perf_counter()
     time_talib = (end - start) / iterations
 
-    # Benchmark talib-pure
+    # Benchmark numta
     start = time.perf_counter()
     for _ in range(iterations):
         result_pure = func_pure(*pure_args)
     end = time.perf_counter()
     time_pure = (end - start) / iterations
 
-    # Calculate speedup (>1 means talib-pure is faster)
+    # Calculate speedup (>1 means numta is faster)
     speedup = time_talib / time_pure if time_pure > 0 else float('inf')
 
     return {
@@ -100,7 +100,7 @@ def run_benchmarks(size, iterations=100):
         if result:
             results.append(result)
             print(f"{name:20s} | TA-Lib: {result['talib_time']:8.4f} ms | "
-                  f"talib-pure: {result['pure_time']:8.4f} ms | "
+                  f"numta: {result['pure_time']:8.4f} ms | "
                   f"Speedup: {result['speedup']:5.2f}x")
 
     return results
@@ -143,7 +143,7 @@ def main():
     """Main benchmark execution"""
     print("="*70)
     print("Statistic Functions Performance Benchmark")
-    print("Comparing talib-pure (Numba/CPU) vs TA-Lib")
+    print("Comparing numta (Numba/CPU) vs TA-Lib")
     print("="*70)
 
     # Test with different dataset sizes

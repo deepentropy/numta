@@ -1,5 +1,5 @@
 """
-Performance measurement utilities for comparing talib-pure with TA-Lib
+Performance measurement utilities for comparing numta with TA-Lib
 """
 
 import time
@@ -12,7 +12,7 @@ class PerformanceMeasurement:
     """
     General class to measure and compare the speed of indicator functions.
 
-    This class allows you to benchmark any function (from talib-pure or TA-Lib)
+    This class allows you to benchmark any function (from numta or TA-Lib)
     and compare their performance across multiple runs and data sizes.
 
     Examples
@@ -29,7 +29,7 @@ class PerformanceMeasurement:
     >>> bench = PerformanceMeasurement()
     >>>
     >>> # Add functions to compare
-    >>> bench.add_function("talib-pure SMA", SMA_pure, data, timeperiod=30)
+    >>> bench.add_function("numta SMA", SMA_pure, data, timeperiod=30)
     >>> bench.add_function("TA-Lib SMA", talib.SMA, data, timeperiod=30)
     >>>
     >>> # Run benchmark

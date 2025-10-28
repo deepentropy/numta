@@ -1,8 +1,8 @@
 """
-Accuracy comparison for Statistic Functions: talib-pure vs TA-Lib
+Accuracy comparison for Statistic Functions: numta vs TA-Lib
 
 This script compares the accuracy of Statistic Functions implementations
-between talib-pure (Numba/CPU) and the original TA-Lib library.
+between numta (Numba/CPU) and the original TA-Lib library.
 """
 
 import numpy as np
@@ -81,7 +81,7 @@ def calculate_single_accuracy(result_talib, result_pure, name):
 
 
 def calculate_accuracy(result_talib, result_pure, name):
-    """Calculate accuracy metrics between TA-Lib and talib-pure results"""
+    """Calculate accuracy metrics between TA-Lib and numta results"""
     # Handle both single and tuple outputs
     if isinstance(result_talib, tuple):
         results = []
@@ -214,7 +214,7 @@ def main():
     """Main execution"""
     print("="*70)
     print("Statistic Functions Accuracy Comparison")
-    print("Comparing talib-pure (Numba/CPU) vs TA-Lib")
+    print("Comparing numta (Numba/CPU) vs TA-Lib")
     print("="*70)
 
     all_results = run_accuracy_tests(size=10000)

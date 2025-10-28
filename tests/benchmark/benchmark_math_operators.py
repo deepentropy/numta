@@ -1,5 +1,5 @@
 """
-Performance benchmark comparison between talib-pure (Numba/CPU) and original TA-Lib
+Performance benchmark comparison between numta (Numba/CPU) and original TA-Lib
 for Math Operators
 """
 
@@ -25,7 +25,7 @@ def benchmark_function(func_talib, func_pure, name, data, timeperiod=30, iterati
     end = time.perf_counter()
     time_talib = (end - start) / iterations
 
-    # Benchmark talib-pure
+    # Benchmark numta
     start = time.perf_counter()
     for _ in range(iterations):
         result_pure = func_pure(data, timeperiod=timeperiod)
@@ -47,7 +47,7 @@ def main():
 
     print("=" * 80)
     print("Math Operators Performance Comparison")
-    print("talib-pure (Numba/CPU) vs Original TA-Lib")
+    print("numta (Numba/CPU) vs Original TA-Lib")
     print("=" * 80)
     print()
 
@@ -85,7 +85,7 @@ def main():
             results[size].append(result)
 
             print(f"  {name:15} | TA-Lib: {result['talib_ms']:8.4f}ms | "
-                  f"talib-pure: {result['pure_ms']:8.4f}ms | "
+                  f"numta: {result['pure_ms']:8.4f}ms | "
                   f"Speedup: {result['speedup']:5.2f}x")
 
     print("\n" + "=" * 80)
@@ -115,7 +115,7 @@ def main():
     for size in sizes:
         print(f"\n### {size:,} bars")
         print()
-        print("| Function | TA-Lib (ms) | talib-pure (ms) | Speedup |")
+        print("| Function | TA-Lib (ms) | numta (ms) | Speedup |")
         print("|----------|-------------|-----------------|---------|")
         for result in results[size]:
             print(f"| {result['name']:15} | {result['talib_ms']:11.4f} | "

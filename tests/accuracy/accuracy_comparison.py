@@ -1,5 +1,5 @@
 """
-Accuracy comparison between talib-pure (Numba/CPU) and original TA-Lib
+Accuracy comparison between numta (Numba/CPU) and original TA-Lib
 for Cycle Indicators
 """
 
@@ -122,7 +122,7 @@ def main():
 
     print("=" * 80)
     print("Cycle Indicators Accuracy Comparison")
-    print("talib-pure (Numba/CPU) vs Original TA-Lib")
+    print("numta (Numba/CPU) vs Original TA-Lib")
     print("=" * 80)
     print()
 
