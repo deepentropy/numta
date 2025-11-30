@@ -15,6 +15,9 @@ Usage:
     
     # Calculate and append to DataFrame
     df.ta.sma(timeperiod=20, append=True)  # Adds column 'SMA_20'
+
+Note:
+    Requires pandas to be installed: pip install "numta[pandas]"
 """
 
 from typing import Optional, Union, List, Tuple
@@ -25,6 +28,7 @@ try:
     HAS_PANDAS = True
 except ImportError:
     HAS_PANDAS = False
+    pd = None  # type: ignore
 
 
 if HAS_PANDAS:
@@ -45,7 +49,7 @@ if HAS_PANDAS:
         _CLOSE_NAMES = ['close', 'c', 'adj close', 'adj_close', 'adjclose']
         _VOLUME_NAMES = ['volume', 'v', 'vol']
         
-        def __init__(self, pandas_obj: pd.DataFrame):
+        def __init__(self, pandas_obj: "pd.DataFrame"):
             self._obj = pandas_obj
             self._validate()
             self._detect_ohlcv_columns()
