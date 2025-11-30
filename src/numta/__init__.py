@@ -90,3 +90,6 @@ __all__ = [
 # Add optimized versions to __all__ if available
 if HAS_NUMBA:
     __all__.append("SMA_numba")
+
+# Register pandas DataFrame extension accessor (if pandas is available)
+from . import pandas_ext  # noqa: F401
