@@ -63,6 +63,100 @@ sma_20 = SMA(close_prices, timeperiod=20)
 print(f"SMA values: {sma[-5:]}")  # Last 5 values
 ```
 
+## Pandas Integration 🐼
+
+`numta` provides a seamless pandas DataFrame integration through the `.ta` accessor, allowing you to calculate and append technical indicators directly to your DataFrames.
+
+### Installation with Pandas Support
+
+```bash
+pip install "numta[pandas]"
+```
+
+### Basic Usage with DataFrames
+
+```python
+import pandas as pd
+import numta  # Auto-registers the .ta accessor
+
+# Load your OHLCV data
+df = pd.DataFrame({
+    'open': [100, 101, 102, 103, 104],
+    'high': [105, 106, 107, 108, 109],
+    'low': [99, 100, 101, 102, 103],
+    'close': [104, 105, 106, 107, 108],
+    'volume': [1000, 1100, 1200, 1300, 1400]
+})
+
+# Calculate and return Series (default behavior)
+sma_series = df.ta.sma(timeperiod=20)
+
+# Calculate and append to DataFrame
+df.ta.sma(timeperiod=20, append=True)   # Adds column 'SMA_20'
+df.ta.ema(timeperiod=12, append=True)   # Adds column 'EMA_12'
+df.ta.rsi(timeperiod=14, append=True)   # Adds column 'RSI_14'
+```
+
+### Multi-Output Indicators
+
+```python
+# MACD returns 3 columns
+df.ta.macd(append=True)
+# Adds: 'MACD_12_26_9', 'MACDSignal_12_26_9', 'MACDHist_12_26_9'
+
+# Bollinger Bands returns 3 columns
+df.ta.bbands(timeperiod=20, append=True)
+# Adds: 'BBU_20_2.0', 'BBM_20', 'BBL_20_2.0'
+
+# Stochastic returns 2 columns
+df.ta.stoch(append=True)
+# Adds: 'STOCH_SLOWK_5_3_3', 'STOCH_SLOWD_5_3_3'
+```
+
+### Pattern Recognition
+
+```python
+# Candlestick patterns
+df.ta.cdldoji(append=True)       # Adds 'CDLDOJI'
+df.ta.cdlengulfing(append=True)  # Adds 'CDLENGULFING'
+df.ta.cdlhammer(append=True)     # Adds 'CDLHAMMER'
+```
+
+### Auto-Detection of OHLCV Columns
+
+The accessor automatically detects standard column names (case-insensitive):
+- Open: `open`, `Open`, `OPEN`, `o`
+- High: `high`, `High`, `HIGH`, `h`
+- Low: `low`, `Low`, `LOW`, `l`
+- Close: `close`, `Close`, `CLOSE`, `c`, `adj_close`
+- Volume: `volume`, `Volume`, `VOLUME`, `v`, `vol`
+
+### Custom Column Specification
+
+```python
+# Use a custom column instead of auto-detected 'close'
+df.ta.sma(column='adj_close', timeperiod=20, append=True)
+```
+
+### Column Naming Convention
+
+All columns follow TA-Lib/pandas-ta conventions:
+- Single output: `{INDICATOR}_{param1}_{param2}` (e.g., `SMA_20`, `RSI_14`)
+- Multiple outputs: Named appropriately (e.g., `MACD_12_26_9`, `MACDSignal_12_26_9`)
+- Patterns: `{PATTERN_NAME}` (e.g., `CDLDOJI`, `CDLENGULFING`)
+
+### Migration from pandas-ta
+
+If you're migrating from pandas-ta (abandoned since 2019), numta provides a compatible API:
+
+```python
+# pandas-ta style (works with numta)
+df.ta.sma(timeperiod=20, append=True)
+df.ta.rsi(timeperiod=14, append=True)
+df.ta.macd(append=True)
+df.ta.bbands(append=True)
+```
+
 ## Performance Optimization 🚀
 
 numta can match or exceed TA-Lib's performance using optional optimization backends:
@@ -381,6 +475,7 @@ This project implements technical analysis algorithms that are publicly availabl
 - [x] Comprehensive test framework
 - [x] Performance benchmarking tools
 - [x] Multiple backend support (NumPy, Numba)
+- [x] Pandas DataFrame extension accessor (`.ta`)
 
 ### In Progress 🚧
 - [ ] Additional performance optimizations
