@@ -36,7 +36,7 @@ git push origin v0.1.2
 
 ### 3. Create a GitHub Release
 
-1. Go to https://github.com/houseofai/numta/releases
+1. Go to https://github.com/deepentropy/numta/releases
 2. Click "Draft a new release"
 3. Select the tag you just created (e.g., `v0.1.2`)
 4. Fill in the release notes
