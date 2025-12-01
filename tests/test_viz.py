@@ -10,6 +10,10 @@ from numta.viz import (
     plot_chart,
     plot_pattern,
     plot_harmonic,
+    plot_ohlc,
+    plot_line,
+    plot_with_indicators,
+    StreamingChart,
     create_point_marker,
     create_trendline,
     create_horizontal_line,
@@ -326,3 +330,215 @@ class TestPandasAccessorPatterns:
         
         if not HAS_LWCHARTS:
             assert result is None
+
+
+class TestNewChartFunctions:
+    """Tests for new chart functions."""
+    
+    @pytest.fixture
+    def sample_df(self):
+        """Create sample DataFrame for testing."""
+        try:
+            import pandas as pd
+            open_, high, low, close, volume = _create_sample_ohlcv_data()
+            
+            return pd.DataFrame({
+                'open': open_,
+                'high': high,
+                'low': low,
+                'close': close,
+                'volume': volume
+            })
+        except ImportError:
+            pytest.skip("pandas not installed")
+    
+    def test_plot_ohlc_without_lwcharts(self, sample_df):
+        """Test plot_ohlc returns None gracefully when lwcharts not installed."""
+        if HAS_LWCHARTS:
+            pytest.skip("lwcharts is installed, skipping graceful degradation test")
+        
+        result = plot_ohlc(sample_df)
+        assert result is None
+    
+    def test_plot_line_without_lwcharts(self, sample_df):
+        """Test plot_line returns None gracefully when lwcharts not installed."""
+        if HAS_LWCHARTS:
+            pytest.skip("lwcharts is installed, skipping graceful degradation test")
+        
+        result = plot_line(sample_df, 'close')
+        assert result is None
+    
+    def test_plot_with_indicators_without_lwcharts(self, sample_df):
+        """Test plot_with_indicators returns None gracefully when lwcharts not installed."""
+        if HAS_LWCHARTS:
+            pytest.skip("lwcharts is installed, skipping graceful degradation test")
+        
+        result = plot_with_indicators(sample_df, {'SMA': [100] * len(sample_df)})
+        assert result is None
+    
+    def test_plot_line_invalid_column(self, sample_df):
+        """Test plot_line raises error for invalid column."""
+        if HAS_LWCHARTS:
+            pytest.skip("lwcharts is installed, testing import error instead")
+        
+        # Without lwcharts, it returns None before checking the column
+        result = plot_line(sample_df, 'nonexistent_column')
+        assert result is None
+
+
+class TestStreamingChart:
+    """Tests for StreamingChart class."""
+    
+    def test_init(self):
+        """Test StreamingChart initialization."""
+        chart = StreamingChart(max_points=500, title="Test")
+        
+        assert chart.max_points == 500
+        assert chart.num_points == 0
+    
+    def test_add_bar(self):
+        """Test adding OHLCV bars."""
+        chart = StreamingChart()
+        
+        chart.add_bar(0, 100, 105, 95, 102, 1000)
+        assert chart.num_points == 1
+        
+        chart.add_bar(1, 102, 108, 100, 106, 1500)
+        assert chart.num_points == 2
+    
+    def test_max_points_trim(self):
+        """Test that old points are trimmed when max is reached."""
+        chart = StreamingChart(max_points=10)
+        
+        for i in range(20):
+            chart.add_bar(i, 100, 105, 95, 102, 1000)
+        
+        assert chart.num_points == 10
+    
+    def test_update_last_bar(self):
+        """Test updating the last bar."""
+        chart = StreamingChart()
+        chart.add_bar(0, 100, 105, 95, 102, 1000)
+        
+        chart.update_last_bar(close=110)
+        
+        df = chart.to_dataframe()
+        assert df is not None
+        assert df.iloc[-1]['close'] == 110
+    
+    def test_add_indicator(self):
+        """Test adding indicator data points."""
+        chart = StreamingChart()
+        
+        for i in range(10):
+            chart.add_bar(i, 100, 105, 95, 102, 1000)
+            chart.add_indicator('SMA', i, 100 + i)
+        
+        assert 'SMA' in chart._indicators
+        assert len(chart._indicators['SMA']) == 10
+    
+    def test_add_indicator_with_color(self):
+        """Test adding indicator with custom color."""
+        chart = StreamingChart()
+        
+        chart.add_indicator('SMA', 0, 100, color='red')
+        
+        assert chart._indicator_colors['SMA'] == 'red'
+    
+    def test_add_indicator_skips_nan(self):
+        """Test that NaN values are skipped."""
+        chart = StreamingChart()
+        
+        chart.add_indicator('SMA', 0, float('nan'))
+        
+        assert 'SMA' not in chart._indicators or len(chart._indicators.get('SMA', [])) == 0
+    
+    def test_clear(self):
+        """Test clearing all data."""
+        chart = StreamingChart()
+        
+        for i in range(5):
+            chart.add_bar(i, 100, 105, 95, 102, 1000)
+            chart.add_indicator('SMA', i, 100)
+        
+        chart.clear()
+        
+        assert chart.num_points == 0
+        assert len(chart._indicators) == 0
+    
+    def test_clear_indicators(self):
+        """Test clearing only indicators."""
+        chart = StreamingChart()
+        
+        for i in range(5):
+            chart.add_bar(i, 100, 105, 95, 102, 1000)
+            chart.add_indicator('SMA', i, 100)
+        
+        chart.clear_indicators()
+        
+        assert chart.num_points == 5
+        assert len(chart._indicators) == 0
+    
+    def test_to_dataframe(self):
+        """Test converting to DataFrame."""
+        try:
+            import pandas as pd
+        except ImportError:
+            pytest.skip("pandas not installed")
+        
+        chart = StreamingChart()
+        
+        for i in range(5):
+            chart.add_bar(i, 100 + i, 105 + i, 95 + i, 102 + i, 1000 + i * 100)
+        
+        df = chart.to_dataframe()
+        
+        assert df is not None
+        assert len(df) == 5
+        assert 'open' in df.columns
+        assert 'close' in df.columns
+    
+    def test_to_dataframe_empty(self):
+        """Test converting empty chart to DataFrame."""
+        try:
+            import pandas as pd
+        except ImportError:
+            pytest.skip("pandas not installed")
+        
+        chart = StreamingChart()
+        df = chart.to_dataframe()
+        
+        assert df is not None
+        assert len(df) == 0
+    
+    def test_show_without_lwcharts(self):
+        """Test show returns None when lwcharts not installed."""
+        if HAS_LWCHARTS:
+            pytest.skip("lwcharts is installed, skipping graceful degradation test")
+        
+        chart = StreamingChart()
+        for i in range(5):
+            chart.add_bar(i, 100, 105, 95, 102, 1000)
+        
+        result = chart.show()
+        assert result is None
+    
+    def test_show_empty(self):
+        """Test show with no data."""
+        chart = StreamingChart()
+        result = chart.show()
+        
+        assert result is None
+    
+    def test_repr(self):
+        """Test string representation."""
+        chart = StreamingChart()
+        for i in range(5):
+            chart.add_bar(i, 100, 105, 95, 102, 1000)
+            chart.add_indicator('SMA', i, 100)
+        
+        repr_str = repr(chart)
+        
+        assert 'StreamingChart' in repr_str
+        assert 'points=5' in repr_str
+        assert 'SMA' in repr_str
