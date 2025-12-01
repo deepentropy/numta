@@ -1476,3 +1476,187 @@ if HAS_PANDAS:
             close = self._get_column('close')
             result = CDLXSIDEGAP3METHODS(open_, high, low, close)
             return self._append_or_return(result, 'CDLXSIDEGAP3METHODS', append)
+
+        # =====================================================================
+        # CHART PATTERN RECOGNITION
+        # =====================================================================
+
+        def find_patterns(
+            self,
+            pattern_type: str = 'all',
+            order: int = 5,
+            tolerance: float = 0.03
+        ) -> list:
+            """
+            Find chart patterns in the price data.
+            
+            Parameters
+            ----------
+            pattern_type : str, optional
+                Type of pattern to detect. Options:
+                - 'all': All patterns
+                - 'head_shoulders': Head and Shoulders (regular and inverse)
+                - 'double': Double Top/Bottom
+                - 'triple': Triple Top/Bottom
+                - 'triangle': Triangles (ascending, descending, symmetrical)
+                - 'wedge': Wedges (rising, falling)
+                - 'flag': Flags and Pennants
+                - 'vcp': Volatility Contraction Pattern
+            order : int, optional
+                Swing detection order (default: 5)
+            tolerance : float, optional
+                Price tolerance for pattern matching (default: 0.03)
+            
+            Returns
+            -------
+            list
+                List of detected pattern objects
+            
+            Examples
+            --------
+            >>> patterns = df.ta.find_patterns(pattern_type='double')
+            >>> patterns = df.ta.find_patterns(pattern_type='all', order=3)
+            """
+            from .patterns import (
+                detect_head_shoulders, detect_inverse_head_shoulders,
+                detect_double_top, detect_double_bottom,
+                detect_triple_top, detect_triple_bottom,
+                detect_triangle, detect_wedge, detect_flag, detect_vcp
+            )
+            
+            high = self._get_column('high')
+            low = self._get_column('low')
+            close = self._get_column('close')
+            
+            patterns = []
+            
+            pattern_functions = {
+                'head_shoulders': [
+                    (detect_head_shoulders, {'order': order, 'tolerance': tolerance}),
+                    (detect_inverse_head_shoulders, {'order': order, 'tolerance': tolerance})
+                ],
+                'double': [
+                    (detect_double_top, {'order': order, 'tolerance': tolerance}),
+                    (detect_double_bottom, {'order': order, 'tolerance': tolerance})
+                ],
+                'triple': [
+                    (detect_triple_top, {'order': order, 'tolerance': tolerance}),
+                    (detect_triple_bottom, {'order': order, 'tolerance': tolerance})
+                ],
+                'triangle': [(detect_triangle, {'order': order})],
+                'wedge': [(detect_wedge, {'order': order})],
+                'flag': [(detect_flag, {'order': order})],
+                'vcp': [(detect_vcp, {'order': order})]
+            }
+            
+            if pattern_type == 'all':
+                for funcs in pattern_functions.values():
+                    for func, kwargs in funcs:
+                        patterns.extend(func(high, low, close, **kwargs))
+            elif pattern_type in pattern_functions:
+                for func, kwargs in pattern_functions[pattern_type]:
+                    patterns.extend(func(high, low, close, **kwargs))
+            else:
+                raise ValueError(
+                    f"Unknown pattern type: {pattern_type}. "
+                    f"Options: 'all', {', '.join(pattern_functions.keys())}"
+                )
+            
+            return patterns
+
+        def find_harmonic_patterns(
+            self,
+            patterns: Optional[List[str]] = None,
+            order: int = 5,
+            tolerance: float = 0.02
+        ) -> list:
+            """
+            Find harmonic patterns in the price data.
+            
+            Parameters
+            ----------
+            patterns : list, optional
+                List of pattern types to detect. Options:
+                - 'gartley': Gartley pattern
+                - 'butterfly': Butterfly pattern
+                - 'bat': Bat pattern
+                - 'crab': Crab pattern
+                If None, all patterns are detected.
+            order : int, optional
+                Swing detection order (default: 5)
+            tolerance : float, optional
+                Tolerance for Fibonacci ratio matching (default: 0.02)
+            
+            Returns
+            -------
+            list
+                List of HarmonicPattern objects
+            
+            Examples
+            --------
+            >>> harmonics = df.ta.find_harmonic_patterns()
+            >>> harmonics = df.ta.find_harmonic_patterns(patterns=['gartley', 'bat'])
+            """
+            from .patterns import detect_harmonic_patterns
+            
+            high = self._get_column('high')
+            low = self._get_column('low')
+            close = self._get_column('close')
+            
+            return detect_harmonic_patterns(
+                high, low, close,
+                patterns=patterns,
+                order=order,
+                tolerance=tolerance
+            )
+
+        def plot(
+            self,
+            indicators: Optional[dict] = None,
+            patterns: Optional[list] = None,
+            volume: bool = True,
+            height: int = 400,
+            width: int = 800
+        ):
+            """
+            Plot candlestick chart with optional indicators and patterns.
+            
+            Parameters
+            ----------
+            indicators : dict, optional
+                Dictionary of indicator data to overlay. Keys are names, values are
+                either Series/arrays or dicts with 'data' and optional 'color', 'type'.
+            patterns : list, optional
+                List of pattern objects to overlay on the chart
+            volume : bool, optional
+                Whether to show volume bars (default: True)
+            height : int, optional
+                Chart height in pixels (default: 400)
+            width : int, optional
+                Chart width in pixels (default: 800)
+            
+            Returns
+            -------
+            Chart object or None if lwcharts is not available
+            
+            Examples
+            --------
+            >>> # Simple chart with SMA indicator
+            >>> df.ta.plot(indicators={'SMA_20': df.ta.sma(20)})
+            
+            >>> # Chart with patterns
+            >>> patterns = df.ta.find_patterns()
+            >>> df.ta.plot(patterns=patterns)
+            """
+            from .viz import plot_chart, plot_pattern
+            
+            if patterns:
+                return plot_pattern(
+                    self._obj, patterns,
+                    height=height, width=width
+                )
+            else:
+                return plot_chart(
+                    self._obj, indicators=indicators,
+                    volume=volume, height=height, width=width
+                )

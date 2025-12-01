@@ -122,6 +122,80 @@ df.ta.cdlengulfing(append=True)  # Adds 'CDLENGULFING'
 df.ta.cdlhammer(append=True)     # Adds 'CDLHAMMER'
 ```
 
+### Chart Pattern Recognition 📊
+
+Detect classic chart patterns with confidence scores:
+
+```python
+# Find all chart patterns
+patterns = df.ta.find_patterns(pattern_type='all', order=5)
+
+# Find specific pattern types
+double_patterns = df.ta.find_patterns(pattern_type='double')
+triangles = df.ta.find_patterns(pattern_type='triangle')
+head_shoulders = df.ta.find_patterns(pattern_type='head_shoulders')
+
+# Available pattern types:
+# - 'head_shoulders': Head and Shoulders (regular and inverse)
+# - 'double': Double Top/Bottom
+# - 'triple': Triple Top/Bottom
+# - 'triangle': Triangles (ascending, descending, symmetrical)
+# - 'wedge': Wedges (rising, falling)
+# - 'flag': Flags and Pennants
+# - 'vcp': Volatility Contraction Pattern
+
+# Access pattern details
+for pattern in patterns:
+    print(f"Type: {pattern.pattern_type}")
+    print(f"Confidence: {pattern.confidence:.2f}")
+    print(f"Start: {pattern.start_index}, End: {pattern.end_index}")
+```
+
+### Harmonic Pattern Detection 🔢
+
+Detect harmonic patterns using Fibonacci ratios:
+
+```python
+# Find all harmonic patterns
+harmonics = df.ta.find_harmonic_patterns()
+
+# Find specific harmonic patterns
+gartley_patterns = df.ta.find_harmonic_patterns(patterns=['gartley'])
+bat_crab = df.ta.find_harmonic_patterns(patterns=['bat', 'crab'])
+
+# Available patterns: 'gartley', 'butterfly', 'bat', 'crab'
+
+# Access harmonic pattern details
+for h in harmonics:
+    print(f"Pattern: {h.pattern_type}")
+    print(f"Direction: {h.direction}")  # 'bullish' or 'bearish'
+    print(f"PRZ: {h.prz}")  # Potential Reversal Zone
+    print(f"Confidence: {h.confidence:.2f}")
+```
+
+### Visualization (with lwcharts) 📈
+
+Visualize charts with patterns in Jupyter notebooks:
+
+```python
+# Install visualization support
+# pip install "numta[viz]"
+
+# Plot candlestick chart with indicators
+df.ta.plot(indicators={'SMA_20': df.ta.sma(20), 'EMA_10': df.ta.ema(10)})
+
+# Plot with detected patterns
+patterns = df.ta.find_patterns()
+df.ta.plot(patterns=patterns)
+
+# Alternative: use the viz module directly
+from numta.viz import plot_chart, plot_pattern, plot_harmonic
+
+chart = plot_chart(df, indicators={'SMA_20': sma_data}, volume=True)
+chart = plot_pattern(df, patterns, show_trendlines=True)
+chart = plot_harmonic(df, harmonic_patterns, show_prz=True)
+```
+
 ### Auto-Detection of OHLCV Columns
 
 The accessor automatically detects standard column names (case-insensitive):
@@ -215,8 +289,23 @@ MAX, MAXINDEX, MIN, MININDEX, MINMAX, MINMAXINDEX, SUM
 ### Price Transform
 MEDPRICE, MIDPOINT, MIDPRICE, TYPPRICE, WCLPRICE
 
-### Pattern Recognition
+### Candlestick Pattern Recognition
 60+ candlestick patterns including: Doji, Hammer, Engulfing, Morning Star, Evening Star, Three White Soldiers, and many more.
+
+### Chart Pattern Recognition
+- **Head and Shoulders**: Regular and Inverse patterns
+- **Double Patterns**: Double Top, Double Bottom
+- **Triple Patterns**: Triple Top, Triple Bottom
+- **Triangles**: Ascending, Descending, Symmetrical
+- **Wedges**: Rising, Falling
+- **Flags**: Bull Flag, Bear Flag, Pennant
+- **VCP**: Volatility Contraction Pattern
+
+### Harmonic Pattern Recognition
+- **Gartley**: 61.8% XA retracement, 78.6% completion
+- **Butterfly**: 78.6% XA retracement, 127-161.8% extension
+- **Bat**: 38.2-50% XA retracement, 88.6% completion
+- **Crab**: 38.2-61.8% XA retracement, 161.8% extension
 
 **See [FUNCTION_IMPLEMENTATIONS.md](FUNCTION_IMPLEMENTATIONS.md) for detailed implementation status.**
 
