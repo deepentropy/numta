@@ -330,11 +330,14 @@ def create_pattern_markers(pattern: Any, pattern_type: str) -> List[Dict[str, An
                 color, 1, 'solid'
             ))
         
-        # PRZ zone
+        # PRZ zone - determine fill color based on pattern direction
+        prz_fill_rgb = '0, 255, 0' if color == 'green' else '255, 0, 0'
+        prz_fill_color = f'rgba({prz_fill_rgb}, 0.1)'
+        
         markers.append(create_zone(
             pattern.D[0] - 5, pattern.D[0] + 10,
             pattern.prz[1], pattern.prz[0],
-            f'rgba({"0, 255, 0" if color == "green" else "255, 0, 0"}, 0.1)',
+            prz_fill_color,
             color, 'PRZ'
         ))
     

@@ -1244,7 +1244,10 @@ def detect_vcp(
         low_price = low[low_idx]
         
         current_range = high_price - low_price
-        depth_pct = (first_high_price - low_price) / first_high_price * 100 if first_high_price > 0 else 0
+        if first_high_price > 0:
+            depth_pct = (first_high_price - low_price) / first_high_price * 100
+        else:
+            depth_pct = 0
         
         if current_range < prev_range:
             contractions.append((high_idx, low_idx, current_range))

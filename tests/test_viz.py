@@ -20,6 +20,21 @@ from numta.viz import (
 )
 
 
+# Module-level random seed for reproducibility
+RANDOM_SEED = 42
+
+
+def _create_sample_ohlcv_data(n: int = 100):
+    """Create sample OHLCV data for testing."""
+    np.random.seed(RANDOM_SEED)
+    close = 100 + np.cumsum(np.random.randn(n) * 0.5)
+    high = close + np.abs(np.random.randn(n) * 0.5)
+    low = close - np.abs(np.random.randn(n) * 0.5)
+    open_ = close + np.random.randn(n) * 0.3
+    volume = np.random.randint(1000, 10000, n).astype(float)
+    return open_, high, low, close, volume
+
+
 class TestPatternMarkers:
     """Test pattern marker creation functions."""
     
@@ -196,14 +211,7 @@ class TestPlotFunctions:
         """Create sample DataFrame for testing."""
         try:
             import pandas as pd
-            np.random.seed(42)
-            n = 100
-            
-            close = 100 + np.cumsum(np.random.randn(n) * 0.5)
-            high = close + np.abs(np.random.randn(n) * 0.5)
-            low = close - np.abs(np.random.randn(n) * 0.5)
-            open_ = close + np.random.randn(n) * 0.3
-            volume = np.random.randint(1000, 10000, n).astype(float)
+            open_, high, low, close, volume = _create_sample_ohlcv_data()
             
             return pd.DataFrame({
                 'open': open_,
@@ -259,14 +267,7 @@ class TestPandasAccessorPatterns:
             import pandas as pd
             import numta  # noqa: F401 - registers accessor
             
-            np.random.seed(42)
-            n = 100
-            
-            close = 100 + np.cumsum(np.random.randn(n) * 0.5)
-            high = close + np.abs(np.random.randn(n) * 0.5)
-            low = close - np.abs(np.random.randn(n) * 0.5)
-            open_ = close + np.random.randn(n) * 0.3
-            volume = np.random.randint(1000, 10000, n).astype(float)
+            open_, high, low, close, volume = _create_sample_ohlcv_data()
             
             return pd.DataFrame({
                 'open': open_,

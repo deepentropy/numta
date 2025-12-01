@@ -208,8 +208,9 @@ def price_within_tolerance(price1: float, price2: float, tolerance: float = 0.02
     bool
         True if prices are within tolerance
     """
-    if price1 == 0:
-        return price2 == 0
+    epsilon = 1e-10
+    if abs(price1) < epsilon:
+        return abs(price2) < epsilon
     return abs(price1 - price2) / abs(price1) <= tolerance
 
 
