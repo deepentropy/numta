@@ -1,175 +1,219 @@
 # numta Function Implementation Status
 
-This table shows which numta functions have Numba (CPU) implementations.
+This document lists all implemented functions in numta.
 
-| Category | Function Name | Numba (CPU) Notes |
-|----------|---------------|-------------|
-| Cycle Indicators | HT_DCPERIOD | - |
-| Cycle Indicators | HT_DCPHASE | - |
-| Cycle Indicators | HT_PHASOR | - |
-| Cycle Indicators | HT_SINE | - |
-| Cycle Indicators | HT_TRENDLINE | - |
-| Cycle Indicators | HT_TRENDMODE | - |
-| Math Operators | MAX | - |
-| Math Operators | MAXINDEX | - |
-| Math Operators | MIN | - |
-| Math Operators | MININDEX | - |
-| Math Operators | MINMAX | - |
-| Math Operators | MINMAXINDEX | - |
-| Math Operators | SUM | - |
-| Momentum Indicators | ADX | - |
-| Momentum Indicators | ADXR | - |
-| Momentum Indicators | APO | - |
-| Momentum Indicators | AROON | - |
-| Momentum Indicators | AROONOSC | - |
-| Momentum Indicators | ATR | - |
-| Momentum Indicators | BOP | - |
-| Momentum Indicators | CCI | - |
-| Momentum Indicators | CMO | ✓ | - |
-| Momentum Indicators | DX | ✓ | - |
-| Momentum Indicators | MACD | ✓ | - |
-| Momentum Indicators | MACDEXT | - |
-| Momentum Indicators | MACDFIX | - |
-| Momentum Indicators | MFI | - |
-| Momentum Indicators | MINUS_DI | - |
-| Momentum Indicators | MINUS_DM | - |
-| Momentum Indicators | MOM | - |
-| Momentum Indicators | PLUS_DI | - |
-| Momentum Indicators | PLUS_DM | - |
-| Momentum Indicators | PPO | - |
-| Momentum Indicators | ROC | - |
-| Momentum Indicators | ROCP | - |
-| Momentum Indicators | ROCR | - |
-| Momentum Indicators | ROCR100 | - |
-| Momentum Indicators | RSI | ✓ | - |
-| Momentum Indicators | STOCH | - |
-| Momentum Indicators | STOCHF | - |
-| Momentum Indicators | STOCHRSI | - |
-| Momentum Indicators | TRIX | - |
-| Momentum Indicators | ULTOSC | - |
-| Momentum Indicators | WILLR | - |
-| Overlap | BBANDS | - |
-| Overlap | DEMA | ✓ | - |
-| Overlap | EMA | ✓ | - |
-| Overlap | KAMA | ✓ | - |
-| Overlap | MA | ✓ | Routes to all MA types (SMA/EMA/WMA/DEMA/TEMA/TRIMA/KAMA/MAMA/T3) |
-| Overlap | MAMA | ✓ | Simplified adaptive implementation |
-| Overlap | SAR | ✓ | - |
-| Overlap | SAREXT | ✓ | - |
-| Overlap | SMA | ✓ | - |
-| Overlap | T3 | ✓ | Uses 6 EMAs with coefficients |
-| Overlap | TEMA | ✓ | Uses EMA internally |
-| Overlap | TRIMA | ✓ | Uses SMA internally (double smoothed) |
-| Overlap | WMA | ✓ | - |
-| Pattern Recognition | CDL2CROWS | Bearish reversal pattern |
-| Pattern Recognition | CDL3BLACKCROWS | Bearish reversal pattern |
-| Pattern Recognition | CDL3INSIDE | Bullish/Bearish reversal pattern |
-| Pattern Recognition | CDL3OUTSIDE | Bullish/Bearish reversal pattern |
-| Pattern Recognition | CDL3STARSINSOUTH | Bullish reversal - 3 black candles with progressively smaller bodies |
-| Pattern Recognition | CDL3WHITESOLDIERS | Bullish reversal - 3 consecutive white candles advancing progressively |
-| Pattern Recognition | CDLABANDONEDBABY | Reversal pattern with isolated doji (gap before and after) |
-| Pattern Recognition | CDLADVANCEBLOCK | Bearish warning - 3 white candles with decreasing bodies |
-| Pattern Recognition | CDLBELTHOLD | Reversal - marubozu opening on extreme (white on low/black on high) |
-| Pattern Recognition | CDLBREAKAWAY | 5-candle continuation pattern with gap closure |
-| Pattern Recognition | CDLCLOSINGMARUBOZU | Single candle with no shadow at close (marubozu variant) |
-| Pattern Recognition | CDLCONCEALBABYSWALL | Rare 4-candle bullish reversal with black marubozu pattern |
-| Pattern Recognition | CDLCOUNTERATTACK | 2-candle reversal with matching closes |
-| Pattern Recognition | CDLDARKCLOUDCOVER | Bearish reversal - black candle penetrating into white candle body |
-| Pattern Recognition | CDLDOJI | Single candle with very small body (indecision) |
-| Pattern Recognition | CDLDOJISTAR | 2-candle reversal with doji gapping away from trend |
-| Pattern Recognition | CDLDRAGONFLYDOJI | Bullish doji with long lower shadow (T-shape) |
-| Pattern Recognition | CDLENGULFING | 2-candle reversal where second body engulfs first completely |
-| Pattern Recognition | CDLEVENINGDOJISTAR | Bearish 3-candle reversal with doji at top |
-| Pattern Recognition | CDLEVENINGSTAR | Bearish 3-candle reversal with small star at top |
-| Pattern Recognition | CDLGAPSIDESIDEWHITE | 3-candle continuation - two white candles side-by-side after gap |
-| Pattern Recognition | CDLGRAVESTONEDOJI | Bearish doji with long upper shadow (inverted T-shape) |
-| Pattern Recognition | CDLHAMMER | Bullish reversal - small body with long lower shadow |
-| Pattern Recognition | CDLHANGINGMAN | Bearish reversal - visually identical to hammer but context differs |
-| Pattern Recognition | CDLHARAMI | 2-candle reversal where second body contained within first |
-| Pattern Recognition | CDLHARAMICROSS | Harami pattern with doji as second candle |
-| Pattern Recognition | CDLHIGHWAVE | Doji with very long upper and lower shadows |
-| Pattern Recognition | CDLHIKKAKE | 3-bar pattern with false inside day followed by breakout |
-| Pattern Recognition | CDLHIKKAKEMOD | Modified Hikkake with delayed confirmation window |
-| Pattern Recognition | CDLHOMINGPIGEON | Bullish reversal - 2 black candles, second contained in first body |
-| Pattern Recognition | CDLIDENTICAL3CROWS | Bearish reversal - 3 black candles with similar closes |
-| Pattern Recognition | CDLINNECK | Bearish continuation - white candle closes at prior low |
-| Pattern Recognition | CDLINVERTEDHAMMER | Bullish reversal - small body with long upper shadow |
-| Pattern Recognition | CDLKICKING | Strong reversal with two opposite marubozu candles that gap |
-| Pattern Recognition | CDLKICKINGBYLENGTH | Kicking pattern where second marubozu is longer than first |
-| Pattern Recognition | CDLLADDERBOTTOM | Rare 5-candle bullish reversal pattern |
-| Pattern Recognition | CDLLONGLEGGEDDOJI | Doji with very long upper and lower shadows |
-| Pattern Recognition | CDLLONGLINE | Single candle with very long body showing strong conviction |
-| Pattern Recognition | CDLMARUBOZU | ✓ | - |
-| Pattern Recognition | CDLMATCHINGLOW | ✓ | - |
-| Pattern Recognition | CDLMATHOLD | ✓ | - |
-| Pattern Recognition | CDLMORNINGDOJISTAR | ✓ | - |
-| Pattern Recognition | CDLMORNINGSTAR | ✓ | - |
-| Pattern Recognition | CDLONNECK | ✓ | - |
-| Pattern Recognition | CDLPIERCING | ✓ | - |
-| Pattern Recognition | CDLRICKSHAWMAN | ✓ | - |
-| Pattern Recognition | CDLRISEFALL3METHODS | ✓ | - |
-| Pattern Recognition | CDLSEPARATINGLINES | ✓ | - |
-| Pattern Recognition | CDLSHOOTINGSTAR | ✓ | - |
-| Pattern Recognition | CDLSHORTLINE | ✓ | - |
-| Pattern Recognition | CDLSPINNINGTOP | ✓ | - |
-| Pattern Recognition | CDLSTALLEDPATTERN | ✓ | - |
-| Pattern Recognition | CDLSTICKSANDWICH | ✓ | - |
-| Pattern Recognition | CDLTAKURI | ✓ | - |
-| Pattern Recognition | CDLTASUKIGAP | ✓ | - |
-| Pattern Recognition | CDLTHRUSTING | ✓ | - |
-| Pattern Recognition | CDLTRISTAR | ✓ | - |
-| Pattern Recognition | CDLUNIQUE3RIVER | ✓ | - |
-| Pattern Recognition | CDLUPSIDEGAP2CROWS | ✓ | - |
-| Pattern Recognition | CDLXSIDEGAP3METHODS | ✓ | - |
-| Price Transform | MEDPRICE | - |
-| Price Transform | MIDPOINT | - |
-| Price Transform | MIDPRICE | - |
-| Price Transform | TYPPRICE | - |
-| Price Transform | WCLPRICE | - |
-| Statistic Functions | BETA | Volatility measure relative to a benchmark |
-| Statistic Functions | CORREL | - |
-| Statistic Functions | LINEARREG | - |
-| Statistic Functions | LINEARREG_ANGLE | - |
-| Statistic Functions | LINEARREG_INTERCEPT | - |
-| Statistic Functions | LINEARREG_SLOPE | - |
-| Statistics | STDDEV | - |
-| Statistics | TSF | - |
-| Statistics | VAR | - |
-| Volatility Indicators | NATR | Normalized ATR expressed as percentage |
-| Volatility Indicators | TRANGE | - |
-| Volume Indicators | AD | - |
-| Volume Indicators | ADOSC | - |
-| Volume Indicators | OBV | - |
+## Technical Indicators
+
+| Category | Function Name | Notes |
+|----------|---------------|-------|
+| Cycle Indicators | HT_DCPERIOD | Hilbert Transform - Dominant Cycle Period |
+| Cycle Indicators | HT_DCPHASE | Hilbert Transform - Dominant Cycle Phase |
+| Cycle Indicators | HT_PHASOR | Hilbert Transform - Phasor Components |
+| Cycle Indicators | HT_SINE | Hilbert Transform - SineWave |
+| Cycle Indicators | HT_TRENDLINE | Hilbert Transform - Instantaneous Trendline |
+| Cycle Indicators | HT_TRENDMODE | Hilbert Transform - Trend vs Cycle Mode |
+| Math Operators | MAX | Highest value over a specified period |
+| Math Operators | MAXINDEX | Index of highest value over a specified period |
+| Math Operators | MIN | Lowest value over a specified period |
+| Math Operators | MININDEX | Index of lowest value over a specified period |
+| Math Operators | MINMAX | Lowest and highest values over a specified period |
+| Math Operators | MINMAXINDEX | Indexes of lowest and highest values |
+| Math Operators | SUM | Summation |
+| Momentum Indicators | ADX | Average Directional Movement Index |
+| Momentum Indicators | ADXR | Average Directional Movement Index Rating |
+| Momentum Indicators | APO | Absolute Price Oscillator |
+| Momentum Indicators | AROON | Aroon |
+| Momentum Indicators | AROONOSC | Aroon Oscillator |
+| Momentum Indicators | ATR | Average True Range |
+| Momentum Indicators | BOP | Balance Of Power |
+| Momentum Indicators | CCI | Commodity Channel Index |
+| Momentum Indicators | CMO | Chande Momentum Oscillator |
+| Momentum Indicators | DX | Directional Movement Index |
+| Momentum Indicators | MACD | Moving Average Convergence/Divergence |
+| Momentum Indicators | MACDEXT | MACD with controllable MA type |
+| Momentum Indicators | MACDFIX | Moving Average Convergence/Divergence Fix 12/26 |
+| Momentum Indicators | MFI | Money Flow Index |
+| Momentum Indicators | MINUS_DI | Minus Directional Indicator |
+| Momentum Indicators | MINUS_DM | Minus Directional Movement |
+| Momentum Indicators | MOM | Momentum |
+| Momentum Indicators | PLUS_DI | Plus Directional Indicator |
+| Momentum Indicators | PLUS_DM | Plus Directional Movement |
+| Momentum Indicators | PPO | Percentage Price Oscillator |
+| Momentum Indicators | ROC | Rate of Change |
+| Momentum Indicators | ROCP | Rate of Change Percentage |
+| Momentum Indicators | ROCR | Rate of Change Ratio |
+| Momentum Indicators | ROCR100 | Rate of Change Ratio 100 scale |
+| Momentum Indicators | RSI | Relative Strength Index |
+| Momentum Indicators | STOCH | Stochastic |
+| Momentum Indicators | STOCHF | Stochastic Fast |
+| Momentum Indicators | STOCHRSI | Stochastic Relative Strength Index |
+| Momentum Indicators | TRIX | 1-day Rate-Of-Change of Triple Smooth EMA |
+| Momentum Indicators | ULTOSC | Ultimate Oscillator |
+| Momentum Indicators | WILLR | Williams' %R |
+| Overlap Studies | BBANDS | Bollinger Bands |
+| Overlap Studies | DEMA | Double Exponential Moving Average |
+| Overlap Studies | EMA | Exponential Moving Average |
+| Overlap Studies | KAMA | Kaufman Adaptive Moving Average |
+| Overlap Studies | MA | All Moving Average types |
+| Overlap Studies | MAMA | MESA Adaptive Moving Average |
+| Overlap Studies | SAR | Parabolic SAR |
+| Overlap Studies | SAREXT | Parabolic SAR - Extended |
+| Overlap Studies | SMA | Simple Moving Average |
+| Overlap Studies | T3 | Triple Exponential Moving Average (T3) |
+| Overlap Studies | TEMA | Triple Exponential Moving Average |
+| Overlap Studies | TRIMA | Triangular Moving Average |
+| Overlap Studies | WMA | Weighted Moving Average |
+| Price Transform | MEDPRICE | Median Price |
+| Price Transform | MIDPOINT | MidPoint over period |
+| Price Transform | MIDPRICE | Midpoint Price over period |
+| Price Transform | TYPPRICE | Typical Price |
+| Price Transform | WCLPRICE | Weighted Close Price |
+| Statistic Functions | BETA | Beta coefficient |
+| Statistic Functions | CORREL | Pearson's Correlation Coefficient |
+| Statistic Functions | LINEARREG | Linear Regression |
+| Statistic Functions | LINEARREG_ANGLE | Linear Regression Angle |
+| Statistic Functions | LINEARREG_INTERCEPT | Linear Regression Intercept |
+| Statistic Functions | LINEARREG_SLOPE | Linear Regression Slope |
+| Statistic Functions | STDDEV | Standard Deviation |
+| Statistic Functions | TSF | Time Series Forecast |
+| Statistic Functions | VAR | Variance |
+| Volatility Indicators | NATR | Normalized Average True Range |
+| Volatility Indicators | TRANGE | True Range |
+| Volume Indicators | AD | Chaikin A/D Line |
+| Volume Indicators | ADOSC | Chaikin A/D Oscillator |
+| Volume Indicators | OBV | On Balance Volume |
+
+## Candlestick Pattern Recognition (60+ patterns)
+
+| Function | Description |
+|----------|-------------|
+| CDL2CROWS | Two Crows |
+| CDL3BLACKCROWS | Three Black Crows |
+| CDL3INSIDE | Three Inside Up/Down |
+| CDL3OUTSIDE | Three Outside Up/Down |
+| CDL3STARSINSOUTH | Three Stars In The South |
+| CDL3WHITESOLDIERS | Three Advancing White Soldiers |
+| CDLABANDONEDBABY | Abandoned Baby |
+| CDLADVANCEBLOCK | Advance Block |
+| CDLBELTHOLD | Belt-hold |
+| CDLBREAKAWAY | Breakaway |
+| CDLCLOSINGMARUBOZU | Closing Marubozu |
+| CDLCONCEALBABYSWALL | Concealing Baby Swallow |
+| CDLCOUNTERATTACK | Counterattack |
+| CDLDARKCLOUDCOVER | Dark Cloud Cover |
+| CDLDOJI | Doji |
+| CDLDOJISTAR | Doji Star |
+| CDLDRAGONFLYDOJI | Dragonfly Doji |
+| CDLENGULFING | Engulfing Pattern |
+| CDLEVENINGDOJISTAR | Evening Doji Star |
+| CDLEVENINGSTAR | Evening Star |
+| CDLGAPSIDESIDEWHITE | Up/Down-gap side-by-side white lines |
+| CDLGRAVESTONEDOJI | Gravestone Doji |
+| CDLHAMMER | Hammer |
+| CDLHANGINGMAN | Hanging Man |
+| CDLHARAMI | Harami Pattern |
+| CDLHARAMICROSS | Harami Cross Pattern |
+| CDLHIGHWAVE | High-Wave Candle |
+| CDLHIKKAKE | Hikkake Pattern |
+| CDLHIKKAKEMOD | Modified Hikkake Pattern |
+| CDLHOMINGPIGEON | Homing Pigeon |
+| CDLIDENTICAL3CROWS | Identical Three Crows |
+| CDLINNECK | In-Neck Pattern |
+| CDLINVERTEDHAMMER | Inverted Hammer |
+| CDLKICKING | Kicking |
+| CDLKICKINGBYLENGTH | Kicking by Length |
+| CDLLADDERBOTTOM | Ladder Bottom |
+| CDLLONGLEGGEDDOJI | Long Legged Doji |
+| CDLLONGLINE | Long Line Candle |
+| CDLMARUBOZU | Marubozu |
+| CDLMATCHINGLOW | Matching Low |
+| CDLMATHOLD | Mat Hold |
+| CDLMORNINGDOJISTAR | Morning Doji Star |
+| CDLMORNINGSTAR | Morning Star |
+| CDLONNECK | On-Neck Pattern |
+| CDLPIERCING | Piercing Pattern |
+| CDLRICKSHAWMAN | Rickshaw Man |
+| CDLRISEFALL3METHODS | Rising/Falling Three Methods |
+| CDLSEPARATINGLINES | Separating Lines |
+| CDLSHOOTINGSTAR | Shooting Star |
+| CDLSHORTLINE | Short Line Candle |
+| CDLSPINNINGTOP | Spinning Top |
+| CDLSTALLEDPATTERN | Stalled Pattern |
+| CDLSTICKSANDWICH | Stick Sandwich |
+| CDLTAKURI | Takuri |
+| CDLTASUKIGAP | Tasuki Gap |
+| CDLTHRUSTING | Thrusting Pattern |
+| CDLTRISTAR | Tristar Pattern |
+| CDLUNIQUE3RIVER | Unique 3 River |
+| CDLUPSIDEGAP2CROWS | Upside Gap Two Crows |
+| CDLXSIDEGAP3METHODS | Upside/Downside Gap Three Methods |
+
+## Chart Pattern Detection
+
+| Function | Description |
+|----------|-------------|
+| find_swing_highs | Detect swing high points |
+| find_swing_lows | Detect swing low points |
+| find_swing_points | Detect all swing points |
+| detect_head_shoulders | Head and Shoulders pattern |
+| detect_inverse_head_shoulders | Inverse Head and Shoulders pattern |
+| detect_double_top | Double Top pattern |
+| detect_double_bottom | Double Bottom pattern |
+| detect_triple_top | Triple Top pattern |
+| detect_triple_bottom | Triple Bottom pattern |
+| detect_triangle | Ascending, Descending, Symmetrical triangles |
+| detect_wedge | Rising and Falling wedges |
+| detect_flag | Bull Flag, Bear Flag, Pennant |
+| detect_vcp | Volatility Contraction Pattern |
+
+## Harmonic Pattern Detection
+
+| Function | Description |
+|----------|-------------|
+| detect_gartley | Gartley pattern (61.8% XA retracement) |
+| detect_butterfly | Butterfly pattern (78.6% XA retracement) |
+| detect_bat | Bat pattern (38.2-50% XA retracement) |
+| detect_crab | Crab pattern (161.8% XA extension) |
+| detect_harmonic_patterns | Detect all harmonic patterns |
+| fibonacci_retracement | Calculate Fibonacci retracement levels |
+| fibonacci_extension | Calculate Fibonacci extension levels |
+
+## Streaming Indicators
+
+Real-time indicators that update efficiently with each new data point.
+
+| Function | Description |
+|----------|-------------|
+| StreamingSMA | Simple Moving Average |
+| StreamingEMA | Exponential Moving Average |
+| StreamingBBANDS | Bollinger Bands |
+| StreamingDEMA | Double Exponential Moving Average |
+| StreamingTEMA | Triple Exponential Moving Average |
+| StreamingWMA | Weighted Moving Average |
+| StreamingRSI | Relative Strength Index |
+| StreamingMACD | Moving Average Convergence/Divergence |
+| StreamingSTOCH | Stochastic Oscillator |
+| StreamingMOM | Momentum |
+| StreamingROC | Rate of Change |
+| StreamingATR | Average True Range |
+| StreamingTRANGE | True Range |
+| StreamingOBV | On Balance Volume |
+| StreamingAD | Accumulation/Distribution |
 
 ## Summary Statistics
 
-### By Category
-
-| Category | Total Functions | CPU Implemented |
-|----------|----------------|-----------------|
-| Cycle Indicators | 6 | 6 (100%) |
-| Math Operators | 7 | 7 (100%) |
-| Momentum Indicators | 31 | 31 (100%) |
-| Overlap | 13 | 13 (100%) |
-| Pattern Recognition | 60 | 60 (100%) |
-| Price Transform | 5 | 5 (100%) |
-| Statistic Functions | 6 | 6 (100%) |
-| Statistics | 3 | 3 (100%) |
-| Volatility Indicators | 2 | 2 (100%) |
-| Volume Indicators | 3 | 3 (100%) |
-
-### Overall
-
-- **Total Functions**: 136
-- **CPU (Numba) Implementations**: 136 (100%)
-- **Fully Implemented**: 136
+| Category | Count |
+|----------|-------|
+| Technical Indicators | 76 |
+| Candlestick Patterns | 60 |
+| Chart Pattern Functions | 14 |
+| Harmonic Pattern Functions | 7 |
+| Streaming Indicators | 15 |
+| **Total** | **172** |
 
 ## Notes
 
-- **✓** indicates the function has the corresponding implementation
-- **✗** indicates the function does not have the corresponding implementation
-- Some functions like `MA`, `TEMA`, `T3`, `TRIMA` use other functions internally rather than having direct Numba implementations
-- Functions marked as "Not yet implemented" will raise `NotImplementedError` when called
-
----
-*Generated automatically from source code analysis*
+- All technical indicators support NumPy arrays and Python lists
+- Pattern recognition returns +100 (bullish), -100 (bearish), or 0 (no pattern)
+- Chart patterns return confidence scores (0-1)
+- Streaming indicators are optimized for real-time processing with O(1) updates
