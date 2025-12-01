@@ -12,6 +12,16 @@ from .lwcharts_adapter import (
     plot_harmonic,
 )
 
+from .chart import (
+    plot_ohlc,
+    plot_line,
+    plot_with_indicators,
+)
+
+from .streaming_chart import (
+    StreamingChart,
+)
+
 from .pattern_markers import (
     create_point_marker,
     create_trendline,
@@ -28,6 +38,12 @@ __all__ = [
     'plot_chart',
     'plot_pattern',
     'plot_harmonic',
+    # Chart functions
+    'plot_ohlc',
+    'plot_line',
+    'plot_with_indicators',
+    # Streaming chart
+    'StreamingChart',
     # Pattern markers
     'create_point_marker',
     'create_trendline',

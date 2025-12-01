@@ -189,11 +189,84 @@ patterns = df.ta.find_patterns()
 df.ta.plot(patterns=patterns)
 
 # Alternative: use the viz module directly
-from numta.viz import plot_chart, plot_pattern, plot_harmonic
+from numta.viz import plot_chart, plot_ohlc, plot_line, plot_with_indicators
 
-chart = plot_chart(df, indicators={'SMA_20': sma_data}, volume=True)
+# Simple OHLC chart
+chart = plot_ohlc(df, volume=True)
+
+# Chart with indicators overlay
+chart = plot_with_indicators(df, indicators={'SMA_20': sma_data}, volume=True)
+
+# Pattern visualization
+from numta.viz import plot_pattern, plot_harmonic
 chart = plot_pattern(df, patterns, show_trendlines=True)
 chart = plot_harmonic(df, harmonic_patterns, show_prz=True)
+```
+
+### Streaming/Real-Time Indicators ⚡
+
+numta provides streaming versions of indicators for real-time data processing:
+
+```python
+from numta.streaming import (
+    StreamingSMA, StreamingEMA, StreamingRSI, 
+    StreamingMACD, StreamingATR
+)
+
+# Create streaming indicators
+sma = StreamingSMA(timeperiod=20)
+ema = StreamingEMA(timeperiod=12)
+rsi = StreamingRSI(timeperiod=14)
+macd = StreamingMACD(fastperiod=12, slowperiod=26, signalperiod=9)
+
+# Process streaming price data
+for price in price_stream:
+    sma_value = sma.update(price)
+    ema_value = ema.update(price)
+    rsi_value = rsi.update(price)
+    macd_result = macd.update(price)
+    
+    if sma.ready and rsi.ready:
+        print(f"SMA: {sma_value:.2f}, RSI: {rsi_value:.2f}")
+
+# For OHLCV data, use update_bar()
+atr = StreamingATR(timeperiod=14)
+for bar in ohlcv_stream:
+    atr_value = atr.update_bar(
+        open_=bar['open'],
+        high=bar['high'],
+        low=bar['low'],
+        close=bar['close'],
+        volume=bar['volume']
+    )
+```
+
+**Available Streaming Indicators:**
+- **Overlap**: StreamingSMA, StreamingEMA, StreamingBBANDS, StreamingDEMA, StreamingTEMA, StreamingWMA
+- **Momentum**: StreamingRSI, StreamingMACD, StreamingSTOCH, StreamingMOM, StreamingROC
+- **Volatility**: StreamingATR, StreamingTRANGE
+- **Volume**: StreamingOBV, StreamingAD
+
+### StreamingChart for Real-Time Visualization
+
+```python
+from numta.viz import StreamingChart
+from numta.streaming import StreamingSMA
+
+# Create streaming chart
+chart = StreamingChart(max_points=500, title="Real-Time Chart")
+sma = StreamingSMA(timeperiod=20)
+
+# Add streaming data
+for i, bar in enumerate(price_stream):
+    chart.add_bar(i, bar['open'], bar['high'], bar['low'], bar['close'], bar['volume'])
+    
+    sma_value = sma.update(bar['close'])
+    if sma_value is not None:
+        chart.add_indicator('SMA_20', i, sma_value, color='blue')
+
+# Display in Jupyter notebook
+chart.show()
 ```
 
 ### Auto-Detection of OHLCV Columns
@@ -565,6 +638,8 @@ This project implements technical analysis algorithms that are publicly availabl
 - [x] Performance benchmarking tools
 - [x] Multiple backend support (NumPy, Numba)
 - [x] Pandas DataFrame extension accessor (`.ta`)
+- [x] Streaming/real-time indicators
+- [x] Jupyter notebook visualization with lwcharts
 
 ### In Progress 🚧
 - [ ] Additional performance optimizations
@@ -572,9 +647,7 @@ This project implements technical analysis algorithms that are publicly availabl
 - [ ] More comprehensive benchmarks
 
 ### Future Plans 📋
-- [ ] Real-time streaming data support
 - [ ] Integration with popular data providers
-- [ ] Interactive visualization tools
 - [ ] Additional optimization backends
 
 ## Support
