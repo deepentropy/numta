@@ -30,7 +30,7 @@ A pure Python implementation of TA-Lib (Technical Analysis Library) with a focus
 pip install numta
 
 # From source
-git clone https://github.com/houseofai/numta.git
+git clone https://github.com/deepentropy/numta.git
 cd numta
 pip install -e .
 ```
@@ -653,7 +653,7 @@ This project implements technical analysis algorithms that are publicly availabl
 ## Support
 
 For issues, questions, or contributions, please visit:
-https://github.com/houseofai/numta/issues
+https://github.com/deepentropy/numta/issues
 
 ## Citation
 
@@ -663,7 +663,7 @@ If you use this library in your research or project, please cite:
 @software{numta,
   title={numta: NumPy-based Technical Analysis Library},
   author={numta contributors},
-  url={https://github.com/houseofai/numta},
+  url={https://github.com/deepentropy/numta},
   year={2025}
 }
 ```

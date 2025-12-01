@@ -67,8 +67,8 @@ all = [
 ]
 
 [project.urls]
-Homepage = "https://github.com/houseofai/numta"
-Repository = "https://github.com/houseofai/numta"
+Homepage = "https://github.com/deepentropy/numta"
+Repository = "https://github.com/deepentropy/numta"
 
 [tool.setuptools.packages.find]
 where = ["src"]
