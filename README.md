@@ -1,6 +1,11 @@
 # numta
 
+[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://deepentropy.github.io/numta)
+[![Tests](https://github.com/deepentropy/numta/actions/workflows/test.yml/badge.svg)](https://github.com/deepentropy/numta/actions/workflows/test.yml)
+
 Pure Python technical analysis library. A modern, high-performance alternative to TA-Lib with zero C dependencies.
+
+**[📖 Documentation](https://deepentropy.github.io/numta)** | **[🚀 Quick Start](https://deepentropy.github.io/numta/getting-started/quickstart/)** | **[📚 API Reference](https://deepentropy.github.io/numta/api/)**
 
 ## Highlights
 
@@ -149,6 +154,10 @@ chart = df.ta.plot(patterns=patterns)
 ```
 
 ## Documentation
+
+📖 **[Full Documentation](https://deepentropy.github.io/numta)** - Comprehensive API reference and guides.
+
+### Notebooks
 
 - [Getting Started](notebooks/01_getting_started.ipynb)
 - [Technical Indicators Guide](notebooks/02_technical_indicators.ipynb)
