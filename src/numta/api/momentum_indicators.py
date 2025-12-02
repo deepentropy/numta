@@ -2534,11 +2534,12 @@ def MFI(high: Union[np.ndarray, list],
     if timeperiod < 2:
         raise ValueError("timeperiod must be >= 2")
 
-    # Convert to numpy arrays
-    high = np.asarray(high, dtype=np.float64)
-    low = np.asarray(low, dtype=np.float64)
-    close = np.asarray(close, dtype=np.float64)
-    volume = np.asarray(volume, dtype=np.float64)
+    # Convert to numpy arrays with float64 dtype and ensure contiguous memory layout
+    # This prevents potential segfaults in numba JIT-compiled functions
+    high = np.ascontiguousarray(np.asarray(high, dtype=np.float64))
+    low = np.ascontiguousarray(np.asarray(low, dtype=np.float64))
+    close = np.ascontiguousarray(np.asarray(close, dtype=np.float64))
+    volume = np.ascontiguousarray(np.asarray(volume, dtype=np.float64))
 
     n = len(high)
     if len(low) != n or len(close) != n or len(volume) != n:
