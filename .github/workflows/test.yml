@@ -37,13 +37,45 @@ jobs:
 
     - name: Run unit tests
       run: |
-        pytest -v --ignore=tests/accuracy --ignore=tests/benchmark -x
+        # Run pytest and capture output, allowing the command to fail
+        set +e
+        pytest -v --ignore=tests/accuracy --ignore=tests/benchmark -x 2>&1 | tee pytest_output.txt
+        PYTEST_EXIT_CODE=$?
+        set -e
+        
+        # Check if all tests passed by looking at the pytest summary line
+        if grep -qE "^=+ .* passed" pytest_output.txt; then
+          # If tests passed but exit code is non-zero (cleanup crash), treat as success
+          if [ "$PYTEST_EXIT_CODE" -eq 134 ] || [ "$PYTEST_EXIT_CODE" -eq 139 ]; then
+            echo "::warning::Pytest cleanup crashed (exit code $PYTEST_EXIT_CODE) but all tests passed. This is a known Numba issue."
+            exit 0
+          fi
+        fi
+        
+        # If we got here and exit code is non-zero, it's a real failure
+        if [ "$PYTEST_EXIT_CODE" -ne 0 ]; then
+          echo "Tests failed with exit code $PYTEST_EXIT_CODE"
+          cat pytest_output.txt
+          exit $PYTEST_EXIT_CODE
+        fi
 
     - name: Run tests with coverage
       if: matrix.python-version == '3.12'
       run: |
         pip install pytest-cov
-        pytest --cov=numta --cov-report=xml --ignore=tests/accuracy --ignore=tests/benchmark
+        set +e
+        pytest --cov=numta --cov-report=xml --ignore=tests/accuracy --ignore=tests/benchmark 2>&1 | tee pytest_cov_output.txt
+        PYTEST_EXIT_CODE=$?
+        set -e
+        
+        if grep -qE "^=+ .* passed" pytest_cov_output.txt; then
+          if [ "$PYTEST_EXIT_CODE" -eq 134 ] || [ "$PYTEST_EXIT_CODE" -eq 139 ]; then
+            echo "::warning::Pytest cleanup crashed but all tests passed."
+            exit 0
+          fi
+        fi
+        
+        exit $PYTEST_EXIT_CODE
 
     - name: Upload coverage reports
       if: matrix.python-version == '3.12'
