@@ -357,7 +357,14 @@ class TestVolumeIndicators:
     
     def test_mfi_calculation(self, sample_df):
         """Test MFI calculation."""
-        result = sample_df.ta.mfi(timeperiod=14)
+        # Ensure OHLCV data has correct dtypes to prevent numba JIT issues
+        df = sample_df.copy()
+        df['high'] = df['high'].astype(np.float64)
+        df['low'] = df['low'].astype(np.float64)
+        df['close'] = df['close'].astype(np.float64)
+        df['volume'] = df['volume'].astype(np.float64)
+        
+        result = df.ta.mfi(timeperiod=14)
         assert isinstance(result, pd.Series)
         
         # MFI should be bounded between 0 and 100
