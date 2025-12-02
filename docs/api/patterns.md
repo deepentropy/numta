@@ -125,6 +125,8 @@ result = CDLEVENINGSTAR(open_, high, low, close, penetration=0.3)
 
 ## Chart Patterns
 
+Chart patterns are detected using functions from `numta.patterns`. These are also available from the main `numta` module.
+
 ### Head and Shoulders
 
 ```python

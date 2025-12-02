@@ -4,7 +4,7 @@ Volatility indicators measure the magnitude of price fluctuations.
 
 ## ATR - Average True Range
 
-The ATR function is located in the momentum indicators module but is conceptually a volatility indicator.
+The Average True Range is a volatility indicator. In numta, it is implemented in the momentum indicators module alongside other indicators that use true range calculations.
 
 ::: numta.api.momentum_indicators.ATR
 
