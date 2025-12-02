@@ -44,7 +44,12 @@ FUNCTION_SIGNATURES = {
     'BBANDS': {'inputs': ['close'], 'params': {'timeperiod': 5, 'nbdevup': 2.0, 'nbdevdn': 2.0, 'matype': 0}},
     'MAMA': {'inputs': ['close'], 'params': {'fastlimit': 0.5, 'slowlimit': 0.05}},
     'SAR': {'inputs': ['high', 'low'], 'params': {'acceleration': 0.02, 'maximum': 0.2}},
-    'SAREXT': {'inputs': ['high', 'low'], 'params': {}},
+    'SAREXT': {'inputs': ['high', 'low'], 'params': {
+        'startvalue': 0.0, 'offsetonreverse': 0.0,
+        'accelerationinit_long': 0.02, 'accelerationlong': 0.02,
+        'accelerationmax_long': 0.2, 'accelerationinit_short': 0.02,
+        'accelerationshort': 0.02, 'accelerationmax_short': 0.2
+    }},
     
     # Momentum Indicators
     'RSI': {'inputs': ['close'], 'params': {'timeperiod': 14}},
@@ -58,7 +63,11 @@ FUNCTION_SIGNATURES = {
     'PPO': {'inputs': ['close'], 'params': {'fastperiod': 12, 'slowperiod': 26, 'matype': 0}},
     'APO': {'inputs': ['close'], 'params': {'fastperiod': 12, 'slowperiod': 26, 'matype': 0}},
     'MACD': {'inputs': ['close'], 'params': {'fastperiod': 12, 'slowperiod': 26, 'signalperiod': 9}},
-    'MACDEXT': {'inputs': ['close'], 'params': {}},
+    'MACDEXT': {'inputs': ['close'], 'params': {
+        'fastperiod': 12, 'fastmatype': 0,
+        'slowperiod': 26, 'slowmatype': 0,
+        'signalperiod': 9, 'signalmatype': 0
+    }},
     'MACDFIX': {'inputs': ['close'], 'params': {'signalperiod': 9}},
     'ADX': {'inputs': ['high', 'low', 'close'], 'params': {'timeperiod': 14}},
     'ADXR': {'inputs': ['high', 'low', 'close'], 'params': {'timeperiod': 14}},
@@ -73,10 +82,17 @@ FUNCTION_SIGNATURES = {
     'BOP': {'inputs': ['open', 'high', 'low', 'close'], 'params': {}},
     'CCI': {'inputs': ['high', 'low', 'close'], 'params': {'timeperiod': 14}},
     'MFI': {'inputs': ['high', 'low', 'close', 'volume'], 'params': {'timeperiod': 14}},
-    'STOCH': {'inputs': ['high', 'low', 'close'], 'params': {}},
-    'STOCHF': {'inputs': ['high', 'low', 'close'], 'params': {}},
+    'STOCH': {'inputs': ['high', 'low', 'close'], 'params': {
+        'fastk_period': 5, 'slowk_period': 3, 'slowk_matype': 0,
+        'slowd_period': 3, 'slowd_matype': 0
+    }},
+    'STOCHF': {'inputs': ['high', 'low', 'close'], 'params': {
+        'fastk_period': 5, 'fastd_period': 3, 'fastd_matype': 0
+    }},
     'STOCHRSI': {'inputs': ['close'], 'params': {'timeperiod': 14}},
-    'ULTOSC': {'inputs': ['high', 'low', 'close'], 'params': {}},
+    'ULTOSC': {'inputs': ['high', 'low', 'close'], 'params': {
+        'timeperiod1': 7, 'timeperiod2': 14, 'timeperiod3': 28
+    }},
     'WILLR': {'inputs': ['high', 'low', 'close'], 'params': {'timeperiod': 14}},
     
     # Volume Indicators

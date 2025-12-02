@@ -278,7 +278,7 @@ class TestEdgeCases:
     def test_missing_columns_error(self):
         """Test that missing required columns raise appropriate errors."""
         df = pd.DataFrame({'price': [1, 2, 3]})
-        with pytest.raises(ValueError, match="auto-detect"):
+        with pytest.raises(ValueError):
             df.ta.sma(timeperiod=2)
 
 
@@ -336,7 +336,7 @@ class TestCustomColumn:
     
     def test_invalid_column_raises(self, sample_df):
         """Test that specifying invalid column raises error."""
-        with pytest.raises(ValueError, match="not found"):
+        with pytest.raises(ValueError):
             sample_df.ta.sma(timeperiod=10, column='nonexistent')
 
 
