@@ -28,6 +28,46 @@ from .api.pattern_recognition import (
     CDLTHRUSTING, CDLTRISTAR, CDLUNIQUE3RIVER, CDLUPSIDEGAP2CROWS, CDLXSIDEGAP3METHODS
 )
 
+# Chart Pattern Recognition
+from .patterns import (
+    # Swing detection
+    find_swing_highs,
+    find_swing_lows,
+    find_swing_points,
+    get_swing_high_indices,
+    get_swing_low_indices,
+    # Utilities
+    fibonacci_retracement,
+    fibonacci_extension,
+    fit_trendline,
+    # Chart pattern dataclasses
+    HeadShouldersPattern,
+    DoublePattern,
+    TriplePattern,
+    TrianglePattern,
+    WedgePattern,
+    FlagPattern,
+    VCPPattern,
+    # Chart pattern detection
+    detect_head_shoulders,
+    detect_inverse_head_shoulders,
+    detect_double_top,
+    detect_double_bottom,
+    detect_triple_top,
+    detect_triple_bottom,
+    detect_triangle,
+    detect_wedge,
+    detect_flag,
+    detect_vcp,
+    # Harmonic patterns
+    HarmonicPattern,
+    detect_gartley,
+    detect_butterfly,
+    detect_bat,
+    detect_crab,
+    detect_harmonic_patterns,
+)
+
 # Backend configuration
 from .backend import (
     set_backend,
@@ -63,7 +103,7 @@ __all__ = [
     "BETA", "CORREL", "LINEARREG", "LINEARREG_ANGLE", "LINEARREG_INTERCEPT", "LINEARREG_SLOPE",
     "MAX", "MAXINDEX", "MIN", "MININDEX", "MINMAX", "MINMAXINDEX", "SUM",
     "MEDPRICE", "MIDPOINT", "MIDPRICE", "TYPPRICE", "WCLPRICE",
-    # Pattern Recognition
+    # Candlestick Pattern Recognition
     "CDL2CROWS", "CDL3BLACKCROWS", "CDL3INSIDE", "CDL3OUTSIDE", "CDL3STARSINSOUTH", "CDL3WHITESOLDIERS",
     "CDLABANDONEDBABY", "CDLADVANCEBLOCK", "CDLBELTHOLD", "CDLBREAKAWAY",
     "CDLCLOSINGMARUBOZU", "CDLCONCEALBABYSWALL", "CDLCOUNTERATTACK", "CDLDARKCLOUDCOVER", "CDLDOJI", "CDLDOJISTAR",
@@ -76,6 +116,18 @@ __all__ = [
     "CDLRICKSHAWMAN", "CDLRISEFALL3METHODS", "CDLSEPARATINGLINES", "CDLSHOOTINGSTAR",
     "CDLSHORTLINE", "CDLSPINNINGTOP", "CDLSTALLEDPATTERN", "CDLSTICKSANDWICH", "CDLTAKURI", "CDLTASUKIGAP",
     "CDLTHRUSTING", "CDLTRISTAR", "CDLUNIQUE3RIVER", "CDLUPSIDEGAP2CROWS", "CDLXSIDEGAP3METHODS",
+    # Chart Pattern Recognition
+    "find_swing_highs", "find_swing_lows", "find_swing_points",
+    "get_swing_high_indices", "get_swing_low_indices",
+    "fibonacci_retracement", "fibonacci_extension", "fit_trendline",
+    "HeadShouldersPattern", "DoublePattern", "TriplePattern", "TrianglePattern", "WedgePattern", "FlagPattern", "VCPPattern",
+    "detect_head_shoulders", "detect_inverse_head_shoulders",
+    "detect_double_top", "detect_double_bottom",
+    "detect_triple_top", "detect_triple_bottom",
+    "detect_triangle", "detect_wedge", "detect_flag", "detect_vcp",
+    # Harmonic patterns
+    "HarmonicPattern",
+    "detect_gartley", "detect_butterfly", "detect_bat", "detect_crab", "detect_harmonic_patterns",
     # Backend configuration
     "set_backend",
     "get_backend",
@@ -90,3 +142,13 @@ __all__ = [
 # Add optimized versions to __all__ if available
 if HAS_NUMBA:
     __all__.append("SMA_numba")
+
+# Streaming indicators (lazy import to avoid circular imports)
+try:
+    from . import streaming
+    __all__.append("streaming")
+except ImportError:
+    pass
+
+# Register pandas DataFrame extension accessor (if pandas is available)
+from . import pandas_ext  # noqa: F401

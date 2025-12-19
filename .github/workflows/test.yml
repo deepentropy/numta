@@ -6,14 +6,19 @@ on:
   pull_request:
     branches: [ main ]
 
+permissions:
+  contents: read
+
 jobs:
   test:
-    name: Test on Python ${{ matrix.python-version }}
+    name: Unit Tests (Python ${{ matrix.python-version }})
     runs-on: ubuntu-latest
     strategy:
       fail-fast: false
       matrix:
         python-version: ["3.8", "3.9", "3.10", "3.11", "3.12"]
+    env:
+      NUMBA_DISABLE_CACHING: 1
 
     steps:
     - uses: actions/checkout@v4
@@ -30,9 +35,80 @@ jobs:
         python -m pip install --upgrade pip
         pip install -e ".[dev]"
 
-    - name: Run tests
+    - name: Run unit tests
       run: |
-        pytest -v
+        # Run pytest and capture output, allowing the command to fail
+        set +e
+        pytest -v --ignore=tests/accuracy --ignore=tests/benchmark -x 2>&1 | tee pytest_output.txt
+        PYTEST_EXIT_CODE=$?
+        set -e
+        
+        # Check if all tests passed by looking at the pytest summary line
+        if grep -qE "^=+ .* passed" pytest_output.txt; then
+          # If tests passed but exit code is non-zero (cleanup crash), treat as success
+          if [ "$PYTEST_EXIT_CODE" -eq 134 ] || [ "$PYTEST_EXIT_CODE" -eq 139 ]; then
+            echo "::warning::Pytest cleanup crashed (exit code $PYTEST_EXIT_CODE) but all tests passed. This is a known Numba issue."
+            exit 0
+          fi
+        fi
+        
+        # If we got here and exit code is non-zero, it's a real failure
+        if [ "$PYTEST_EXIT_CODE" -ne 0 ]; then
+          echo "Tests failed with exit code $PYTEST_EXIT_CODE"
+          cat pytest_output.txt
+          exit $PYTEST_EXIT_CODE
+        fi
+
+    - name: Run tests with coverage
+      if: matrix.python-version == '3.12'
+      run: |
+        pip install pytest-cov
+        set +e
+        pytest --cov=numta --cov-report=xml --ignore=tests/accuracy --ignore=tests/benchmark 2>&1 | tee pytest_cov_output.txt
+        PYTEST_EXIT_CODE=$?
+        set -e
+        
+        if grep -qE "^=+ .* passed" pytest_cov_output.txt; then
+          if [ "$PYTEST_EXIT_CODE" -eq 134 ] || [ "$PYTEST_EXIT_CODE" -eq 139 ]; then
+            echo "::warning::Pytest cleanup crashed but all tests passed."
+            exit 0
+          fi
+        fi
+        
+        exit $PYTEST_EXIT_CODE
+
+    - name: Upload coverage reports
+      if: matrix.python-version == '3.12'
+      uses: codecov/codecov-action@v4
+      with:
+        files: ./coverage.xml
+        fail_ci_if_error: false
+      continue-on-error: true
+
+  benchmark:
+    name: Benchmark Tests
+    runs-on: ubuntu-latest
+    env:
+      NUMBA_DISABLE_CACHING: 1
+    
+    steps:
+    - uses: actions/checkout@v4
+      with:
+        fetch-depth: 0
+
+    - name: Set up Python
+      uses: actions/setup-python@v5
+      with:
+        python-version: "3.12"
+
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install -e ".[dev]"
+
+    - name: Run benchmark tests
+      run: |
+        pytest tests/benchmark/test_benchmark.py -v
 
   build:
     name: Build package

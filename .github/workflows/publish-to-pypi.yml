@@ -6,6 +6,7 @@ on:
   workflow_dispatch:  # Allow manual trigger
 
 permissions:
+  id-token: write
   contents: read
 
 jobs:
@@ -39,15 +40,14 @@ jobs:
 
   publish-to-pypi:
     name: Publish to PyPI
-    if: github.event_name == 'release'
     needs:
     - build
     runs-on: ubuntu-latest
-    environment:
-      name: pypi
-      url: https://pypi.org/p/numta
+    # Only run this job for published releases
+    if: github.event_name == 'release' && github.event.action == 'published'
     permissions:
-      id-token: write  # IMPORTANT: mandatory for trusted publishing
+      id-token: write
+      contents: read
 
     steps:
     - name: Download all the dists
@@ -58,5 +58,6 @@ jobs:
 
     - name: Publish distribution to PyPI
       uses: pypa/gh-action-pypi-publish@release/v1
-
+      with:
+        password: ${{ secrets.PYPI_API_TOKEN }}
 
