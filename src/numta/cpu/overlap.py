@@ -34,6 +34,12 @@ def _sma_numba(close: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
     """
     n = len(close)
 
+    # Early return if not enough data for the timeperiod
+    if n < timeperiod:
+        for i in range(n):
+            output[i] = np.nan
+        return
+
     # Find first valid (non-NaN) index
     start_idx = 0
     for i in range(n):
@@ -41,15 +47,15 @@ def _sma_numba(close: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
             start_idx = i
             break
 
-    # Fill initial values with NaN
-    for i in range(start_idx + timeperiod - 1):
-        output[i] = np.nan
-
-    # Check if we have enough valid data
+    # Check if we have enough valid data after start_idx
     if start_idx + timeperiod > n:
         for i in range(n):
             output[i] = np.nan
         return
+
+    # Fill initial values with NaN
+    for i in range(start_idx + timeperiod - 1):
+        output[i] = np.nan
 
     # Calculate first SMA value from first timeperiod valid values
     sum_val = 0.0

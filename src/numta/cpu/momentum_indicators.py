@@ -784,12 +784,22 @@ def _macd_numba(close: np.ndarray, fastperiod: int, slowperiod: int, signalperio
     Histogram = MACD - Signal
     """
     n = len(close)
+
+    # Lookback = slowperiod + signalperiod - 2
+    lookback = slowperiod + signalperiod - 2
+
+    # Early return if not enough data
+    if n <= lookback:
+        for i in range(n):
+            macd[i] = np.nan
+            signal[i] = np.nan
+            hist[i] = np.nan
+        return
+
     fast_mult = 2.0 / (fastperiod + 1)
     slow_mult = 2.0 / (slowperiod + 1)
     signal_mult = 2.0 / (signalperiod + 1)
 
-    # Lookback = slowperiod + signalperiod - 2
-    lookback = slowperiod + signalperiod - 2
     for i in range(lookback):
         macd[i] = np.nan
         signal[i] = np.nan
