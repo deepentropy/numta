@@ -57,11 +57,9 @@ def _tsf_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
         output[i] = np.nan
 
     # Precalculate sums for x values (0, 1, 2, ..., timeperiod-1)
-    sum_x = 0.0
-    sum_xx = 0.0
-    for x in range(timeperiod):
-        sum_x += x
-        sum_xx += x * x
+    # Closed-form: sum(0..n-1) = n*(n-1)/2, sum_sq(0..n-1) = n*(n-1)*(2n-1)/6
+    sum_x = timeperiod * (timeperiod - 1) / 2.0
+    sum_xx = timeperiod * (timeperiod - 1) * (2 * timeperiod - 1) / 6.0
 
     # Calculate TSF for each window
     for i in range(timeperiod - 1, n):
@@ -71,9 +69,8 @@ def _tsf_numba(data: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
 
         for j in range(timeperiod):
             y = data[i - timeperiod + 1 + j]
-            x = float(j)
             sum_y += y
-            sum_xy += x * y
+            sum_xy += j * y
 
         # Linear regression: y = a + b*x
         # b = (n*sum_xy - sum_x*sum_y) / (n*sum_xx - sum_x*sum_x)
