@@ -3,6 +3,13 @@ numta: Pure Python TA-Lib library with focus on performance
 
 Optimized with Numba JIT compilation for fast CPU computation.
 """
+# Disable numba JIT caching on Windows to prevent segfaults from cache corruption.
+# This must happen before any numba imports. See: https://github.com/deepentropy/numta/issues/31
+import os as _os
+import sys as _sys
+if _sys.platform == "win32" and "NUMBA_DISABLE_CACHING" not in _os.environ:
+    _os.environ["NUMBA_DISABLE_CACHING"] = "1"
+
 # Import from API layer
 from .api.overlap import SMA, EMA, DEMA, BBANDS, KAMA, MA, MAMA, SAR, SAREXT, T3, TEMA, TRIMA, WMA
 from .api.statistics import STDDEV, TSF, VAR

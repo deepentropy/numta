@@ -58,12 +58,14 @@ def SMA(close: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     if n == 0:
         return np.array([], dtype=np.float64)
 
+    # Not enough data points - return all NaN
+    if n < timeperiod:
+        return np.full(n, np.nan, dtype=np.float64)
+
     # Check backend and dispatch to appropriate implementation
-    
     backend = get_backend()
-    
-            # Use CPU implementation (default)
-    # The Numba function handles NaN values and insufficient data
+
+    # Use CPU implementation (default)
     output = np.empty(n, dtype=np.float64)
     _sma_numba(close, timeperiod, output)
 
@@ -721,10 +723,16 @@ def MAMA(close: Union[np.ndarray, list],
         empty = np.array([], dtype=np.float64)
         return empty, empty
 
+    # Not enough data points - return all NaN
+    # MAMA lookback = 32
+    if n <= 32:
+        nans = np.full(n, np.nan, dtype=np.float64)
+        return nans, nans
+
     # Check backend and dispatch to appropriate implementation
     backend = get_backend()
 
-            # Use CPU implementation with Numba optimization
+    # Use CPU implementation with Numba optimization
     from ..cpu.overlap import _mama_numba
     mama = np.empty(n, dtype=np.float64)
     fama = np.empty(n, dtype=np.float64)
@@ -995,6 +1003,12 @@ def TEMA(data: Union[np.ndarray, list], timeperiod: int = 30) -> np.ndarray:
     if n == 0:
         return np.array([], dtype=np.float64)
 
+    # Not enough data points - return all NaN
+    # TEMA lookback = 3 * (timeperiod - 1)
+    lookback = 3 * (timeperiod - 1)
+    if n <= lookback:
+        return np.full(n, np.nan, dtype=np.float64)
+
     # Check backend and dispatch to appropriate implementation
 
     backend = get_backend()
@@ -1039,6 +1053,12 @@ def T3(data: Union[np.ndarray, list],
     n = len(data)
     if n == 0:
         return np.array([], dtype=np.float64)
+
+    # Not enough data points - return all NaN
+    # T3 lookback = 6 * (timeperiod - 1)
+    lookback = 6 * (timeperiod - 1)
+    if n <= lookback:
+        return np.full(n, np.nan, dtype=np.float64)
 
     # Check backend and dispatch to appropriate implementation
 

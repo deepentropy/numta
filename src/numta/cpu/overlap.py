@@ -96,15 +96,15 @@ def _ema_numba(close: np.ndarray, timeperiod: int, output: np.ndarray) -> None:
             start_idx = i
             break
 
-    # Fill initial values with NaN
-    for i in range(start_idx + timeperiod - 1):
-        output[i] = np.nan
-
     # Check if we have enough valid data
     if start_idx + timeperiod > n:
         for i in range(n):
             output[i] = np.nan
         return
+
+    # Fill initial values with NaN
+    for i in range(start_idx + timeperiod - 1):
+        output[i] = np.nan
 
     # Initialize first EMA value as SMA of first timeperiod valid values
     sum_val = 0.0
