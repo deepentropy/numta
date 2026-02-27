@@ -30,6 +30,13 @@ except ImportError:
     HAS_TALIB = False
 
 try:
+    from numba import cuda
+    cuda.detect()
+    HAS_CUDA = True
+except Exception:
+    HAS_CUDA = False
+
+try:
     import pandas_ta
     HAS_PANDAS_TA = True
 except ImportError:
@@ -55,6 +62,9 @@ def pytest_configure(config):
         "markers", "pandas_ta: marks tests requiring pandas-ta (skip if not available)"
     )
     config.addinivalue_line(
+        "markers", "cuda: marks tests requiring CUDA GPU (skip if not available)"
+    )
+    config.addinivalue_line(
         "markers", "slow: marks tests as slow (deselect with '-m \"not slow\"')"
     )
     config.addinivalue_line(
@@ -68,7 +78,8 @@ def pytest_collection_modifyitems(config, items):
     skip_pandas = pytest.mark.skip(reason="pandas not installed")
     skip_talib = pytest.mark.skip(reason="TA-Lib not installed")
     skip_pandas_ta = pytest.mark.skip(reason="pandas-ta not installed")
-    
+    skip_cuda = pytest.mark.skip(reason="CUDA GPU not available")
+
     for item in items:
         if "numba" in item.keywords and not HAS_NUMBA:
             item.add_marker(skip_numba)
@@ -78,6 +89,8 @@ def pytest_collection_modifyitems(config, items):
             item.add_marker(skip_talib)
         if "pandas_ta" in item.keywords and not HAS_PANDAS_TA:
             item.add_marker(skip_pandas_ta)
+        if "cuda" in item.keywords and not HAS_CUDA:
+            item.add_marker(skip_cuda)
 
 
 # =====================================================================

@@ -57,6 +57,9 @@ patterns = [
 streaming = [
     # No additional dependencies for streaming indicators
 ]
+gpu = [
+    "numba-cuda>=0.1.0",
+]
 full = [
     "pandas>=1.3.0",
     "lwcharts>=0.1.0",
@@ -94,6 +97,7 @@ markers = [
     "pandas_ta: marks tests requiring pandas-ta",
     "slow: marks tests as slow",
     "benchmark: marks tests as benchmark tests",
+    "cuda: marks tests requiring CUDA GPU",
 ]
 filterwarnings = [
     "ignore::DeprecationWarning",

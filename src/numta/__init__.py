@@ -94,6 +94,49 @@ from .optimized import (
 if HAS_NUMBA:
     from .optimized import SMA_numba
 
+# GPU batch processing (conditional on CUDA availability)
+from .gpu import HAS_CUDA
+if HAS_CUDA:
+    from .api.batch import (
+        SMA_batch, EMA_batch, BBANDS_batch, DEMA_batch, KAMA_batch,
+        WMA_batch, TEMA_batch, T3_batch, TRIMA_batch, MAMA_batch,
+        SAR_batch, SAREXT_batch,
+        RSI_batch, MACD_batch, ADX_batch, ATR_batch, CCI_batch, CMO_batch,
+        DX_batch, MOM_batch, ROC_batch, ROCP_batch, ROCR_batch, ROCR100_batch,
+        WILLR_batch, STOCH_batch, STOCHF_batch, BOP_batch, AROON_batch,
+        AROONOSC_batch, MFI_batch, MINUS_DM_batch, PLUS_DM_batch,
+        MINUS_DI_batch, PLUS_DI_batch, ULTOSC_batch,
+        TRANGE_batch, NATR_batch,
+        AD_batch, OBV_batch, ADOSC_batch,
+        STDDEV_batch, VAR_batch, TSF_batch,
+        BETA_batch, CORREL_batch, LINEARREG_batch, LINEARREG_ANGLE_batch,
+        LINEARREG_INTERCEPT_batch, LINEARREG_SLOPE_batch,
+        MAX_batch, MAXINDEX_batch, MIN_batch, MININDEX_batch,
+        MINMAX_batch, MINMAXINDEX_batch, SUM_batch,
+        MEDPRICE_batch, MIDPOINT_batch, MIDPRICE_batch, TYPPRICE_batch, WCLPRICE_batch,
+        HT_TRENDLINE_batch, HT_TRENDMODE_batch,
+        HT_DCPERIOD_batch, HT_DCPHASE_batch, HT_PHASOR_batch, HT_SINE_batch,
+        CDL2CROWS_batch, CDL3BLACKCROWS_batch, CDL3INSIDE_batch, CDL3OUTSIDE_batch,
+        CDL3STARSINSOUTH_batch, CDL3WHITESOLDIERS_batch,
+        CDLABANDONEDBABY_batch, CDLADVANCEBLOCK_batch, CDLBELTHOLD_batch, CDLBREAKAWAY_batch,
+        CDLCLOSINGMARUBOZU_batch, CDLCONCEALBABYSWALL_batch, CDLCOUNTERATTACK_batch,
+        CDLDARKCLOUDCOVER_batch, CDLDOJI_batch, CDLDOJISTAR_batch,
+        CDLDRAGONFLYDOJI_batch, CDLENGULFING_batch, CDLEVENINGDOJISTAR_batch, CDLEVENINGSTAR_batch,
+        CDLGAPSIDESIDEWHITE_batch, CDLGRAVESTONEDOJI_batch,
+        CDLHAMMER_batch, CDLHANGINGMAN_batch, CDLHARAMI_batch, CDLHARAMICROSS_batch,
+        CDLHIGHWAVE_batch, CDLHIKKAKE_batch, CDLHIKKAKEMOD_batch, CDLHOMINGPIGEON_batch,
+        CDLIDENTICAL3CROWS_batch, CDLINNECK_batch,
+        CDLINVERTEDHAMMER_batch, CDLKICKING_batch, CDLKICKINGBYLENGTH_batch, CDLLADDERBOTTOM_batch,
+        CDLLONGLEGGEDDOJI_batch, CDLLONGLINE_batch,
+        CDLMARUBOZU_batch, CDLMATCHINGLOW_batch, CDLMATHOLD_batch,
+        CDLMORNINGDOJISTAR_batch, CDLMORNINGSTAR_batch, CDLONNECK_batch, CDLPIERCING_batch,
+        CDLRICKSHAWMAN_batch, CDLRISEFALL3METHODS_batch, CDLSEPARATINGLINES_batch, CDLSHOOTINGSTAR_batch,
+        CDLSHORTLINE_batch, CDLSPINNINGTOP_batch, CDLSTALLEDPATTERN_batch, CDLSTICKSANDWICH_batch,
+        CDLTAKURI_batch, CDLTASUKIGAP_batch,
+        CDLTHRUSTING_batch, CDLTRISTAR_batch, CDLUNIQUE3RIVER_batch, CDLUPSIDEGAP2CROWS_batch,
+        CDLXSIDEGAP3METHODS_batch,
+    )
+
 # Version is automatically managed by setuptools-scm from git tags
 try:
     from ._version import __version__
@@ -144,11 +187,55 @@ __all__ = [
     "SMA_auto",
     "get_available_backends",
     "HAS_NUMBA",
+    # GPU
+    "HAS_CUDA",
 ]
 
 # Add optimized versions to __all__ if available
 if HAS_NUMBA:
     __all__.append("SMA_numba")
+
+# Add batch functions to __all__ if CUDA available
+if HAS_CUDA:
+    __all__.extend([
+        "SMA_batch", "EMA_batch", "BBANDS_batch", "DEMA_batch", "KAMA_batch",
+        "WMA_batch", "TEMA_batch", "T3_batch", "TRIMA_batch", "MAMA_batch",
+        "SAR_batch", "SAREXT_batch",
+        "RSI_batch", "MACD_batch", "ADX_batch", "ATR_batch", "CCI_batch", "CMO_batch",
+        "DX_batch", "MOM_batch", "ROC_batch", "ROCP_batch", "ROCR_batch", "ROCR100_batch",
+        "WILLR_batch", "STOCH_batch", "STOCHF_batch", "BOP_batch", "AROON_batch",
+        "AROONOSC_batch", "MFI_batch", "MINUS_DM_batch", "PLUS_DM_batch",
+        "MINUS_DI_batch", "PLUS_DI_batch", "ULTOSC_batch",
+        "TRANGE_batch", "NATR_batch",
+        "AD_batch", "OBV_batch", "ADOSC_batch",
+        "STDDEV_batch", "VAR_batch", "TSF_batch",
+        "BETA_batch", "CORREL_batch", "LINEARREG_batch", "LINEARREG_ANGLE_batch",
+        "LINEARREG_INTERCEPT_batch", "LINEARREG_SLOPE_batch",
+        "MAX_batch", "MAXINDEX_batch", "MIN_batch", "MININDEX_batch",
+        "MINMAX_batch", "MINMAXINDEX_batch", "SUM_batch",
+        "MEDPRICE_batch", "MIDPOINT_batch", "MIDPRICE_batch", "TYPPRICE_batch", "WCLPRICE_batch",
+        "HT_TRENDLINE_batch", "HT_TRENDMODE_batch",
+        "HT_DCPERIOD_batch", "HT_DCPHASE_batch", "HT_PHASOR_batch", "HT_SINE_batch",
+        "CDL2CROWS_batch", "CDL3BLACKCROWS_batch", "CDL3INSIDE_batch", "CDL3OUTSIDE_batch",
+        "CDL3STARSINSOUTH_batch", "CDL3WHITESOLDIERS_batch",
+        "CDLABANDONEDBABY_batch", "CDLADVANCEBLOCK_batch", "CDLBELTHOLD_batch", "CDLBREAKAWAY_batch",
+        "CDLCLOSINGMARUBOZU_batch", "CDLCONCEALBABYSWALL_batch", "CDLCOUNTERATTACK_batch",
+        "CDLDARKCLOUDCOVER_batch", "CDLDOJI_batch", "CDLDOJISTAR_batch",
+        "CDLDRAGONFLYDOJI_batch", "CDLENGULFING_batch", "CDLEVENINGDOJISTAR_batch", "CDLEVENINGSTAR_batch",
+        "CDLGAPSIDESIDEWHITE_batch", "CDLGRAVESTONEDOJI_batch",
+        "CDLHAMMER_batch", "CDLHANGINGMAN_batch", "CDLHARAMI_batch", "CDLHARAMICROSS_batch",
+        "CDLHIGHWAVE_batch", "CDLHIKKAKE_batch", "CDLHIKKAKEMOD_batch", "CDLHOMINGPIGEON_batch",
+        "CDLIDENTICAL3CROWS_batch", "CDLINNECK_batch",
+        "CDLINVERTEDHAMMER_batch", "CDLKICKING_batch", "CDLKICKINGBYLENGTH_batch", "CDLLADDERBOTTOM_batch",
+        "CDLLONGLEGGEDDOJI_batch", "CDLLONGLINE_batch",
+        "CDLMARUBOZU_batch", "CDLMATCHINGLOW_batch", "CDLMATHOLD_batch",
+        "CDLMORNINGDOJISTAR_batch", "CDLMORNINGSTAR_batch", "CDLONNECK_batch", "CDLPIERCING_batch",
+        "CDLRICKSHAWMAN_batch", "CDLRISEFALL3METHODS_batch", "CDLSEPARATINGLINES_batch", "CDLSHOOTINGSTAR_batch",
+        "CDLSHORTLINE_batch", "CDLSPINNINGTOP_batch", "CDLSTALLEDPATTERN_batch", "CDLSTICKSANDWICH_batch",
+        "CDLTAKURI_batch", "CDLTASUKIGAP_batch",
+        "CDLTHRUSTING_batch", "CDLTRISTAR_batch", "CDLUNIQUE3RIVER_batch", "CDLUPSIDEGAP2CROWS_batch",
+        "CDLXSIDEGAP3METHODS_batch",
+    ])
 
 # Streaming indicators (lazy import to avoid circular imports)
 try:
