@@ -200,16 +200,201 @@ Real-time indicators that update efficiently with each new data point.
 | StreamingOBV | On Balance Volume |
 | StreamingAD | Accumulation/Distribution |
 
+## GPU Batch Processing (128 functions)
+
+Run any indicator on thousands of tickers simultaneously using NVIDIA CUDA. Each `*_batch` function accepts 2D arrays of shape `(num_tickers, num_bars)` and returns results of the same shape. Requires `pip install "numta[gpu]"`.
+
+### Overlap Studies Batch (12)
+
+| Function | Description |
+|----------|-------------|
+| SMA_batch | Simple Moving Average |
+| EMA_batch | Exponential Moving Average |
+| BBANDS_batch | Bollinger Bands (returns upper, middle, lower) |
+| DEMA_batch | Double Exponential Moving Average |
+| KAMA_batch | Kaufman Adaptive Moving Average |
+| WMA_batch | Weighted Moving Average |
+| TEMA_batch | Triple Exponential Moving Average |
+| T3_batch | Triple Exponential T3 |
+| TRIMA_batch | Triangular Moving Average |
+| MAMA_batch | MESA Adaptive Moving Average (returns mama, fama) |
+| SAR_batch | Parabolic SAR |
+| SAREXT_batch | Parabolic SAR - Extended |
+
+### Momentum Indicators Batch (24)
+
+| Function | Description |
+|----------|-------------|
+| RSI_batch | Relative Strength Index |
+| MACD_batch | MACD (returns macd, signal, histogram) |
+| ADX_batch | Average Directional Movement Index |
+| ATR_batch | Average True Range |
+| CCI_batch | Commodity Channel Index |
+| CMO_batch | Chande Momentum Oscillator |
+| DX_batch | Directional Movement Index |
+| MOM_batch | Momentum |
+| ROC_batch | Rate of Change |
+| ROCP_batch | Rate of Change Percentage |
+| ROCR_batch | Rate of Change Ratio |
+| ROCR100_batch | Rate of Change Ratio 100 scale |
+| WILLR_batch | Williams' %R |
+| STOCH_batch | Stochastic (returns slowk, slowd) |
+| STOCHF_batch | Stochastic Fast (returns fastk, fastd) |
+| BOP_batch | Balance Of Power |
+| AROON_batch | Aroon (returns down, up) |
+| AROONOSC_batch | Aroon Oscillator |
+| MFI_batch | Money Flow Index |
+| MINUS_DM_batch | Minus Directional Movement |
+| PLUS_DM_batch | Plus Directional Movement |
+| MINUS_DI_batch | Minus Directional Indicator |
+| PLUS_DI_batch | Plus Directional Indicator |
+| ULTOSC_batch | Ultimate Oscillator |
+
+### Volatility Indicators Batch (2)
+
+| Function | Description |
+|----------|-------------|
+| TRANGE_batch | True Range |
+| NATR_batch | Normalized Average True Range |
+
+### Volume Indicators Batch (3)
+
+| Function | Description |
+|----------|-------------|
+| AD_batch | Chaikin A/D Line |
+| OBV_batch | On Balance Volume |
+| ADOSC_batch | Chaikin A/D Oscillator |
+
+### Statistics Batch (3)
+
+| Function | Description |
+|----------|-------------|
+| STDDEV_batch | Standard Deviation |
+| VAR_batch | Variance |
+| TSF_batch | Time Series Forecast |
+
+### Statistic Functions Batch (6)
+
+| Function | Description |
+|----------|-------------|
+| BETA_batch | Beta coefficient |
+| CORREL_batch | Pearson's Correlation Coefficient |
+| LINEARREG_batch | Linear Regression |
+| LINEARREG_ANGLE_batch | Linear Regression Angle |
+| LINEARREG_INTERCEPT_batch | Linear Regression Intercept |
+| LINEARREG_SLOPE_batch | Linear Regression Slope |
+
+### Math Operators Batch (7)
+
+| Function | Description |
+|----------|-------------|
+| MAX_batch | Highest value over a specified period |
+| MAXINDEX_batch | Index of highest value over a specified period |
+| MIN_batch | Lowest value over a specified period |
+| MININDEX_batch | Index of lowest value over a specified period |
+| MINMAX_batch | Lowest and highest values (returns min, max) |
+| MINMAXINDEX_batch | Indexes of lowest and highest values (returns minidx, maxidx) |
+| SUM_batch | Summation |
+
+### Price Transform Batch (5)
+
+| Function | Description |
+|----------|-------------|
+| MEDPRICE_batch | Median Price |
+| MIDPOINT_batch | MidPoint over period |
+| MIDPRICE_batch | Midpoint Price over period |
+| TYPPRICE_batch | Typical Price |
+| WCLPRICE_batch | Weighted Close Price |
+
+### Cycle Indicators Batch (6)
+
+| Function | Description |
+|----------|-------------|
+| HT_TRENDLINE_batch | Hilbert Transform - Instantaneous Trendline |
+| HT_TRENDMODE_batch | Hilbert Transform - Trend vs Cycle Mode |
+| HT_DCPERIOD_batch | Hilbert Transform - Dominant Cycle Period |
+| HT_DCPHASE_batch | Hilbert Transform - Dominant Cycle Phase |
+| HT_PHASOR_batch | Hilbert Transform - Phasor Components (returns inphase, quadrature) |
+| HT_SINE_batch | Hilbert Transform - SineWave (returns sine, leadsine) |
+
+### Candlestick Patterns Batch (60)
+
+All 60 candlestick patterns have GPU batch equivalents. Each accepts 2D OHLC arrays and returns integer signals (+100, -100, 0).
+
+| Function | Description |
+|----------|-------------|
+| CDL2CROWS_batch | Two Crows |
+| CDL3BLACKCROWS_batch | Three Black Crows |
+| CDL3INSIDE_batch | Three Inside Up/Down |
+| CDL3OUTSIDE_batch | Three Outside Up/Down |
+| CDL3STARSINSOUTH_batch | Three Stars In The South |
+| CDL3WHITESOLDIERS_batch | Three Advancing White Soldiers |
+| CDLABANDONEDBABY_batch | Abandoned Baby |
+| CDLADVANCEBLOCK_batch | Advance Block |
+| CDLBELTHOLD_batch | Belt-hold |
+| CDLBREAKAWAY_batch | Breakaway |
+| CDLCLOSINGMARUBOZU_batch | Closing Marubozu |
+| CDLCONCEALBABYSWALL_batch | Concealing Baby Swallow |
+| CDLCOUNTERATTACK_batch | Counterattack |
+| CDLDARKCLOUDCOVER_batch | Dark Cloud Cover |
+| CDLDOJI_batch | Doji |
+| CDLDOJISTAR_batch | Doji Star |
+| CDLDRAGONFLYDOJI_batch | Dragonfly Doji |
+| CDLENGULFING_batch | Engulfing Pattern |
+| CDLEVENINGDOJISTAR_batch | Evening Doji Star |
+| CDLEVENINGSTAR_batch | Evening Star |
+| CDLGAPSIDESIDEWHITE_batch | Up/Down-gap side-by-side white lines |
+| CDLGRAVESTONEDOJI_batch | Gravestone Doji |
+| CDLHAMMER_batch | Hammer |
+| CDLHANGINGMAN_batch | Hanging Man |
+| CDLHARAMI_batch | Harami Pattern |
+| CDLHARAMICROSS_batch | Harami Cross Pattern |
+| CDLHIGHWAVE_batch | High-Wave Candle |
+| CDLHIKKAKE_batch | Hikkake Pattern |
+| CDLHIKKAKEMOD_batch | Modified Hikkake Pattern |
+| CDLHOMINGPIGEON_batch | Homing Pigeon |
+| CDLIDENTICAL3CROWS_batch | Identical Three Crows |
+| CDLINNECK_batch | In-Neck Pattern |
+| CDLINVERTEDHAMMER_batch | Inverted Hammer |
+| CDLKICKING_batch | Kicking |
+| CDLKICKINGBYLENGTH_batch | Kicking by Length |
+| CDLLADDERBOTTOM_batch | Ladder Bottom |
+| CDLLONGLEGGEDDOJI_batch | Long Legged Doji |
+| CDLLONGLINE_batch | Long Line Candle |
+| CDLMARUBOZU_batch | Marubozu |
+| CDLMATCHINGLOW_batch | Matching Low |
+| CDLMATHOLD_batch | Mat Hold (with penetration param) |
+| CDLMORNINGDOJISTAR_batch | Morning Doji Star (with penetration param) |
+| CDLMORNINGSTAR_batch | Morning Star (with penetration param) |
+| CDLONNECK_batch | On-Neck Pattern |
+| CDLPIERCING_batch | Piercing Pattern |
+| CDLRICKSHAWMAN_batch | Rickshaw Man |
+| CDLRISEFALL3METHODS_batch | Rising/Falling Three Methods |
+| CDLSEPARATINGLINES_batch | Separating Lines |
+| CDLSHOOTINGSTAR_batch | Shooting Star |
+| CDLSHORTLINE_batch | Short Line Candle |
+| CDLSPINNINGTOP_batch | Spinning Top |
+| CDLSTALLEDPATTERN_batch | Stalled Pattern |
+| CDLSTICKSANDWICH_batch | Stick Sandwich |
+| CDLTAKURI_batch | Takuri |
+| CDLTASUKIGAP_batch | Tasuki Gap |
+| CDLTHRUSTING_batch | Thrusting Pattern |
+| CDLTRISTAR_batch | Tristar Pattern |
+| CDLUNIQUE3RIVER_batch | Unique 3 River |
+| CDLUPSIDEGAP2CROWS_batch | Upside Gap Two Crows |
+| CDLXSIDEGAP3METHODS_batch | Upside/Downside Gap Three Methods |
+
 ## Summary Statistics
 
 | Category | Count |
 |----------|-------|
 | Technical Indicators | 76 |
 | Candlestick Patterns | 60 |
+| GPU Batch Functions | 128 |
 | Chart Pattern Functions | 14 |
 | Harmonic Pattern Functions | 7 |
 | Streaming Indicators | 15 |
-| **Total** | **172** |
+| **Total** | **300** |
 
 ## Notes
 
@@ -217,3 +402,5 @@ Real-time indicators that update efficiently with each new data point.
 - Pattern recognition returns +100 (bullish), -100 (bearish), or 0 (no pattern)
 - Chart patterns return confidence scores (0-1)
 - Streaming indicators are optimized for real-time processing with O(1) updates
+- GPU batch functions accept 2D `(num_tickers, num_bars)` arrays and process all tickers in parallel via CUDA
+- GPU batch outputs match CPU single-ticker results exactly (verified with `assert_allclose`)

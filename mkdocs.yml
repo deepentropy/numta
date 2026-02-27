@@ -92,6 +92,7 @@ nav:
       - Math Operators: api/math.md
       - Price Transform: api/price_transform.md
       - Pattern Recognition: api/patterns.md
+      - GPU Batch Processing: api/batch.md
       - Streaming Indicators: api/streaming.md
       - Pandas Extension: api/pandas.md
   - Examples:

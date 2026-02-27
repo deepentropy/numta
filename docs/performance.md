@@ -4,13 +4,14 @@ numta is designed for high performance through optimized algorithms and optional
 
 ## Performance Comparison
 
-numta uses optimized algorithms and optional Numba JIT compilation to achieve significant speedups:
+numta uses optimized algorithms, optional Numba JIT compilation, and CUDA GPU batch processing:
 
 | Implementation | Speed vs Default | Requirements |
 |----------------|------------------|--------------|
 | NumPy (default) | 1.0x (baseline) | None |
 | Cumsum optimized | ~3x faster | None |
 | Numba JIT | 5-10x faster | `pip install numba` |
+| **GPU batch** | **100x+ faster** (multi-ticker) | NVIDIA GPU + `pip install "numta[gpu]"` |
 
 ## Backend Selection
 
@@ -190,7 +191,25 @@ close_col = some_2d_array[:, 0]
 close_contiguous = np.ascontiguousarray(close_col)
 ```
 
-### 2. Batch Processing
+### 2. GPU Batch Processing
+
+For processing thousands of tickers, use the GPU batch functions:
+
+```python
+import numpy as np
+from numta import SMA_batch, RSI_batch
+
+# 2D arrays: (num_tickers, num_bars)
+close = np.random.uniform(50, 150, (10000, 500))
+
+# All 10,000 tickers processed simultaneously on GPU
+sma = SMA_batch(close, timeperiod=20)
+rsi = RSI_batch(close, timeperiod=14)
+```
+
+All 128 batch functions (`*_batch`) are available when CUDA is installed. See the [GPU Batch API](api/batch.md) for the complete list.
+
+### 3. Calculate Multiple Indicators
 
 Calculate multiple indicators in a single pass over the data:
 
@@ -203,7 +222,7 @@ ema = EMA(close, 12)
 rsi = RSI(close, 14)
 ```
 
-### 3. Avoid Repeated Calculations
+### 4. Avoid Repeated Calculations
 
 ```python
 # Bad: Recalculates SMA each time
@@ -214,7 +233,7 @@ for i in range(len(df)):
 sma = SMA(df['close'].values, 20)
 ```
 
-### 4. Use Appropriate Data Types
+### 5. Use Appropriate Data Types
 
 ```python
 # Good: float64 for best precision

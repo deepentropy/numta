@@ -20,6 +20,16 @@ For 5-10x performance speedup using Numba JIT compilation:
 pip install "numta[numba]"
 ```
 
+### GPU Batch Processing
+
+For processing thousands of tickers simultaneously on NVIDIA GPUs:
+
+```bash
+pip install "numta[gpu]"
+```
+
+Requires an NVIDIA GPU with CUDA support and compatible drivers.
+
 ### Pandas Integration
 
 To use the `.ta` DataFrame accessor:
@@ -62,6 +72,7 @@ pip install -e ".[dev]"
 | Feature | Package | Installation |
 |---------|---------|--------------|
 | Performance | numba >= 0.56.0 | `pip install "numta[numba]"` |
+| GPU Batch | numba-cuda >= 0.1.0 | `pip install "numta[gpu]"` |
 | Pandas | pandas >= 1.3.0 | `pip install "numta[pandas]"` |
 | Visualization | lwcharts >= 0.1.0 | `pip install "numta[viz]"` |
 | All features | - | `pip install "numta[full]"` |

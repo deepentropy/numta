@@ -11,6 +11,7 @@ Pure Python technical analysis library. A modern, high-performance alternative t
 
 - **Pure Python**: No C compiler required, works everywhere Python runs
 - **Fast**: 5-10x speedup with optional Numba JIT compilation
+- **GPU Batch Processing**: Run any indicator on 26K+ tickers simultaneously with CUDA
 - **Complete**: 130+ indicators, 60+ candlestick patterns, chart pattern detection
 - **Modern**: Pandas integration, streaming support, Jupyter visualization
 
@@ -22,6 +23,9 @@ pip install numta
 
 # With Numba for 5-10x speedup
 pip install "numta[numba]"
+
+# With GPU batch processing (NVIDIA CUDA)
+pip install "numta[gpu]"
 
 # With pandas integration
 pip install "numta[pandas]"
@@ -117,6 +121,28 @@ patterns = df.ta.find_patterns(pattern_type='all')
 harmonics = df.ta.find_harmonic_patterns()
 ```
 
+### GPU Batch Processing
+
+Process thousands of tickers simultaneously on NVIDIA GPUs:
+
+```python
+import numpy as np
+from numta import SMA_batch, RSI_batch, CDLDOJI_batch
+
+# 2D arrays: (num_tickers, num_bars)
+close = np.random.uniform(50, 150, (10000, 500))
+high = close + np.random.uniform(0, 5, (10000, 500))
+low = close - np.random.uniform(0, 5, (10000, 500))
+open_ = close + np.random.uniform(-2, 2, (10000, 500))
+
+# Run on all 10,000 tickers at once — one CUDA thread per ticker
+sma = SMA_batch(close, timeperiod=20)        # shape: (10000, 500)
+rsi = RSI_batch(close, timeperiod=14)        # shape: (10000, 500)
+doji = CDLDOJI_batch(open_, high, low, close) # shape: (10000, 500)
+```
+
+All 128 batch functions (`*_batch`) mirror the CPU API exactly — same parameters, same output values. Requires an NVIDIA GPU with CUDA support.
+
 ### Streaming/Real-Time
 
 ```python
@@ -177,6 +203,7 @@ numta uses optimized algorithms and optional Numba JIT compilation:
 | numpy (default) | 1.0x (baseline) | None |
 | cumsum | ~3x faster | None |
 | numba | 5-10x faster | `pip install numba` |
+| **GPU batch** | **100x+ faster** (multi-ticker) | NVIDIA GPU + `pip install "numta[gpu]"` |
 
 ```python
 from numta import SMA_auto, SMA_cumsum
@@ -187,6 +214,8 @@ sma = SMA_auto(close_prices, timeperiod=30, backend='auto')
 # Or choose specific backend
 sma_fast = SMA_cumsum(close_prices, timeperiod=30)
 ```
+
+For batch processing across thousands of tickers, the GPU backend provides massive parallelism — each CUDA thread processes one ticker's full time series. See [GPU Batch Processing](https://deepentropy.github.io/numta/api/batch/) for details.
 
 ## API Reference
 
@@ -202,6 +231,7 @@ See [FUNCTION_IMPLEMENTATIONS.md](FUNCTION_IMPLEMENTATIONS.md) for detailed impl
 | Feature | Package | Installation |
 |---------|---------|--------------|
 | Performance | numba >= 0.56.0 | `pip install "numta[numba]"` |
+| GPU Batch | numba-cuda >= 0.1.0 | `pip install "numta[gpu]"` |
 | Pandas | pandas >= 1.3.0 | `pip install "numta[pandas]"` |
 | Visualization | lwcharts >= 0.1.0 | `pip install "numta[viz]"` |
 | All features | - | `pip install "numta[full]"` |
@@ -213,7 +243,9 @@ numta/
 ├── src/numta/
 │   ├── __init__.py
 │   ├── api/                 # Indicator implementations
-│   ├── cpu/                 # Numba-optimized versions
+│   │   └── batch.py         # GPU batch API (128 *_batch functions)
+│   ├── cpu/                 # Numba-optimized CPU kernels
+│   ├── gpu/                 # CUDA GPU kernels for batch processing
 │   ├── patterns/            # Chart pattern detection
 │   ├── streaming/           # Real-time indicators
 │   ├── viz/                 # Visualization (lwcharts)

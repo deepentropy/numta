@@ -22,6 +22,12 @@ A modern, high-performance alternative to TA-Lib with zero C dependencies.
 
     5-10x speedup with optional Numba JIT compilation
 
+-   :material-gpu: **GPU Batch Processing**
+
+    ---
+
+    Run 128 indicators on 26K+ tickers simultaneously with NVIDIA CUDA
+
 -   :material-check-all: **Complete**
 
     ---
@@ -118,6 +124,20 @@ for price in price_stream:
     
     if sma.ready and rsi.ready:
         print(f"SMA: {sma_value:.2f}, RSI: {rsi_value:.2f}")
+```
+
+### GPU Batch Processing
+
+```python
+import numpy as np
+from numta import SMA_batch, RSI_batch
+
+# 2D arrays: (num_tickers, num_bars)
+close = np.random.uniform(50, 150, (10000, 500))
+
+# Run on all 10,000 tickers at once
+sma = SMA_batch(close, timeperiod=20)   # shape: (10000, 500)
+rsi = RSI_batch(close, timeperiod=14)   # shape: (10000, 500)
 ```
 
 ### Pattern Recognition

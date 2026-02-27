@@ -114,6 +114,14 @@ Candlestick and chart pattern detection:
 - 60+ candlestick patterns (CDL*)
 - Chart pattern detection
 
+### [GPU Batch Processing](batch.md)
+
+Run any indicator on thousands of tickers simultaneously using NVIDIA CUDA:
+
+- 128 batch functions mirroring the CPU API
+- Input: 2D arrays `(num_tickers, num_bars)`
+- One CUDA thread per ticker for massive parallelism
+
 ### [Streaming Indicators](streaming.md)
 
 Real-time indicator updates:
