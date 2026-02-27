@@ -1,9 +1,15 @@
-# numta
+<p align="center">
+  <img src="docs/assets/logo-readme.png" alt="numta logo" width="200">
+</p>
 
-[![Documentation](https://img.shields.io/badge/docs-mkdocs-blue.svg)](https://deepentropy.github.io/numta)
-[![Tests](https://github.com/deepentropy/numta/actions/workflows/test.yml/badge.svg)](https://github.com/deepentropy/numta/actions/workflows/test.yml)
+<h1 align="center">numta</h1>
 
-Pure Python technical analysis library. A modern, high-performance alternative to TA-Lib with zero C dependencies.
+<p align="center">
+  <a href="https://deepentropy.github.io/numta"><img src="https://img.shields.io/badge/docs-mkdocs-blue.svg" alt="Documentation"></a>
+  <a href="https://github.com/deepentropy/numta/actions/workflows/test.yml"><img src="https://github.com/deepentropy/numta/actions/workflows/test.yml/badge.svg" alt="Tests"></a>
+</p>
+
+<p align="center">Pure Python technical analysis library. A modern, high-performance alternative to TA-Lib with zero C dependencies.</p>
 
 **[📖 Documentation](https://deepentropy.github.io/numta)** | **[🚀 Quick Start](https://deepentropy.github.io/numta/getting-started/quickstart/)** | **[📚 API Reference](https://deepentropy.github.io/numta/api/)**
 
